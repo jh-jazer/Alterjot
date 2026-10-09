@@ -1,0 +1,230 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* --- Light Retro Palette (Default) --- */
+    --bg-canvas: #fbf9f4; /* warm antique parchment */
+    --bg-subtle: #f4eedf; /* vintage manuscript linen */
+    --bg-card: #ffffff; /* crisp archival bond paper */
+    --bg-surface: #ede5d4; /* aged paper elevation */
+    --border-main: #ded4c1; /* pressed bookbinding rule */
+    --bg-hover: #e9dfcc;
+
+    --text-ink: #29241f; /* deep typewriter carbon ink */
+    --text-muted: #6e6254; /* warm graphite */
+    --text-faint: #998b7c; /* faded sepia */
+
+    --brand-50: #fff7ed;
+    --brand-100: #ffedd5;
+    --brand-200: #fed7aa;
+    --brand-300: #fdba74;
+    --brand-400: #fb923c;
+    --brand-500: #d97706;
+    --brand-600: #c2593f; /* vintage terracotta / typewriter ribbon red-amber */
+    --brand-700: #a2402a;
+    --brand-800: #84321f;
+    --brand-900: #672617;
+
+    --codex-char: #3b5998;
+    --codex-loc: #2a6b52;
+    --codex-faction: #b45309;
+    --codex-timeline: #9f375a;
+
+    color-scheme: light;
+  }
+
+  .dark {
+    /* --- Dark Nocturne Palette --- */
+    --bg-canvas: #0d0d11;
+    --bg-subtle: #13131b;
+    --bg-card: #181824;
+    --bg-surface: #1f1f2e;
+    --border-main: #27273a;
+    --bg-hover: #2b2b3f;
+
+    --text-ink: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-faint: #64748b;
+
+    --brand-50: #f5f3ff;
+    --brand-100: #ede9fe;
+    --brand-200: #ddd6fe;
+    --brand-300: #c4b5fd;
+    --brand-400: #a78bfa;
+    --brand-500: #8b5cf6;
+    --brand-600: #7c3aed;
+    --brand-700: #6d28d9;
+    --brand-800: #5b21b6;
+    --brand-900: #4c1d95;
+
+    --codex-char: #818cf8;
+    --codex-loc: #34d399;
+    --codex-faction: #f59e0b;
+    --codex-timeline: #ec4899;
+
+    color-scheme: dark;
+  }
+
+  html {
+    background-color: var(--bg-canvas);
+    color: var(--text-ink);
+    color-scheme: light;
+  }
+
+  html.dark {
+    background-color: var(--bg-canvas);
+    color: var(--text-ink);
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--bg-canvas);
+    color: var(--text-ink);
+    font-family: 'Inter', sans-serif;
+    user-select: text;
+    min-height: 100vh;
+  }
+
+  /* Custom scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #d4c8b2;
+    border-radius: 9999px;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    background: #272738;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #bfae93;
+  }
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: #393952;
+  }
+}
+
+/* TipTap Prose Canvas Styling */
+.ProseMirror {
+  outline: none;
+  min-height: 520px;
+  color: var(--text-ink);
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: var(--text-faint);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror hr {
+  border: none;
+  border-top: 1px dashed var(--border-main);
+  margin: 3rem 0;
+  text-align: center;
+  position: relative;
+}
+
+.ProseMirror hr::after {
+  content: '⁂';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--bg-card);
+  padding: 0 14px;
+  color: var(--brand-600);
+  font-size: 16px;
+  letter-spacing: 2px;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid var(--brand-600);
+  padding-left: 1.25rem;
+  font-style: italic;
+  color: var(--text-muted);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Line height typography variations */
+.line-height-relaxed .ProseMirror p {
+  line-height: 1.95;
+}
+.line-height-normal .ProseMirror p {
+  line-height: 1.75;
+}
+.line-height-compact .ProseMirror p {
+  line-height: 1.55;
+}
+
+/* Font variations for canvas */
+.font-prose-serif .ProseMirror {
+  font-family: 'Newsreader', 'EB Garamond', 'Merriweather', 'Lora', Georgia, serif;
+  font-size: 1.22rem;
+  letter-spacing: 0.01em;
+}
+.font-prose-sans .ProseMirror {
+  font-family: 'Inter', -apple-system, sans-serif;
+  font-size: 1.125rem;
+}
+.font-prose-typewriter .ProseMirror {
+  font-family: 'Courier Prime', ui-monospace, monospace;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+}
+.font-prose-mono .ProseMirror {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.05rem;
+}
+
+/* Zen mode transitions */
+.zen-transition {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   Smooth Spreading Circular Theme Transition (Flash-Free)
+   ========================================================================== */
+
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none !important;
+  mix-blend-mode: normal !important;
+  display: block;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+/* Fallback: Smooth color interpolation if View Transitions are unavailable */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: background-color 300ms cubic-bezier(0.25, 0.1, 0.25, 1),
+              border-color 300ms cubic-bezier(0.25, 0.1, 0.25, 1),
+              color 300ms cubic-bezier(0.25, 0.1, 0.25, 1),
+              fill 300ms cubic-bezier(0.25, 0.1, 0.25, 1),
+              stroke 300ms cubic-bezier(0.25, 0.1, 0.25, 1),
+              box-shadow 300ms cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  transition-delay: 0s !important;
+}
+
