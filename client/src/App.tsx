@@ -6,7 +6,7 @@ import { Sidebar } from './components/layout/Sidebar';
 import { ProseEditor } from './components/editor/ProseEditor';
 import { CodexDrawer } from './components/layout/CodexDrawer';
 import { LibraryView } from './components/library/LibraryView';
-import { LandingPage } from './components/landing/LandingPage';
+import { DashboardView } from './components/dashboard/DashboardView';
 import { PlayView } from './components/play/PlayView';
 import { RankingView } from './components/ranking/RankingView';
 import { ProjectDashboardModal } from './components/dashboard/ProjectDashboardModal';
@@ -28,9 +28,9 @@ export const App: React.FC = () => {
       {/* Top Application Bar with Side Margins */}
       <Header />
 
-      {/* Main Viewport: Landing Page (Root), Play, Ranking, Library, or Studio */}
-      {currentView === 'landing' ? (
-        <LandingPage />
+      {/* Main Viewport: Dashboard (Root), Play, Ranking, Library, or Studio */}
+      {currentView === 'dashboard' || currentView === 'landing' ? (
+        <DashboardView />
       ) : currentView === 'play' ? (
         <PlayView />
       ) : currentView === 'ranking' ? (

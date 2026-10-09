@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
-import { StatusDot } from '../common/StatusDot';
 import {
   PanelLeft,
   ChevronLeft,
-  ChevronRight,
   BookOpen,
   Edit3,
   Check,
@@ -23,16 +21,10 @@ export const WorkstationNavbar: React.FC = () => {
   const toggleSidebar = useWorkspaceStore((s) => s.toggleSidebar);
   const toggleCodex = useWorkspaceStore((s) => s.toggleCodex);
   const toggleZenMode = useWorkspaceStore((s) => s.toggleZenMode);
-  const saveStatus = useWorkspaceStore((s) => s.saveStatus);
-  const lastSavedAt = useWorkspaceStore((s) => s.lastSavedAt);
   const setIsDashboardOpen = useWorkspaceStore((s) => s.setIsDashboardOpen);
   const setIsExportOpen = useWorkspaceStore((s) => s.setIsExportOpen);
   
   const activeNovel = useWorkspaceStore((s) => s.novels.find((n) => n._id === s.activeNovelId));
-  const chapters = useWorkspaceStore((s) => s.chapters);
-  const activeChapterId = useWorkspaceStore((s) => s.activeChapterId);
-  const activeChapter = chapters.find((c) => c._id === activeChapterId);
-  const activeScene = useWorkspaceStore((s) => s.activeScene);
   const updateNovel = useWorkspaceStore((s) => s.updateNovel);
 
   const theme = useWorkspaceStore((s) => s.theme);
@@ -57,10 +49,6 @@ export const WorkstationNavbar: React.FC = () => {
 
   // If Zen mode is activated, collapse the entire chrome for pure focus
   if (panelState.isZenMode) return null;
-
-  const totalWords = activeNovel?.totalWordCount || 0;
-  const targetWords = activeNovel?.targetWordCount || 80000;
-  const progressPercent = Math.min(100, Math.round((totalWords / targetWords) * 100));
 
   return (
     <header className="w-full border-b border-canvas-border bg-canvas/95 backdrop-blur-md sticky top-0 z-30 select-none">
@@ -133,41 +121,7 @@ export const WorkstationNavbar: React.FC = () => {
                 <Edit3 className="w-2.5 h-2.5 text-ink-faint opacity-40 group-hover/title:opacity-100 transition-opacity flex-shrink-0" />
               </button>
             )}
-
-            {/* Breadcrumb to active Chapter & Scene */}
-            {activeChapter && (
-              <div className="hidden lg:flex items-center gap-1 text-xs text-ink-muted font-mono truncate max-w-[260px]">
-                <ChevronRight className="w-3.5 h-3.5 text-ink-faint flex-shrink-0" />
-                <span className="truncate text-ink-faint max-w-[110px]" title={activeChapter.title}>
-                  {activeChapter.title}
-                </span>
-                {activeScene && (
-                  <>
-                    <ChevronRight className="w-3.5 h-3.5 text-ink-faint flex-shrink-0" />
-                    <span className="truncate text-ink font-medium max-w-[130px]" title={activeScene.title}>
-                      {activeScene.title}
-                    </span>
-                  </>
-                )}
-              </div>
-            )}
           </div>
-        </div>
-
-        {/* Center Section: Autosave Status & Live Progress Indicator */}
-        <div className="hidden md:flex items-center gap-3">
-          <StatusDot status={saveStatus} lastSavedAt={lastSavedAt} />
-          {activeNovel && (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-canvas-card border border-canvas-border text-[11px] font-mono text-ink-muted shadow-xs">
-              <span className="font-semibold text-ink">
-                {totalWords.toLocaleString()}
-              </span>
-              <span>words</span>
-              <span className="text-ink-faint">
-                ({progressPercent}%)
-              </span>
-            </div>
-          )}
         </div>
 
         {/* Right Section: Dedicated Workstation Tools (Metrics, Export, Codex, Zen, Theme, Profile) */}

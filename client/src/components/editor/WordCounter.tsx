@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, Hash } from 'lucide-react';
+import { Hash } from 'lucide-react';
 
 interface WordCounterProps {
   wordCount: number;
@@ -7,10 +7,8 @@ interface WordCounterProps {
 }
 
 export const WordCounter: React.FC<WordCounterProps> = ({ wordCount, characterCount }) => {
-  const readingMinutes = Math.max(1, Math.ceil(wordCount / 200));
-
   return (
-    <div className="flex items-center gap-4 text-xs font-mono text-ink-muted py-1.5 px-3 rounded-lg bg-canvas-card/80 border border-canvas-border shadow-xs backdrop-blur-sm select-none">
+    <div className="flex items-center gap-3 text-xs font-mono text-ink-muted py-1.5 px-3 rounded-lg bg-canvas-card/80 border border-canvas-border shadow-xs backdrop-blur-sm select-none">
       <div className="flex items-center gap-1.5" title="Scene word count">
         <Hash className="w-3.5 h-3.5 text-brand-600" />
         <span className="font-semibold text-ink">{wordCount.toLocaleString()}</span>
@@ -22,14 +20,6 @@ export const WordCounter: React.FC<WordCounterProps> = ({ wordCount, characterCo
       <div className="flex items-center gap-1.5" title="Character count">
         <span className="text-ink-faint">chars:</span>
         <span className="text-ink">{characterCount.toLocaleString()}</span>
-      </div>
-
-      <div className="w-px h-3 bg-canvas-border" />
-
-      <div className="flex items-center gap-1.5" title="Estimated reading time (~200 wpm)">
-        <Clock className="w-3.5 h-3.5 text-amber-700" />
-        <span className="text-ink">~{readingMinutes} min</span>
-        <span className="text-ink-faint text-[11px]">read</span>
       </div>
     </div>
   );

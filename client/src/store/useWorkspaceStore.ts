@@ -16,7 +16,7 @@ interface TypographySettings {
 }
 
 interface WorkspaceState {
-  currentView: 'landing' | 'library' | 'studio' | 'play' | 'ranking';
+  currentView: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking';
   activeNovelId: string | null;
   activeChapterId: string | null;
   activeSceneId: string | null;
@@ -47,7 +47,11 @@ interface WorkspaceState {
   isExportOpen: boolean;
   isNewNovelModalOpen: boolean;
 
-  setCurrentView: (view: 'landing' | 'library' | 'studio' | 'play' | 'ranking') => void;
+  librarySearchQuery: string;
+  setLibrarySearchQuery: (query: string) => void;
+
+  setCurrentView: (view: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking') => void;
+  openDashboard: () => void;
   openLanding: () => void;
   openLibrary: () => void;
   openPlay: () => void;
@@ -107,7 +111,7 @@ if (typeof document !== 'undefined') {
 let isTransitioningTheme = false;
 
 export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
-  currentView: 'landing',
+  currentView: 'dashboard',
   activeNovelId: null,
   activeChapterId: null,
   activeSceneId: null,
@@ -250,7 +254,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   },
 
   setCurrentView: (view) => set({ currentView: view }),
-  openLanding: () => set({ currentView: 'landing' }),
+  openDashboard: () => set({ currentView: 'dashboard' }),
+  openLanding: () => set({ currentView: 'dashboard' }),
   openLibrary: () => set({ currentView: 'library' }),
   openPlay: () => set({ currentView: 'play' }),
   openRanking: () => set({ currentView: 'ranking' }),
@@ -270,6 +275,9 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   isDashboardOpen: false,
   isExportOpen: false,
   isNewNovelModalOpen: false,
+
+  librarySearchQuery: '',
+  setLibrarySearchQuery: (query) => set({ librarySearchQuery: query }),
 
   setPanelState: (partial) =>
     set((state) => ({

@@ -10,6 +10,7 @@ import { useAutosave } from '../../hooks/useAutosave';
 import { EditorToolbar } from './EditorToolbar';
 import { WordCounter } from './WordCounter';
 import { SceneNotesDeck } from './SceneNotesDeck';
+import { StatusDot } from '../common/StatusDot';
 import { Minimize2, Edit3 } from 'lucide-react';
 import type { SceneStatus, SceneMetadata } from '../../types';
 
@@ -21,6 +22,8 @@ export const ProseEditor: React.FC = () => {
   const updateActiveSceneLocally = useWorkspaceStore((s) => s.updateActiveSceneLocally);
   const updateSceneMetadataLocally = useWorkspaceStore((s) => s.updateSceneMetadataLocally);
   const updateSceneTitle = useWorkspaceStore((s) => s.updateSceneTitle);
+  const saveStatus = useWorkspaceStore((s) => s.saveStatus);
+  const lastSavedAt = useWorkspaceStore((s) => s.lastSavedAt);
 
   const [wordCount, setWordCount] = useState(activeScene?.wordCount || 0);
   const [characterCount, setCharacterCount] = useState(activeScene?.characterCount || 0);
@@ -250,7 +253,10 @@ export const ProseEditor: React.FC = () => {
             <span className="text-ink-muted">{typography.lineHeight} spacing</span>
           </div>
 
-          <WordCounter wordCount={wordCount} characterCount={characterCount} />
+          <div className="flex items-center gap-3 sm:gap-4">
+            <StatusDot status={saveStatus} lastSavedAt={lastSavedAt} />
+            <WordCounter wordCount={wordCount} characterCount={characterCount} />
+          </div>
         </div>
       )}
     </div>
