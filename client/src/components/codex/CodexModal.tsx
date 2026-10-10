@@ -92,25 +92,25 @@ export const CodexModal: React.FC<CodexModalProps> = ({
   const categories: CodexCategory[] = ['Characters', 'Locations', 'Factions', 'Timeline'];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-6 text-ink">
-        <div className="flex items-center justify-between pb-4 border-b border-canvas-border">
-          <h3 className="text-lg font-serif font-bold text-ink flex items-center gap-2">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+      <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-4 sm:p-6 text-ink">
+        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-canvas-border">
+          <h3 className="text-base sm:text-lg font-serif font-bold text-ink flex items-center gap-2">
             <span>{initialData ? 'Edit Codex Entry' : 'New World Codex Card'}</span>
           </h3>
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-ink"
+            className="p-1.5 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-ink transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+        <form onSubmit={handleSubmit} className="space-y-4 mt-3 sm:mt-4">
           <div>
             <label className="block text-xs font-mono text-ink-muted mb-1.5 uppercase font-medium">Category</label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {categories.map((cat) => (
                 <button
                   key={cat}
@@ -232,18 +232,18 @@ export const CodexModal: React.FC<CodexModalProps> = ({
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-canvas-border">
+          <div className="flex items-center justify-end gap-2.5 pt-3 sm:pt-4 border-t border-canvas-border">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg text-sm text-ink-muted hover:text-ink hover:bg-canvas-hover transition-colors"
+              className="px-3.5 sm:px-4 py-2 rounded-lg text-sm text-ink-muted hover:text-ink hover:bg-canvas-hover transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-5 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm transition-all shadow-sm shadow-brand-600/30 disabled:opacity-50"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-4 sm:px-5 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-medium text-sm transition-all shadow-sm shadow-brand-600/30 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
               <span>{isSubmitting ? 'Saving...' : 'Save Lore Card'}</span>

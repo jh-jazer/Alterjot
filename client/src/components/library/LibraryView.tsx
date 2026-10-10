@@ -89,12 +89,12 @@ export const LibraryView: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto bg-canvas text-ink select-none">
-      {/* Clean centered container with generous white space on left and right */}
-      <div className="max-w-6xl mx-auto px-6 sm:px-8 py-8 sm:py-10 space-y-10">
+    <div className="flex-1 overflow-y-auto bg-canvas text-ink select-none pb-24 md:pb-10">
+      {/* Clean centered container with responsive padding on left and right */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-6 sm:space-y-10">
         
         {/* Library Desk Hero Banner (matching Dashboard cinematic dark card aesthetic) */}
-        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-6 sm:p-7 shadow-xl border border-black/10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-5 sm:p-7 shadow-xl border border-black/10 flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
           {/* Ambient soft glow */}
           <div className="absolute right-0 top-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -107,7 +107,7 @@ export const LibraryView: React.FC = () => {
                 • {novels.length} {novels.length === 1 ? 'Volume' : 'Volumes'}
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-serif font-bold text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-white tracking-tight">
               Your Manuscript Archive
             </h1>
             <p className="text-xs sm:text-sm text-neutral-300 font-serif max-w-xl leading-relaxed">
@@ -115,15 +115,15 @@ export const LibraryView: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-4 flex-shrink-0 relative z-10">
+          <div className="flex items-center gap-3 sm:gap-4 flex-wrap sm:flex-nowrap w-full md:w-auto justify-between sm:justify-start relative z-10">
             {/* Library Output Metric Pill */}
-            <div className="px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-left backdrop-blur-xs">
+            <div className="flex-1 sm:flex-initial px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-white/5 border border-white/10 text-left backdrop-blur-xs min-w-[130px]">
               <span className="block text-[9px] font-mono uppercase tracking-wider text-neutral-400 font-semibold">
                 Total Words
               </span>
-              <span className="text-lg font-serif font-bold text-amber-300">
+              <span className="text-base sm:text-lg font-serif font-bold text-amber-300">
                 {totalWordsAcrossLibrary.toLocaleString()}{' '}
-                <span className="text-[11px] font-mono font-normal text-neutral-400">words</span>
+                <span className="text-[10px] sm:text-[11px] font-mono font-normal text-neutral-400">words</span>
               </span>
             </div>
 
@@ -131,26 +131,48 @@ export const LibraryView: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsNewNovelModalOpen(true)}
-              className="px-5 py-2.5 rounded-full bg-brand-600 hover:bg-brand-500 text-white text-xs font-mono font-semibold uppercase tracking-wider shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              className="flex-1 sm:flex-initial px-4 sm:px-5 py-2.5 rounded-full bg-brand-600 hover:bg-brand-500 text-white text-xs font-mono font-semibold uppercase tracking-wider shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer text-center whitespace-nowrap"
             >
               + New Book
             </button>
           </div>
         </div>
 
+        {/* Mobile Dedicated Search Input (Visible on small screens where navbar search is hidden) */}
+        <div className="sm:hidden relative">
+          <Search className="w-4 h-4 text-ink-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={librarySearchQuery}
+            onChange={(e) => setLibrarySearchQuery(e.target.value)}
+            placeholder="Search manuscripts by title, genre..."
+            className="w-full pl-9 pr-8 py-2 rounded-xl bg-canvas-card border border-canvas-border text-xs font-sans text-ink placeholder:text-ink-faint focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 shadow-xs"
+          />
+          {librarySearchQuery && (
+            <button
+              type="button"
+              onClick={() => setLibrarySearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-ink-muted hover:text-ink rounded-md"
+              title="Clear search"
+            >
+              <Search className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
+
         {/* Active Search Results Indicator */}
         {librarySearchQuery && (
-          <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-canvas-card border border-canvas-border text-xs font-mono text-ink-muted shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-3.5 sm:px-4 py-2.5 rounded-xl bg-canvas-card border border-canvas-border text-xs font-mono text-ink-muted shadow-xs">
             <div className="flex items-center gap-2">
-              <Search className="w-3.5 h-3.5 text-brand-600" />
-              <span>
+              <Search className="w-3.5 h-3.5 text-brand-600 flex-shrink-0" />
+              <span className="truncate">
                 Found <strong className="text-ink">{filteredNovels.length}</strong> {filteredNovels.length === 1 ? 'manuscript' : 'manuscripts'} matching &ldquo;<span className="text-brand-700">{librarySearchQuery}</span>&rdquo;
               </span>
             </div>
             <button
               type="button"
               onClick={() => setLibrarySearchQuery('')}
-              className="text-xs font-mono text-brand-600 hover:text-brand-700 underline cursor-pointer"
+              className="text-xs font-mono text-brand-600 hover:text-brand-700 underline cursor-pointer self-end sm:self-auto"
             >
               Clear search
             </button>
@@ -159,24 +181,24 @@ export const LibraryView: React.FC = () => {
 
         {/* Manuscript Shelf Grid */}
         <section className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
             <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink tracking-tight">
               Volumes on Shelf
             </h2>
             <span className="text-xs font-mono text-ink-muted">
-              Click any volume to open in Studio
+              Tap any volume to open in Studio
             </span>
           </div>
 
           {novels.length === 0 ? (
-            <div className="py-20 px-6 rounded-2xl bg-canvas-card border border-dashed border-canvas-border text-center shadow-xs">
-              <div className="w-16 h-16 rounded-2xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-brand-700 mx-auto mb-4 shadow-xs">
-                <Book className="w-8 h-8" />
+            <div className="py-16 sm:py-20 px-4 sm:px-6 rounded-2xl bg-canvas-card border border-dashed border-canvas-border text-center shadow-xs">
+              <div className="w-14 sm:w-16 h-14 sm:h-16 rounded-2xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-brand-700 mx-auto mb-4 shadow-xs">
+                <Book className="w-7 sm:w-8 h-7 sm:h-8" />
               </div>
-              <h3 className="text-xl font-serif font-bold text-ink mb-1">
+              <h3 className="text-lg sm:text-xl font-serif font-bold text-ink mb-1">
                 Your Library is Quiet
               </h3>
-              <p className="text-sm text-ink-muted max-w-md mx-auto leading-relaxed font-sans mb-5">
+              <p className="text-xs sm:text-sm text-ink-muted max-w-md mx-auto leading-relaxed font-sans mb-5">
                 No manuscripts found on your shelf. Start drafting with quick-write or build a new story volume.
               </p>
               <button
@@ -188,14 +210,14 @@ export const LibraryView: React.FC = () => {
               </button>
             </div>
           ) : filteredNovels.length === 0 ? (
-            <div className="py-20 px-6 rounded-2xl bg-canvas-card border border-dashed border-canvas-border text-center shadow-xs">
-              <div className="w-14 h-14 rounded-2xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-ink-muted mx-auto mb-3 shadow-xs">
-                <Search className="w-6 h-6 text-brand-600" />
+            <div className="py-16 sm:py-20 px-4 sm:px-6 rounded-2xl bg-canvas-card border border-dashed border-canvas-border text-center shadow-xs">
+              <div className="w-12 sm:w-14 h-12 sm:h-14 rounded-2xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-ink-muted mx-auto mb-3 shadow-xs">
+                <Search className="w-5 sm:w-6 h-5 sm:h-6 text-brand-600" />
               </div>
-              <h3 className="text-xl font-serif font-bold text-ink mb-1">
+              <h3 className="text-lg sm:text-xl font-serif font-bold text-ink mb-1">
                 No Matching Manuscripts
               </h3>
-              <p className="text-sm text-ink-muted max-w-md mx-auto mb-4 leading-relaxed font-sans">
+              <p className="text-xs sm:text-sm text-ink-muted max-w-md mx-auto mb-4 leading-relaxed font-sans">
                 We couldn&apos;t find any manuscripts matching &ldquo;{librarySearchQuery}&rdquo;. Try another title, genre, or premise keyword.
               </p>
               <button
@@ -207,7 +229,7 @@ export const LibraryView: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {filteredNovels.map((novel, idx) => {
                 const totalWords = novel.totalWordCount || 0;
                 const targetGoal = novel.targetWordCount || 80000;
@@ -231,7 +253,7 @@ export const LibraryView: React.FC = () => {
                     {/* Top ribbon accent */}
                     <div className={`h-2.5 w-full bg-gradient-to-r ${spineGradient}`} />
 
-                    <div className="p-5 flex-1 flex flex-col justify-between">
+                    <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                       <div>
                         {/* Genre & Status */}
                         <div className="flex items-center justify-between gap-2 mb-2">
@@ -248,7 +270,7 @@ export const LibraryView: React.FC = () => {
                         </div>
 
                         {/* Title & Subtitle */}
-                        <h3 className="text-xl font-serif font-bold text-ink group-hover:text-brand-700 transition-colors line-clamp-2">
+                        <h3 className="text-lg sm:text-xl font-serif font-bold text-ink group-hover:text-brand-700 transition-colors line-clamp-2">
                           {novel.title}
                         </h3>
                         {novel.subtitle && (
@@ -270,7 +292,7 @@ export const LibraryView: React.FC = () => {
                       </div>
 
                       {/* Progress Bar & Word Metrics */}
-                      <div className="mt-5 pt-3.5 border-t border-canvas-border">
+                      <div className="mt-4 sm:mt-5 pt-3 sm:pt-3.5 border-t border-canvas-border">
                         <div className="flex items-baseline justify-between text-xs font-mono mb-1.5">
                           <span className="text-ink font-semibold">
                             {totalWords.toLocaleString()} <span className="text-ink-faint text-[10px]">words</span>
@@ -300,41 +322,45 @@ export const LibraryView: React.FC = () => {
                     </div>
 
                     {/* Card Actions Footer */}
-                    <div className="px-5 py-2.5 bg-canvas-surface/70 border-t border-canvas-border flex items-center justify-between text-xs">
-                      <span className="text-brand-700 font-serif font-semibold text-xs group-hover:underline">
+                    <div className="px-4 sm:px-5 py-2.5 bg-canvas-surface/70 border-t border-canvas-border flex items-center justify-between text-xs gap-2">
+                      <span className="text-brand-700 font-serif font-semibold text-xs group-hover:underline truncate">
                         Open in Studio →
                       </span>
 
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
                         <button
                           type="button"
                           onClick={(e) => handleMetricsBook(novel, e)}
-                          className="p-1.5 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-brand-700 transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-brand-700 transition-colors touch-manipulation"
                           title="View Metrics"
+                          aria-label="View Metrics"
                         >
                           <TrendingUp className="w-3.5 h-3.5" />
                         </button>
                         <button
                           type="button"
                           onClick={(e) => handleExportBook(novel, e)}
-                          className="p-1.5 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-brand-700 transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-brand-700 transition-colors touch-manipulation"
                           title="Export Manuscript"
+                          aria-label="Export Manuscript"
                         >
                           <FileDown className="w-3.5 h-3.5" />
                         </button>
                         <button
                           type="button"
                           onClick={(e) => handleEditBook(novel, e)}
-                          className="p-1.5 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-brand-700 transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-brand-700 transition-colors touch-manipulation"
                           title="Edit Book Details"
+                          aria-label="Edit Book Details"
                         >
                           <Edit className="w-3.5 h-3.5" />
                         </button>
                         <button
                           type="button"
                           onClick={(e) => handleDeleteBook(novel, e)}
-                          className="p-1.5 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-rose-600 transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-rose-600 transition-colors touch-manipulation"
                           title="Delete Book"
+                          aria-label="Delete Book"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

@@ -11,6 +11,7 @@ import { PlayView } from './components/play/PlayView';
 import { RankingView } from './components/ranking/RankingView';
 import { ProjectDashboardModal } from './components/dashboard/ProjectDashboardModal';
 import { ExportModal } from './components/export/ExportModal';
+import { MobileBottomNav } from './components/layout/MobileBottomNav';
 
 export const App: React.FC = () => {
   const loadInitialWorkspace = useWorkspaceStore((s) => s.loadInitialWorkspace);
@@ -24,7 +25,7 @@ export const App: React.FC = () => {
   }, [loadInitialWorkspace]);
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-canvas text-ink">
+    <div className="flex flex-col h-screen h-[100dvh] w-full overflow-hidden bg-canvas text-ink">
       {/* Top Application Bar with Side Margins */}
       <Header />
 
@@ -53,6 +54,9 @@ export const App: React.FC = () => {
       {/* Modals & Dialogs */}
       <ProjectDashboardModal />
       <ExportModal />
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
     </div>
   );
 };

@@ -18,8 +18,8 @@ export const SceneNotesDeck: React.FC<SceneNotesDeckProps> = ({ scene, onChange 
 
   return (
     <div className="border-b border-canvas-border bg-canvas-subtle/80 transition-colors">
-      <div className="flex items-center justify-between px-6 py-2 text-xs text-ink-muted">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between px-3 sm:px-6 py-2 text-xs text-ink-muted">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             type="button"
             onClick={toggleNotesDeck}
@@ -78,7 +78,7 @@ export const SceneNotesDeck: React.FC<SceneNotesDeckProps> = ({ scene, onChange 
       </div>
 
       {isNotesDeckOpen && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 px-6 py-3 bg-canvas-card/60 border-t border-canvas-border text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3 px-3 sm:px-6 py-3 bg-canvas-card/60 border-t border-canvas-border text-xs">
           <div className="space-y-1">
             <label className="flex items-center gap-1.5 text-ink-muted font-mono text-[11px] font-medium">
               <User className="w-3 h-3 text-[#2e4785] dark:text-indigo-400" />

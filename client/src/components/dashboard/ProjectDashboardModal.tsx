@@ -42,17 +42,17 @@ export const ProjectDashboardModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-6 text-ink">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+      <div className="w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-4 sm:p-6 text-ink">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-canvas-border">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-brand-50 text-brand-700 border border-brand-200 dark:bg-brand-600/20 dark:text-brand-400 dark:border-brand-500/30">
+        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-canvas-border">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div className="p-2 rounded-xl bg-brand-50 text-brand-700 border border-brand-200 dark:bg-brand-600/20 dark:text-brand-400 dark:border-brand-500/30 flex-shrink-0">
               <TrendingUp className="w-5 h-5" />
             </div>
-            <div>
-              <h3 className="text-xl font-serif font-bold text-ink">{activeNovel.title}</h3>
-              <p className="text-xs text-ink-muted font-mono">
+            <div className="min-w-0">
+              <h3 className="text-lg sm:text-xl font-serif font-bold text-ink truncate">{activeNovel.title}</h3>
+              <p className="text-xs text-ink-muted font-mono truncate">
                 Project Metrics & Manuscript Velocity Overview
               </p>
             </div>
@@ -60,32 +60,32 @@ export const ProjectDashboardModal: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsDashboardOpen(false)}
-            className="p-1 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-ink"
+            className="p-1 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-ink flex-shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Word Count Goal Banner */}
-        <div className="mt-6 p-6 rounded-2xl bg-gradient-to-br from-[#fcf7ee] via-canvas-card to-[#f4ecd8] dark:from-brand-950/40 dark:via-canvas-surface dark:to-canvas-card border border-brand-200 dark:border-brand-500/20 relative overflow-hidden shadow-xs">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="mt-4 sm:mt-6 p-4 sm:p-6 rounded-2xl bg-gradient-to-br from-[#fcf7ee] via-canvas-card to-[#f4ecd8] dark:from-brand-950/40 dark:via-canvas-surface dark:to-canvas-card border border-brand-200 dark:border-brand-500/20 relative overflow-hidden shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             <div>
               <span className="text-xs font-mono uppercase tracking-widest text-brand-800 dark:text-brand-300 font-semibold flex items-center gap-1.5">
                 <Target className="w-4 h-4 text-brand-700" />
                 Manuscript Target Word Count
               </span>
-              <div className="flex items-baseline gap-3 mt-1">
-                <span className="text-4xl font-extrabold text-ink tracking-tight font-serif">
+              <div className="flex items-baseline gap-2 sm:gap-3 mt-1 flex-wrap">
+                <span className="text-2xl sm:text-4xl font-extrabold text-ink tracking-tight font-serif">
                   {totalWords.toLocaleString()}
                 </span>
-                <span className="text-xl text-ink-muted font-mono">
+                <span className="text-base sm:text-xl text-ink-muted font-mono">
                   / {targetWords.toLocaleString()} words
                 </span>
               </div>
             </div>
 
-            <div className="text-right">
-              <span className="text-3xl font-extrabold text-brand-700 dark:text-brand-400 font-mono">
+            <div className="text-left sm:text-right">
+              <span className="text-2xl sm:text-3xl font-extrabold text-brand-700 dark:text-brand-400 font-mono">
                 {progressPercent}%
               </span>
               <span className="block text-xs text-ink-muted mt-0.5 font-sans">Completion Rate</span>
@@ -141,7 +141,7 @@ export const ProjectDashboardModal: React.FC = () => {
         </div>
 
         {/* 3 Metric Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-4 sm:mt-6">
           <div className="p-4 rounded-xl bg-canvas-surface border border-canvas-border shadow-xs">
             <div className="flex items-center gap-2 text-ink-muted mb-1">
               <Layers className="w-4 h-4 text-[#2e4785] dark:text-indigo-400" />
@@ -181,7 +181,7 @@ export const ProjectDashboardModal: React.FC = () => {
           <h4 className="text-xs font-mono uppercase text-ink-muted mb-3 tracking-wider font-semibold">
             Scene Revision Pipeline
           </h4>
-          <div className="grid grid-cols-3 gap-3 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 text-center">
             <div className="p-3 rounded-lg bg-[#faeed1] border border-[#e3c788] dark:bg-amber-950/20 dark:border-amber-900/30">
               <span className="text-xs font-mono text-[#7c4a03] dark:text-amber-300 block font-semibold">DRAFT</span>
               <span className="text-xl font-bold font-serif text-[#7c4a03] dark:text-amber-200 mt-1 block">{draftScenes}</span>

@@ -53,17 +53,17 @@ export const ExportModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-3xl max-h-[90vh] flex flex-col rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-6 text-ink">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+      <div className="w-full max-w-3xl max-h-[90vh] flex flex-col rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-4 sm:p-6 text-ink">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-canvas-border">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-canvas-border">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <div className="p-2 rounded-xl bg-brand-50 text-brand-700 border border-brand-200 dark:bg-brand-600/20 dark:text-brand-400 dark:border-brand-500/30">
               <FileDown className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-xl font-serif font-bold text-ink">Clean Manuscript Export</h3>
-              <p className="text-xs text-ink-muted font-mono">
+              <h3 className="text-lg sm:text-xl font-serif font-bold text-ink">Clean Manuscript Export</h3>
+              <p className="text-[11px] sm:text-xs text-ink-muted font-mono">
                 Compile entire book with structured headings & scene dividers
               </p>
             </div>
@@ -71,15 +71,15 @@ export const ExportModal: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsExportOpen(false)}
-            className="p-1 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-ink"
+            className="p-1.5 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-ink transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Options Bar */}
-        <div className="flex items-center justify-between my-4">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 my-3 sm:my-4">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-mono text-ink-muted uppercase font-medium">Export Format:</span>
             <div className="flex rounded-lg bg-canvas-surface p-1 border border-canvas-border text-xs font-mono shadow-xs">
               <button
@@ -113,7 +113,7 @@ export const ExportModal: React.FC = () => {
         </div>
 
         {/* Live Preview Box */}
-        <div className="flex-1 min-h-[300px] overflow-hidden rounded-xl border border-canvas-border bg-canvas-subtle/70 p-4 font-typewriter text-xs text-ink shadow-inner">
+        <div className="flex-1 min-h-[220px] sm:min-h-[300px] overflow-hidden rounded-xl border border-canvas-border bg-canvas-subtle/70 p-3 sm:p-4 font-typewriter text-xs text-ink shadow-inner">
           {isLoading ? (
             <div className="h-full flex items-center justify-center text-ink-faint">
               <span>Compiling manuscript bundle...</span>
@@ -128,28 +128,28 @@ export const ExportModal: React.FC = () => {
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-between pt-4 mt-4 border-t border-canvas-border">
-          <span className="text-xs text-ink-muted">
-            Exported document preserves all chapters, scene titles, POVs, and divider glyphs.
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-canvas-border">
+          <span className="text-[11px] sm:text-xs text-ink-muted leading-tight">
+            Preserves chapters, scene titles, POVs, and divider glyphs.
           </span>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
               type="button"
               onClick={handleCopy}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-canvas-card hover:bg-canvas-hover border border-canvas-border text-ink text-xs font-mono transition-colors shadow-xs"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-lg bg-canvas-card hover:bg-canvas-hover border border-canvas-border text-ink text-xs font-mono transition-colors shadow-xs"
             >
               {copied ? <Check className="w-4 h-4 text-[#245b32]" /> : <Copy className="w-4 h-4" />}
-              <span>{copied ? 'Copied!' : 'Copy to Clipboard'}</span>
+              <span>{copied ? 'Copied!' : 'Copy'}</span>
             </button>
 
             <button
               type="button"
               onClick={handleDownload}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-mono font-medium transition-colors shadow-xs shadow-brand-600/30"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-mono font-medium transition-colors shadow-xs shadow-brand-600/30"
             >
               <Download className="w-4 h-4" />
-              <span>Download File</span>
+              <span>Download</span>
             </button>
           </div>
         </div>

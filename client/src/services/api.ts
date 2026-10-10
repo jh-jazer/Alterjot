@@ -1,6 +1,6 @@
 import type { Novel, Chapter, Scene, CodexEntry } from '../types';
 
-const API_BASE = '/api';
+const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
 
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {

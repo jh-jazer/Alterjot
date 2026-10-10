@@ -30,9 +30,9 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 border-b border-canvas-border bg-canvas/80 backdrop-blur-md text-ink-muted transition-colors">
+    <div className="flex items-center justify-between gap-3 px-2.5 sm:px-4 py-1.5 sm:py-2 border-b border-canvas-border bg-canvas/80 backdrop-blur-md text-ink-muted transition-colors overflow-x-auto scrollbar-none">
       {/* Formatting tools */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
@@ -125,7 +125,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
       </div>
 
       {/* Typography settings */}
-      <div className="flex items-center gap-2 text-xs font-mono">
+      <div className="flex items-center gap-2 text-xs font-mono flex-shrink-0">
         {/* Font Family selector with Typewriter support */}
         <div className="flex items-center rounded-lg bg-canvas-card border border-canvas-border p-0.5 shadow-xs">
           <button

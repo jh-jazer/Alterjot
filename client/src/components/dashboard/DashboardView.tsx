@@ -107,13 +107,13 @@ export const DashboardView: React.FC = () => {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto bg-canvas text-ink select-none">
-      {/* Clean centered container with generous white space on left and right */}
-      <div className="max-w-6xl mx-auto px-6 sm:px-8 py-8 sm:py-10 space-y-12">
+    <div className="flex-1 overflow-y-auto bg-canvas text-ink select-none pb-24 md:pb-10">
+      {/* Clean centered container with responsive padding on left and right */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8 sm:space-y-12">
         
         {/* FIRST PART OF DASHBOARD: TWO COLUMNS (Weekly World & Creative Triad) */}
         <section className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
             
             {/* LEFT COLUMN: WEEKLY WORLD */}
             <div className="space-y-3">
@@ -122,13 +122,13 @@ export const DashboardView: React.FC = () => {
               </h2>
 
               {/* Dark cinematic card matching reference layout */}
-              <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-5 sm:p-6 shadow-xl border border-black/10 flex flex-col justify-between min-h-[310px]">
+              <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-4 sm:p-6 shadow-xl border border-black/10 flex flex-col justify-between min-h-[310px]">
                 {/* Ambient warm glow overlay */}
                 <div className="absolute top-0 right-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
-                <div className="flex flex-col sm:flex-row gap-5 items-center sm:items-start relative z-10">
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 items-center sm:items-start relative z-10">
                   {/* Book Cover Sample with subtle 3D spine depth */}
-                  <div className="w-36 sm:w-40 aspect-[2/3] flex-shrink-0 relative select-none group">
+                  <div className="w-32 sm:w-40 aspect-[2/3] flex-shrink-0 relative select-none group">
                     <img
                       src="/images/weekly-world-cover.jpg"
                       alt="The Clockwork Archipelago Book Cover Sample"
@@ -184,10 +184,10 @@ export const DashboardView: React.FC = () => {
               </h2>
 
               {/* Clean list panel with right-aligned images */}
-              <div className="rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment p-5 sm:p-6 flex flex-col justify-between">
+              <div className="rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment p-4 sm:p-6 flex flex-col justify-between">
                 <div className="divide-y divide-canvas-border/80">
                   {/* Row 1: Character */}
-                  <div className="pb-3.5 flex items-center justify-between gap-4 group">
+                  <div className="pb-3.5 flex items-center justify-between gap-3 sm:gap-4 group">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-mono uppercase tracking-wider text-amber-700 dark:text-amber-400 font-semibold">
@@ -201,7 +201,7 @@ export const DashboardView: React.FC = () => {
                         Disgraced clocktower artisan with a pocket watch counting down his heartbeats; cannot lie without skipping a beat.
                       </p>
                     </div>
-                    <div className="w-24 sm:w-28 h-16 sm:h-18 rounded-xl overflow-hidden border border-canvas-border flex-shrink-0 shadow-xs">
+                    <div className="w-20 sm:w-28 h-14 sm:h-18 rounded-xl overflow-hidden border border-canvas-border flex-shrink-0 shadow-xs">
                       <img
                         src="/images/character-silas.jpg"
                         alt="Silas Thorne"
@@ -211,7 +211,7 @@ export const DashboardView: React.FC = () => {
                   </div>
 
                   {/* Row 2: Place */}
-                  <div className="py-3.5 flex items-center justify-between gap-4 group">
+                  <div className="py-3.5 flex items-center justify-between gap-3 sm:gap-4 group">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-mono uppercase tracking-wider text-indigo-700 dark:text-indigo-400 font-semibold">
@@ -225,7 +225,7 @@ export const DashboardView: React.FC = () => {
                         A cathedral library submerged in bioluminescent salt water, where scholars dive to read waterproof glass manuscripts.
                       </p>
                     </div>
-                    <div className="w-24 sm:w-28 h-16 sm:h-18 rounded-xl overflow-hidden border border-canvas-border flex-shrink-0 shadow-xs">
+                    <div className="w-20 sm:w-28 h-14 sm:h-18 rounded-xl overflow-hidden border border-canvas-border flex-shrink-0 shadow-xs">
                       <img
                         src="/images/place-scriptorium.jpg"
                         alt="The Submerged Scriptorium"
@@ -235,7 +235,7 @@ export const DashboardView: React.FC = () => {
                   </div>
 
                   {/* Row 3: World */}
-                  <div className="pt-3.5 flex items-center justify-between gap-4 group">
+                  <div className="pt-3.5 flex items-center justify-between gap-3 sm:gap-4 group">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-700 dark:text-emerald-400 font-semibold">
@@ -249,7 +249,7 @@ export const DashboardView: React.FC = () => {
                         A realm where gravity reverses whenever an eclipse strikes, forcing architecture to span across both ceilings and floors.
                       </p>
                     </div>
-                    <div className="w-24 sm:w-28 h-16 sm:h-18 rounded-xl overflow-hidden border border-canvas-border flex-shrink-0 shadow-xs">
+                    <div className="w-20 sm:w-28 h-14 sm:h-18 rounded-xl overflow-hidden border border-canvas-border flex-shrink-0 shadow-xs">
                       <img
                         src="/images/world-solas.jpg"
                         alt="Solas Inverted"
@@ -292,12 +292,12 @@ export const DashboardView: React.FC = () => {
         <section className="space-y-6 pt-2">
           
           {/* Author Ranking Banner (styled cleanly echoing the sleek horizontal banner in reference) */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-[#1e1c19] text-white border border-black/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
+          <div className="p-4 sm:p-6 rounded-2xl bg-[#1e1c19] text-white border border-black/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
             <div className="absolute right-0 top-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
-            <div className="flex items-center gap-4 min-w-0 relative z-10">
-              <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
-                <Trophy className="w-6 h-6" />
+            <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 relative z-10">
+              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
+                <Trophy className="w-5 sm:w-6 h-5 sm:h-6" />
               </div>
 
               <div className="space-y-1 min-w-0">
@@ -311,38 +311,38 @@ export const DashboardView: React.FC = () => {
                 </div>
 
                 {/* Author Ranking Place and Title */}
-                <div className="flex items-baseline gap-4 sm:gap-6 flex-wrap">
+                <div className="flex items-baseline gap-2.5 sm:gap-6 flex-wrap">
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-[11px] font-mono text-neutral-400 uppercase font-bold">
+                    <span className="text-[10px] sm:text-[11px] font-mono text-neutral-400 uppercase font-bold">
                       Place
                     </span>
-                    <span className="text-2xl sm:text-3xl font-serif font-extrabold text-white tracking-tight">
+                    <span className="text-xl sm:text-3xl font-serif font-extrabold text-white tracking-tight">
                       #4
                     </span>
                   </div>
 
-                  <div className="h-5 w-px bg-white/20 self-center" />
+                  <div className="h-4 sm:h-5 w-px bg-white/20 self-center" />
 
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-[11px] font-mono text-neutral-400 uppercase font-bold">
+                    <span className="text-[10px] sm:text-[11px] font-mono text-neutral-400 uppercase font-bold">
                       Title
                     </span>
-                    <span className="text-xl sm:text-2xl font-serif font-bold text-amber-300">
+                    <span className="text-lg sm:text-2xl font-serif font-bold text-amber-300">
                       {rankInfo.title}
                     </span>
                   </div>
 
-                  <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase font-medium">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase font-medium">
                     {rankInfo.badge}
                   </span>
                 </div>
 
                 {/* Velocity to next title */}
-                <div className="flex items-center gap-3 pt-1 text-xs font-mono text-neutral-400">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1 text-xs font-mono text-neutral-400">
                   <span>{totalWords.toLocaleString()} words written</span>
                   <span>•</span>
                   <span>{rankProgress}% to {rankInfo.nextTitle}</span>
-                  <div className="w-24 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div className="w-20 sm:w-24 h-1.5 rounded-full bg-white/10 overflow-hidden">
                     <div
                       className="h-full bg-amber-500 rounded-full transition-all duration-500"
                       style={{ width: `${Math.max(4, rankProgress)}%` }}
@@ -353,11 +353,11 @@ export const DashboardView: React.FC = () => {
             </div>
 
             {/* Right Button: View Full Leaderboard (styled like READ NOW pill) */}
-            <div className="flex items-center gap-3 flex-shrink-0 relative z-10">
+            <div className="flex items-center gap-3 flex-shrink-0 relative z-10 w-full md:w-auto">
               <button
                 type="button"
                 onClick={openRanking}
-                className="px-6 py-2.5 rounded-full bg-brand-600 hover:bg-brand-500 text-white text-xs font-mono font-semibold uppercase tracking-wider shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                className="w-full md:w-auto px-6 py-2.5 rounded-full bg-brand-600 hover:bg-brand-500 text-white text-xs font-mono font-semibold uppercase tracking-wider shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer text-center"
                 title="View atelier leaderboard rankings"
               >
                 Leaderboard
@@ -410,7 +410,7 @@ export const DashboardView: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                 {novels.slice(0, 6).map((novel, idx) => {
                   const totalWords = novel.totalWordCount || 0;
                   const targetGoal = novel.targetWordCount || 80000;
@@ -433,7 +433,7 @@ export const DashboardView: React.FC = () => {
                       {/* Top ribbon accent */}
                       <div className={`h-2 w-full bg-gradient-to-r ${spineGradient}`} />
 
-                      <div className="p-5 flex-1 flex flex-col justify-between">
+                      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                         <div>
                           <div className="flex items-center justify-between gap-2 mb-1.5">
                             <span className="text-[10px] font-mono uppercase tracking-wider text-brand-700 font-semibold truncate">

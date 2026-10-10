@@ -70,7 +70,7 @@ export const ProseEditor: React.FC = () => {
     editorProps: {
       attributes: {
         class:
-          'prose prose-stone dark:prose-invert max-w-none focus:outline-none min-h-[calc(100vh-320px)] px-8 py-6 md:px-16 md:py-8 select-text',
+          'prose prose-stone dark:prose-invert max-w-none focus:outline-none min-h-[calc(100vh-320px)] px-4 py-4 sm:px-8 sm:py-6 md:px-16 md:py-8 select-text',
       },
     },
     onUpdate: ({ editor }) => {
@@ -182,16 +182,16 @@ export const ProseEditor: React.FC = () => {
       )}
 
       {/* Scrollable Prose Paper Canvas */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 md:py-10 flex justify-center bg-canvas">
+      <div className="flex-1 overflow-y-auto px-2 sm:px-4 py-4 sm:py-6 md:py-10 flex justify-center bg-canvas">
         <div
           className={`w-full transition-all duration-300 ${
             isZenMode
-              ? 'max-w-3xl my-6 bg-canvas-card/90 rounded-2xl border border-canvas-border/80 shadow-parchment-lg p-2 md:p-6'
-              : 'max-w-4xl bg-canvas-card rounded-2xl border border-canvas-border shadow-parchment'
+              ? 'max-w-3xl my-3 sm:my-6 bg-canvas-card/90 rounded-xl sm:rounded-2xl border border-canvas-border/80 shadow-parchment-lg p-2 sm:p-4 md:p-6'
+              : 'max-w-4xl bg-canvas-card rounded-xl sm:rounded-2xl border border-canvas-border shadow-parchment'
           }`}
         >
           {/* Optional Scene Title Header (Freeform & Flexible) */}
-          <div className="px-8 pt-8 pb-3 md:px-16 md:pt-10 border-b border-canvas-border/30">
+          <div className="px-4 pt-5 pb-2.5 sm:px-8 sm:pt-8 md:px-16 md:pt-10 border-b border-canvas-border/30">
             <input
               type="text"
               value={sceneTitle}
@@ -207,7 +207,7 @@ export const ProseEditor: React.FC = () => {
                 }
               }}
               placeholder="Untitled Scene"
-              className="w-full text-2xl md:text-3xl font-serif font-bold text-ink placeholder:text-ink-faint/30 bg-transparent border-none outline-none focus:outline-none transition-colors"
+              className="w-full text-xl sm:text-2xl md:text-3xl font-serif font-bold text-ink placeholder:text-ink-faint/30 bg-transparent border-none outline-none focus:outline-none transition-colors"
               title="Scene title (optional — edit anytime)"
             />
           </div>
@@ -218,8 +218,8 @@ export const ProseEditor: React.FC = () => {
       </div>
 
       {!isZenMode && (
-        <div className="px-6 py-2 border-t border-canvas-border bg-canvas/90 backdrop-blur-md flex items-center justify-between text-xs text-ink-muted font-mono">
-          <div className="flex items-center gap-3">
+        <div className="px-3 sm:px-6 py-1.5 sm:py-2 border-t border-canvas-border bg-canvas/90 backdrop-blur-md flex items-center justify-between text-xs text-ink-muted font-mono gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             {isEditingBottomTitle ? (
               <input
                 type="text"
@@ -234,26 +234,26 @@ export const ProseEditor: React.FC = () => {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === 'Escape') setIsEditingBottomTitle(false);
                 }}
-                className="px-1.5 py-0.5 rounded bg-canvas-card border border-brand-500 font-serif text-ink text-xs focus:outline-none shadow-xs"
+                className="px-1.5 py-0.5 rounded bg-canvas-card border border-brand-500 font-serif text-ink text-xs focus:outline-none shadow-xs max-w-[120px] sm:max-w-none"
               />
             ) : (
               <button
                 type="button"
                 onClick={() => setIsEditingBottomTitle(true)}
-                className="font-serif text-ink hover:text-brand-700 transition-colors flex items-center gap-1 group/btntitle"
+                className="font-serif text-ink hover:text-brand-700 transition-colors flex items-center gap-1 group/btntitle min-w-0"
                 title="Click to rename scene"
               >
-                <span>{activeScene.title}</span>
-                <Edit3 className="w-2.5 h-2.5 text-ink-faint opacity-40 group-hover/btntitle:opacity-100 transition-opacity" />
+                <span className="truncate max-w-[110px] sm:max-w-[200px] md:max-w-none">{activeScene.title}</span>
+                <Edit3 className="w-2.5 h-2.5 text-ink-faint opacity-40 group-hover/btntitle:opacity-100 transition-opacity flex-shrink-0" />
               </button>
             )}
-            <span className="text-ink-faint">•</span>
-            <span className="text-ink-muted capitalize">{typography.fontFamily}</span>
-            <span className="text-ink-faint">•</span>
-            <span className="text-ink-muted">{typography.lineHeight} spacing</span>
+            <span className="hidden sm:inline text-ink-faint">•</span>
+            <span className="hidden sm:inline text-ink-muted capitalize">{typography.fontFamily}</span>
+            <span className="hidden sm:inline text-ink-faint">•</span>
+            <span className="hidden sm:inline text-ink-muted">{typography.lineHeight} spacing</span>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
             <StatusDot status={saveStatus} lastSavedAt={lastSavedAt} />
             <WordCounter wordCount={wordCount} characterCount={characterCount} />
           </div>

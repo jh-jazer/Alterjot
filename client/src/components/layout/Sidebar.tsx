@@ -13,10 +13,12 @@ import {
   ArrowDown,
   Search,
   Edit3,
+  X,
 } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
   const isSidebarOpen = useWorkspaceStore((s) => s.panelState.isSidebarOpen);
+  const toggleSidebar = useWorkspaceStore((s) => s.toggleSidebar);
   const activeChapterId = useWorkspaceStore((s) => s.activeChapterId);
   const activeSceneId = useWorkspaceStore((s) => s.activeSceneId);
   const chapters = useWorkspaceStore((s) => s.chapters);
@@ -118,15 +120,33 @@ export const Sidebar: React.FC = () => {
   };
 
   return (
-    <aside className="w-72 md:w-80 border-r border-canvas-border bg-canvas/95 backdrop-blur-xl flex flex-col h-full z-20 shadow-md select-none">
-      {/* Novel Header Info */}
-      <div className="p-4 border-b border-canvas-border bg-canvas-subtle/60">
-        <div className="flex items-center gap-2 text-brand-700 mb-1">
-          <Book className="w-4 h-4" />
-          <span className="text-[11px] font-mono uppercase tracking-wider text-ink-faint font-semibold">
-            {activeNovel?.genre || 'Manuscript'}
-          </span>
-        </div>
+    <>
+      {/* Mobile Drawer Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs z-30 md:hidden animate-fadeIn"
+        onClick={toggleSidebar}
+        title="Close Manuscript Tree"
+      />
+
+      <aside className="fixed md:relative inset-y-0 left-0 z-40 w-4/5 max-w-xs md:max-w-none md:w-80 border-r border-canvas-border bg-canvas/95 backdrop-blur-xl flex flex-col h-full shadow-2xl md:shadow-md select-none animate-in slide-in-from-left duration-200">
+        {/* Novel Header Info */}
+        <div className="p-4 border-b border-canvas-border bg-canvas-subtle/60">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-2 text-brand-700">
+              <Book className="w-4 h-4" />
+              <span className="text-[11px] font-mono uppercase tracking-wider text-ink-faint font-semibold">
+                {activeNovel?.genre || 'Manuscript'}
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              className="md:hidden p-1 rounded-lg hover:bg-canvas-hover text-ink-muted hover:text-ink transition-colors"
+              title="Close Tree"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         {isEditingNovelTitle ? (
           <input
             type="text"
@@ -315,7 +335,10 @@ export const Sidebar: React.FC = () => {
                   {filteredScenes.map((scene, sIdx) => (
                     <div
                       key={scene._id}
-                      onClick={() => selectScene(scene._id)}
+                      onClick={() => {
+                        selectScene(scene._id);
+                        if (window.innerWidth < 768) toggleSidebar();
+                      }}
                       className={`flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs cursor-pointer transition-all group/scene ${
                         activeSceneId === scene._id
                           ? 'bg-brand-50 text-brand-900 border border-brand-300 font-medium shadow-xs dark:bg-brand-600/20 dark:text-brand-200 dark:border-brand-500/40'
@@ -462,5 +485,6 @@ export const Sidebar: React.FC = () => {
         )}
       </div>
     </aside>
+  </>
   );
 };

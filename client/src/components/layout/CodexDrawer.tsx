@@ -63,7 +63,15 @@ export const CodexDrawer: React.FC = () => {
   };
 
   return (
-    <aside className="w-80 md:w-96 border-l border-canvas-border bg-canvas/95 backdrop-blur-xl flex flex-col h-full z-20 shadow-parchment-lg">
+    <>
+      {/* Mobile Drawer Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs z-30 md:hidden animate-fadeIn"
+        onClick={toggleCodex}
+        title="Close World Codex"
+      />
+
+      <aside className="fixed md:relative inset-y-0 right-0 z-40 w-5/6 max-w-sm md:max-w-none md:w-96 border-l border-canvas-border bg-canvas/95 backdrop-blur-xl flex flex-col h-full shadow-2xl md:shadow-parchment-lg select-none animate-in slide-in-from-right duration-200">
       <div className="p-4 border-b border-canvas-border flex items-center justify-between bg-canvas-subtle/50">
         <div className="flex items-center gap-2">
           <BookMarked className="w-4 h-4 text-brand-700" />
@@ -152,5 +160,6 @@ export const CodexDrawer: React.FC = () => {
         defaultCategory={activeTab !== 'All' ? activeTab : 'Characters'}
       />
     </aside>
+  </>
   );
 };

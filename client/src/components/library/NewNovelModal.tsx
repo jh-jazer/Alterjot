@@ -89,16 +89,16 @@ export const NewNovelModal: React.FC<NewNovelModalProps> = ({ isOpen, onClose, e
   const statuses: NovelStatus[] = ['Planning', 'In Progress', 'First Draft', 'Revision', 'Completed'];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-6 text-ink">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+      <div className="w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-4 sm:p-6 text-ink">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-canvas-border">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-brand-50 text-brand-700 border border-brand-200 dark:bg-brand-600/20 dark:text-brand-300">
+        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-canvas-border">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="p-2 rounded-xl bg-brand-50 text-brand-700 border border-brand-200 dark:bg-brand-600/20 dark:text-brand-300 flex-shrink-0">
               <BookPlus className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-xl font-serif font-bold text-ink">
+              <h3 className="text-lg sm:text-xl font-serif font-bold text-ink">
                 {editingNovel ? 'Edit Manuscript Details' : 'Begin a New Book'}
               </h3>
               <p className="text-xs text-ink-muted font-mono">
@@ -146,7 +146,7 @@ export const NewNovelModal: React.FC<NewNovelModalProps> = ({ isOpen, onClose, e
           </div>
 
           {/* Author & Status */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-mono text-ink-muted mb-1 uppercase font-medium">
                 Author Name

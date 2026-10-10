@@ -96,26 +96,26 @@ export const GlobalNavbar: React.FC = () => {
   return (
     <header className="border-b border-canvas-border bg-canvas/90 backdrop-blur-md sticky top-0 z-30 select-none">
       {/* Side margin container: aligned with landing & library pages */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 h-16 flex items-center justify-between gap-4">
-        {/* Left Side: Website Name + Beside it: PLAY, RANKING, LIBRARY */}
-        <div className="flex items-center gap-4 sm:gap-6 md:gap-8 flex-shrink-0">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
+        {/* Left Side: Website Name + Beside it: (desktop only) DASHBOARD, PLAY, RANKING, LIBRARY */}
+        <div className="flex items-center gap-3 sm:gap-6 md:gap-8 flex-shrink-0">
           {/* Website Name (Very Left) */}
           <button
             type="button"
             onClick={openDashboard}
-            className="flex items-center gap-2.5 hover:opacity-85 transition-opacity group"
+            className="flex items-center gap-2 sm:gap-2.5 hover:opacity-85 transition-opacity group"
             title="Go to Alterjot Dashboard"
           >
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-600 flex items-center justify-center text-white shadow-sm shadow-brand-600/30 group-hover:scale-105 transition-transform">
-              <Feather className="w-4 h-4" />
+            <div className="w-7 h-7 sm:w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-600 flex items-center justify-center text-white shadow-sm shadow-brand-600/30 group-hover:scale-105 transition-transform">
+              <Feather className="w-3.5 h-3.5 sm:w-4 h-4" />
             </div>
-            <span className="font-serif font-bold text-xl text-ink tracking-tight">
+            <span className="font-serif font-bold text-lg sm:text-xl text-ink tracking-tight">
               Alterjot
             </span>
           </button>
 
-          {/* Beside Website Name: DASHBOARD, PLAY, RANKING, LIBRARY */}
-          <nav className="flex items-center gap-2 sm:gap-4 pl-3 sm:pl-5 border-l border-canvas-border text-xs font-mono font-medium">
+          {/* Beside Website Name: DASHBOARD, PLAY, RANKING, LIBRARY (Desktop and Tablet) */}
+          <nav className="hidden md:flex items-center gap-2 sm:gap-4 pl-3 sm:pl-5 border-l border-canvas-border text-xs font-mono font-medium">
             <button
               type="button"
               onClick={openDashboard}
@@ -178,9 +178,9 @@ export const GlobalNavbar: React.FC = () => {
           </nav>
         </div>
 
-        {/* Center: Search Bar in Navbar when Library is Active */}
+        {/* Center: Search Bar in Navbar when Library is Active (Desktop/Tablet) */}
         {currentView === 'library' ? (
-          <div className="flex-1 max-w-xs sm:max-w-sm md:max-w-md mx-2 sm:mx-4 transition-all duration-200">
+          <div className="hidden sm:block flex-1 max-w-xs sm:max-w-sm md:max-w-md mx-2 sm:mx-4 transition-all duration-200">
             <div className="relative flex items-center">
               <Search className="w-4 h-4 text-ink-muted absolute left-3 pointer-events-none" />
               <input
@@ -189,7 +189,6 @@ export const GlobalNavbar: React.FC = () => {
                 onChange={(e) => setLibrarySearchQuery(e.target.value)}
                 placeholder="Search manuscripts by title, genre..."
                 className="w-full pl-9 pr-8 py-1.5 rounded-xl bg-canvas-card border border-canvas-border text-xs font-sans text-ink placeholder:text-ink-faint focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 shadow-xs transition-all"
-                autoFocus
               />
               {librarySearchQuery && (
                 <button
@@ -208,7 +207,7 @@ export const GlobalNavbar: React.FC = () => {
         )}
 
         {/* Right Side: Theme Toggle + Profile Icon Only + Write Button */}
-        <div className="flex items-center gap-2.5 sm:gap-3 flex-shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
           {/* Theme Toggle (Retro Light / Nocturne Dark with smooth spreading circle) */}
           <button
             type="button"
@@ -247,7 +246,7 @@ export const GlobalNavbar: React.FC = () => {
 
             {/* Profile Dropdown Popover */}
             {isProfileOpen && (
-              <div className="absolute right-0 mt-2 w-64 p-3.5 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-24px)] p-3.5 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 animate-in fade-in zoom-in-95 duration-150">
                 <div className="flex items-center gap-2.5 mb-3">
                   <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center font-serif text-xs font-bold shadow-xs">
                     <User className="w-4 h-4" />
@@ -351,7 +350,7 @@ export const GlobalNavbar: React.FC = () => {
 
             {/* Refined Anchored Dropdown Menu */}
             {isWriteMenuOpen && (
-              <div className="absolute right-0 mt-2 w-64 p-2 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 animate-in fade-in zoom-in-95 duration-150 space-y-1">
+              <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-24px)] p-2 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 animate-in fade-in zoom-in-95 duration-150 space-y-1">
                 <div className="px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-ink-faint font-semibold border-b border-canvas-border/70 mb-1">
                   Drafting Options
                 </div>

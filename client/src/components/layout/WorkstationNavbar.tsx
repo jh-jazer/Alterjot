@@ -52,19 +52,20 @@ export const WorkstationNavbar: React.FC = () => {
 
   return (
     <header className="w-full border-b border-canvas-border bg-canvas/95 backdrop-blur-md sticky top-0 z-30 select-none">
-      <div className="w-full px-3 sm:px-4 lg:px-6 h-14 flex items-center justify-between gap-3">
+      <div className="w-full px-2 sm:px-4 lg:px-6 h-14 flex items-center justify-between gap-1.5 sm:gap-3">
         {/* Left Section: Workstation Structure, Library Exit & Manuscript Breadcrumbs */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
           {/* Toggle Sidebar Icon Button */}
           <button
             type="button"
             onClick={toggleSidebar}
-            className={`p-2 rounded-lg border transition-all ${
+            className={`p-1.5 sm:p-2 rounded-lg border transition-all ${
               panelState.isSidebarOpen
                 ? 'bg-canvas-card border-canvas-border text-brand-600 shadow-xs'
                 : 'border-transparent text-ink-muted hover:bg-canvas-hover hover:text-ink'
             }`}
             title="Toggle Manuscript Tree (Ctrl+Shift+S)"
+            aria-label="Toggle Manuscript Tree"
           >
             <PanelLeft className="w-4 h-4" />
           </button>
@@ -73,8 +74,9 @@ export const WorkstationNavbar: React.FC = () => {
           <button
             type="button"
             onClick={openLibrary}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-canvas-hover text-xs font-mono font-medium transition-all group border border-transparent hover:border-canvas-border"
+            className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-canvas-hover text-xs font-mono font-medium transition-all group border border-transparent hover:border-canvas-border"
             title="Return to Manuscript Library"
+            aria-label="Return to Manuscript Library"
           >
             <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
             <span className="hidden sm:inline">Library</span>
@@ -83,7 +85,7 @@ export const WorkstationNavbar: React.FC = () => {
           <div className="h-4 w-px bg-canvas-border mx-0.5 sm:mx-1 flex-shrink-0" />
 
           {/* Manuscript Title & Hierarchy Breadcrumbs */}
-          <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
             <div className="w-6 h-6 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
               <BookOpen className="w-3.5 h-3.5" />
             </div>
@@ -100,7 +102,7 @@ export const WorkstationNavbar: React.FC = () => {
                     if (e.key === 'Enter') handleSaveTitle();
                     if (e.key === 'Escape') setIsEditingTitle(false);
                   }}
-                  className="px-2 py-0.5 rounded bg-canvas-card border border-brand-500 font-serif font-semibold text-ink text-xs sm:text-sm focus:outline-none shadow-xs max-w-[180px] sm:max-w-[240px]"
+                  className="px-2 py-0.5 rounded bg-canvas-card border border-brand-500 font-serif font-semibold text-ink text-xs sm:text-sm focus:outline-none shadow-xs max-w-[120px] sm:max-w-[240px]"
                 />
                 <button
                   type="button"
@@ -114,26 +116,27 @@ export const WorkstationNavbar: React.FC = () => {
               <button
                 type="button"
                 onClick={handleStartEditTitle}
-                className="font-serif font-semibold text-xs sm:text-sm text-ink hover:text-brand-700 truncate max-w-[130px] sm:max-w-[190px] md:max-w-[240px] flex items-center gap-1.5 group/title text-left transition-colors"
+                className="font-serif font-semibold text-xs sm:text-sm text-ink hover:text-brand-700 truncate max-w-[95px] xs:max-w-[130px] sm:max-w-[190px] md:max-w-[240px] flex items-center gap-1 group/title text-left transition-colors"
                 title="Click to rename manuscript"
               >
                 <span className="truncate">{activeNovel?.title || 'Untitled Manuscript'}</span>
-                <Edit3 className="w-2.5 h-2.5 text-ink-faint opacity-40 group-hover/title:opacity-100 transition-opacity flex-shrink-0" />
+                <Edit3 className="w-2.5 h-2.5 text-ink-faint opacity-40 group-hover/title:opacity-100 transition-opacity flex-shrink-0 hidden xs:inline" />
               </button>
             )}
           </div>
         </div>
 
         {/* Right Section: Dedicated Workstation Tools (Metrics, Export, Codex, Zen, Theme, Profile) */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           {/* Workstation Tools Group */}
-          <div className="flex items-center gap-1 bg-canvas-card/50 p-1 rounded-xl border border-canvas-border">
+          <div className="flex items-center gap-0.5 sm:gap-1 bg-canvas-card/50 p-0.5 sm:p-1 rounded-xl border border-canvas-border">
             {/* Project Metrics */}
             <button
               type="button"
               onClick={() => setIsDashboardOpen(true)}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg text-ink-muted hover:text-ink hover:bg-canvas-hover text-xs font-mono transition-colors"
+              className="flex items-center gap-1 p-1.5 sm:px-2 sm:py-1 rounded-lg text-ink-muted hover:text-ink hover:bg-canvas-hover text-xs font-mono transition-colors"
               title="Project Metrics & Word Goals"
+              aria-label="Project Metrics"
             >
               <TrendingUp className="w-3.5 h-3.5 text-brand-600" />
               <span className="hidden sm:inline">Metrics</span>
@@ -143,8 +146,9 @@ export const WorkstationNavbar: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsExportOpen(true)}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg text-ink-muted hover:text-ink hover:bg-canvas-hover text-xs font-mono transition-colors"
+              className="flex items-center gap-1 p-1.5 sm:px-2 sm:py-1 rounded-lg text-ink-muted hover:text-ink hover:bg-canvas-hover text-xs font-mono transition-colors"
               title="Export Manuscript (PDF, DOCX, TXT)"
+              aria-label="Export Manuscript"
             >
               <FileDown className="w-3.5 h-3.5 text-amber-700" />
               <span className="hidden sm:inline">Export</span>
@@ -154,12 +158,13 @@ export const WorkstationNavbar: React.FC = () => {
             <button
               type="button"
               onClick={toggleCodex}
-              className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-mono transition-colors ${
+              className={`flex items-center gap-1 p-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-mono transition-colors ${
                 panelState.isCodexOpen
                   ? 'bg-brand-100 text-brand-900 border border-brand-300 dark:bg-brand-600/25 dark:text-brand-200 dark:border-brand-500/30'
                   : 'text-ink-muted hover:text-ink hover:bg-canvas-hover'
               }`}
               title="World Codex & Lore Reference (Ctrl+Shift+C)"
+              aria-label="World Codex Lore"
             >
               <BookMarked className="w-3.5 h-3.5" />
               <span className="hidden md:inline">Codex</span>
