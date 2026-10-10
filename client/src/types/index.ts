@@ -81,3 +81,59 @@ export interface CodexEntry {
   createdAt: string;
   updatedAt: string;
 }
+
+export type NarrativeTheme = 'apocalyptic' | 'steampunk' | 'dark-fantasy' | 'cyberpunk';
+
+export interface WeeklyWorldThemeData {
+  universe: string;
+  title: string;
+  coverImage: string;
+  description: string;
+  novelGenre: string;
+  novelSynopsis: string;
+}
+
+export interface ThreeElementsThemeData {
+  novelTitle: string;
+  novelGenre: string;
+  novelSynopsis: string;
+  character: {
+    name: string;
+    description: string;
+    image: string;
+  };
+  place: {
+    name: string;
+    description: string;
+    image: string;
+  };
+  world: {
+    name: string;
+    description: string;
+    image: string;
+  };
+}
+
+export interface NarrativeThemeDefinition {
+  id: NarrativeTheme;
+  name: string;
+  badge: string;
+  tagline: string;
+  description: string;
+  accentColor: string;
+  weeklyWorld: WeeklyWorldThemeData;
+  threeElements: ThreeElementsThemeData;
+}
+
+export interface OnboardingAnswers {
+  penName: string;
+  preferredTheme: NarrativeTheme;
+  writingGoal: string;
+  ambiance: string;
+}
+
+export interface AuthUser {
+  id: string;
+  penName: string;
+  email?: string;
+}

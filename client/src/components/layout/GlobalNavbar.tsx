@@ -11,6 +11,8 @@ import {
   BookOpen,
   ChevronDown,
   FileText,
+  LogIn,
+  LogOut,
 } from 'lucide-react';
 
 export const GlobalNavbar: React.FC = () => {
@@ -29,6 +31,10 @@ export const GlobalNavbar: React.FC = () => {
 
   const penName = useWorkspaceStore((s) => s.penName);
   const setPenName = useWorkspaceStore((s) => s.setPenName);
+
+  const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
+  const setIsAuthModalOpen = useWorkspaceStore((s) => s.setIsAuthModalOpen);
+  const logout = useWorkspaceStore((s) => s.logout);
 
   // Currency 1: Common - 1 word = 1 currency
   const currencyWords = novels.reduce((acc, n) => acc + (n.totalWordCount || 0), 0);
@@ -227,16 +233,23 @@ export const GlobalNavbar: React.FC = () => {
           </button>
 
           {/* Profile Icon Only */}
+          {/* Profile Icon Only */}
           <div className="relative" ref={profileMenuRef}>
             <button
               type="button"
-              onClick={() => setIsProfileOpen((prev) => !prev)}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  setIsAuthModalOpen(true, 'signin');
+                } else {
+                  setIsProfileOpen((prev) => !prev);
+                }
+              }}
               className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all shadow-xs group focus:outline-none focus:ring-2 focus:ring-brand-500/30 active:scale-95 ${
                 isProfileOpen
                   ? 'bg-canvas-card border-brand-500 ring-2 ring-brand-500/20'
                   : 'bg-canvas-card border-canvas-border hover:border-brand-500/60 hover:bg-canvas-hover'
               }`}
-              title={`Pen Name: ${penName} (Click to manage)`}
+              title={isAuthenticated ? `Pen Name: ${penName} (Click to manage)` : 'Sign In to Author Account'}
               aria-label="Author Profile"
             >
               <div className="w-6 h-6 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center font-serif text-xs font-bold shadow-xs">
@@ -245,7 +258,7 @@ export const GlobalNavbar: React.FC = () => {
             </button>
 
             {/* Profile Dropdown Popover */}
-            {isProfileOpen && (
+            {isProfileOpen && isAuthenticated && (
               <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-24px)] p-3.5 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 animate-in fade-in zoom-in-95 duration-150">
                 <div className="flex items-center gap-2.5 mb-3">
                   <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center font-serif text-xs font-bold shadow-xs">
@@ -331,74 +344,102 @@ export const GlobalNavbar: React.FC = () => {
                     </button>
                   </div>
                 </div>
+
+                {/* Sign Out Button */}
+                <div className="pt-2.5 mt-2.5 border-t border-canvas-border flex items-center justify-between">
+                  <span className="text-[10px] font-mono text-ink-faint">Logged in as Scribe</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsProfileOpen(false);
+                      logout();
+                    }}
+                    className="flex items-center gap-1.5 text-xs font-mono text-rose-600 dark:text-rose-400 hover:text-rose-700 py-1 px-2 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>
 
-          {/* Write Button with Anchored Dropdown Menu */}
-          <div className="relative" ref={writeMenuRef}>
+          {/* If NOT signed in: Sign In Button; If signed in: Write Button with dropdown */}
+          {!isAuthenticated ? (
             <button
               type="button"
-              onClick={() => setIsWriteMenuOpen((prev) => !prev)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-xs transition-all shadow-sm shadow-brand-600/30 hover:scale-[1.02] active:scale-[0.98]"
-              title="Drafting Options (Quick Write or Open Library)"
+              onClick={() => setIsAuthModalOpen(true, 'signin')}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-xs transition-all shadow-sm shadow-brand-600/30 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+              title="Sign in to your author account"
             >
-              <Feather className="w-3.5 h-3.5" />
-              <span>Write</span>
-              <ChevronDown className={`w-3 h-3 opacity-80 transition-transform duration-200 ${isWriteMenuOpen ? 'rotate-180' : ''}`} />
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Sign In</span>
             </button>
+          ) : (
+            <div className="relative" ref={writeMenuRef}>
+              <button
+                type="button"
+                onClick={() => setIsWriteMenuOpen((prev) => !prev)}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-xs transition-all shadow-sm shadow-brand-600/30 hover:scale-[1.02] active:scale-[0.98]"
+                title="Drafting Options (Quick Write or Open Library)"
+              >
+                <Feather className="w-3.5 h-3.5" />
+                <span>Write</span>
+                <ChevronDown className={`w-3 h-3 opacity-80 transition-transform duration-200 ${isWriteMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
 
-            {/* Refined Anchored Dropdown Menu */}
-            {isWriteMenuOpen && (
-              <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-24px)] p-2 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 animate-in fade-in zoom-in-95 duration-150 space-y-1">
-                <div className="px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-ink-faint font-semibold border-b border-canvas-border/70 mb-1">
-                  Drafting Options
+              {/* Refined Anchored Dropdown Menu */}
+              {isWriteMenuOpen && (
+                <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-24px)] p-2 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 animate-in fade-in zoom-in-95 duration-150 space-y-1">
+                  <div className="px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-ink-faint font-semibold border-b border-canvas-border/70 mb-1">
+                    Drafting Options
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setIsWriteMenuOpen(false);
+                      await startWritingImmediately();
+                    }}
+                    className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left hover:bg-canvas-hover border border-transparent hover:border-canvas-border transition-all group cursor-pointer"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <Zap className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-serif font-bold text-xs text-ink group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
+                        Quick Write
+                      </div>
+                      <div className="text-[11px] text-ink-muted leading-tight mt-0.5 font-sans">
+                        Start typing on blank canvas immediately
+                      </div>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsWriteMenuOpen(false);
+                      openLibrary();
+                    }}
+                    className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left hover:bg-canvas-hover border border-transparent hover:border-canvas-border transition-all group cursor-pointer"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <BookOpen className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-serif font-bold text-xs text-ink group-hover:text-brand-700 dark:group-hover:text-brand-300 transition-colors">
+                        Open Library
+                      </div>
+                      <div className="text-[11px] text-ink-muted leading-tight mt-0.5 font-sans">
+                        Browse your manuscript shelf
+                      </div>
+                    </div>
+                  </button>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={async () => {
-                    setIsWriteMenuOpen(false);
-                    await startWritingImmediately();
-                  }}
-                  className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left hover:bg-canvas-hover border border-transparent hover:border-canvas-border transition-all group cursor-pointer"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                    <Zap className="w-4 h-4" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-serif font-bold text-xs text-ink group-hover:text-amber-700 dark:group-hover:text-amber-300 transition-colors">
-                      Quick Write
-                    </div>
-                    <div className="text-[11px] text-ink-muted leading-tight mt-0.5 font-sans">
-                      Start typing on blank canvas immediately
-                    </div>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsWriteMenuOpen(false);
-                    openLibrary();
-                  }}
-                  className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left hover:bg-canvas-hover border border-transparent hover:border-canvas-border transition-all group cursor-pointer"
-                >
-                  <div className="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
-                    <BookOpen className="w-4 h-4" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-serif font-bold text-xs text-ink group-hover:text-brand-700 dark:group-hover:text-brand-300 transition-colors">
-                      Open Library
-                    </div>
-                    <div className="text-[11px] text-ink-muted leading-tight mt-0.5 font-sans">
-                      Browse your manuscript shelf
-                    </div>
-                  </div>
-                </button>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </header>

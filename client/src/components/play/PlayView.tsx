@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 
 export const PlayView: React.FC = () => {
+  const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
+  const setIsAuthModalOpen = useWorkspaceStore((s) => s.setIsAuthModalOpen);
   const startWritingImmediately = useWorkspaceStore((s) => s.startWritingImmediately);
   const openStudio = useWorkspaceStore((s) => s.openStudio);
   const activeScene = useWorkspaceStore((s) => s.activeScene);
@@ -21,6 +23,32 @@ export const PlayView: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(15 * 60);
   const [isRunning, setIsRunning] = useState(false);
   const [sprintCompleted, setSprintCompleted] = useState(false);
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex-1 overflow-y-auto bg-canvas text-ink p-4 sm:p-8 flex items-center justify-center min-h-[70vh]">
+        <div className="max-w-md w-full text-center p-6 sm:p-8 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg space-y-4">
+          <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center mx-auto shadow-sm">
+            <Dices className="w-7 h-7" />
+          </div>
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-wider text-amber-600 font-bold">Creative Playground</span>
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink mt-1">Sign In Required</h2>
+            <p className="text-xs text-ink-muted font-sans mt-2 leading-relaxed">
+              Sign in to participate in timed writing sprints, generate narrative sparks, and spin the word roulette.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsAuthModalOpen(true, 'signin')}
+            className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-sm shadow-md shadow-brand-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+          >
+            <span>Sign In to Access Playground</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     let interval: any = null;

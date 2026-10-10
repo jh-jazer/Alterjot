@@ -11,6 +11,8 @@ import { PlayView } from './components/play/PlayView';
 import { RankingView } from './components/ranking/RankingView';
 import { ProjectDashboardModal } from './components/dashboard/ProjectDashboardModal';
 import { ExportModal } from './components/export/ExportModal';
+import { AuthModal } from './components/auth/AuthModal';
+import { OnboardingModal } from './components/onboarding/OnboardingModal';
 import { MobileBottomNav } from './components/layout/MobileBottomNav';
 
 export const App: React.FC = () => {
@@ -54,6 +56,8 @@ export const App: React.FC = () => {
       {/* Modals & Dialogs */}
       <ProjectDashboardModal />
       <ExportModal />
+      <AuthModal />
+      <OnboardingModal />
 
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav />

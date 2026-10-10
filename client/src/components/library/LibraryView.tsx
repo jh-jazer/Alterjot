@@ -4,6 +4,7 @@ import type { Novel, NovelStatus } from '../../types';
 import { NewNovelModal } from './NewNovelModal';
 import {
   Book,
+  BookOpen,
   Layers,
   Target,
   Edit,
@@ -14,6 +15,8 @@ import {
 } from 'lucide-react';
 
 export const LibraryView: React.FC = () => {
+  const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
+  const setIsAuthModalOpen = useWorkspaceStore((s) => s.setIsAuthModalOpen);
   const novels = useWorkspaceStore((s) => s.novels);
   const openStudio = useWorkspaceStore((s) => s.openStudio);
   const deleteNovel = useWorkspaceStore((s) => s.deleteNovel);
@@ -28,6 +31,32 @@ export const LibraryView: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingNovel, setEditingNovel] = useState<Novel | null>(null);
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex-1 overflow-y-auto bg-canvas text-ink p-4 sm:p-8 flex items-center justify-center min-h-[70vh]">
+        <div className="max-w-md w-full text-center p-6 sm:p-8 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg space-y-4">
+          <div className="w-14 h-14 rounded-2xl bg-brand-50 text-brand-700 dark:bg-brand-600/20 dark:text-brand-300 border border-brand-200 dark:border-brand-500/30 flex items-center justify-center mx-auto shadow-sm">
+            <BookOpen className="w-7 h-7" />
+          </div>
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-wider text-brand-600 font-bold">Manuscript Shelf</span>
+            <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink mt-1">Sign In Required</h2>
+            <p className="text-xs text-ink-muted font-sans mt-2 leading-relaxed">
+              Sign in to access your manuscript library, organize your chapters, and review book statistics.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsAuthModalOpen(true, 'signin')}
+            className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-sm shadow-md shadow-brand-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+          >
+            <span>Sign In to Unlock Shelf</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const totalWordsAcrossLibrary = novels.reduce((acc, n) => acc + (n.totalWordCount || 0), 0);
 

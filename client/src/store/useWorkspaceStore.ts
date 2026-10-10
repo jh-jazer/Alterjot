@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Novel, Chapter, Scene, CodexEntry, SaveStatus } from '../types';
+import type { Novel, Chapter, Scene, CodexEntry, SaveStatus, NarrativeTheme, OnboardingAnswers, AuthUser } from '../types';
 import { api } from '../services/api';
 
 interface PanelState {
@@ -95,6 +95,23 @@ interface WorkspaceState {
   deleteScene: (sceneId: string) => Promise<void>;
   reorderChapters: (orderedIds: string[]) => Promise<void>;
   reorderScenes: (chapterId: string, orderedIds: string[]) => Promise<void>;
+
+  // Auth & Onboarding
+  isAuthenticated: boolean;
+  currentUser: AuthUser | null;
+  isAuthModalOpen: boolean;
+  authModalMode: 'signin' | 'signup';
+  hasCompletedOnboarding: boolean;
+  isOnboardingModalOpen: boolean;
+  preferredTheme: NarrativeTheme;
+
+  login: (penName: string, email?: string) => void;
+  logout: () => void;
+  setIsAuthModalOpen: (open: boolean, mode?: 'signin' | 'signup') => void;
+  setIsOnboardingModalOpen: (open: boolean) => void;
+  completeOnboarding: (answers: OnboardingAnswers) => void;
+  setPreferredTheme: (theme: NarrativeTheme) => void;
+  requireAuth: (callback?: () => void) => boolean;
 }
 
 // Read initial theme preference: default to 'light' (Light Retro)
@@ -123,6 +140,22 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     } catch {}
     set({ penName: name });
   },
+
+  // Auth & Onboarding State
+  isAuthenticated: (typeof window !== 'undefined' && localStorage.getItem('alterjot_auth') === 'true') || false,
+  currentUser:
+    typeof window !== 'undefined' && localStorage.getItem('alterjot_auth') === 'true'
+      ? {
+          id: localStorage.getItem('alterjot_user_id') || 'author_default',
+          penName: localStorage.getItem('alterjot_pen_name') || 'Ernest Quill',
+          email: localStorage.getItem('alterjot_user_email') || 'scribe@alterjot.com',
+        }
+      : null,
+  isAuthModalOpen: false,
+  authModalMode: 'signin',
+  hasCompletedOnboarding: (typeof window !== 'undefined' && localStorage.getItem('alterjot_onboarded') === 'true') || false,
+  isOnboardingModalOpen: false,
+  preferredTheme: ((typeof window !== 'undefined' && localStorage.getItem('alterjot_preferred_theme')) as NarrativeTheme) || 'apocalyptic',
 
   novels: [],
   chapters: [],
@@ -256,15 +289,110 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   setCurrentView: (view) => set({ currentView: view }),
   openDashboard: () => set({ currentView: 'dashboard' }),
   openLanding: () => set({ currentView: 'dashboard' }),
-  openLibrary: () => set({ currentView: 'library' }),
-  openPlay: () => set({ currentView: 'play' }),
-  openRanking: () => set({ currentView: 'ranking' }),
+  openLibrary: () => {
+    if (get().requireAuth(() => set({ currentView: 'library' }))) {
+      set({ currentView: 'library' });
+    }
+  },
+  openPlay: () => {
+    if (get().requireAuth(() => set({ currentView: 'play' }))) {
+      set({ currentView: 'play' });
+    }
+  },
+  openRanking: () => {
+    if (get().requireAuth(() => set({ currentView: 'ranking' }))) {
+      set({ currentView: 'ranking' });
+    }
+  },
   openStudio: async (novelId) => {
+    if (!get().requireAuth()) return;
     const targetId = novelId || get().activeNovelId;
     if (targetId) {
       await get().selectNovel(targetId);
       set({ currentView: 'studio' });
     }
+  },
+
+  // Auth & Onboarding Actions
+  login: (penName: string, email?: string) => {
+    const finalPenName = penName.trim() || 'Ernest Quill';
+    const finalEmail = email?.trim() || `${finalPenName.toLowerCase().replace(/\s+/g, '')}@alterjot.com`;
+    const user: AuthUser = {
+      id: 'author_' + Date.now(),
+      penName: finalPenName,
+      email: finalEmail,
+    };
+    try {
+      localStorage.setItem('alterjot_auth', 'true');
+      localStorage.setItem('alterjot_pen_name', finalPenName);
+      localStorage.setItem('alterjot_user_id', user.id);
+      localStorage.setItem('alterjot_user_email', finalEmail);
+    } catch {}
+
+    const hasOnboarded = typeof window !== 'undefined' && localStorage.getItem('alterjot_onboarded') === 'true';
+    set({
+      isAuthenticated: true,
+      currentUser: user,
+      penName: finalPenName,
+      isAuthModalOpen: false,
+      isOnboardingModalOpen: !hasOnboarded,
+    });
+  },
+
+  logout: () => {
+    try {
+      localStorage.removeItem('alterjot_auth');
+      localStorage.removeItem('alterjot_user_id');
+      localStorage.removeItem('alterjot_user_email');
+    } catch {}
+    set({
+      isAuthenticated: false,
+      currentUser: null,
+      currentView: 'dashboard',
+    });
+  },
+
+  setIsAuthModalOpen: (open, mode = 'signin') => {
+    set({ isAuthModalOpen: open, authModalMode: mode });
+  },
+
+  setIsOnboardingModalOpen: (open) => {
+    set({ isOnboardingModalOpen: open });
+  },
+
+  completeOnboarding: (answers) => {
+    const finalPenName = answers.penName.trim() || get().penName;
+    try {
+      localStorage.setItem('alterjot_onboarded', 'true');
+      localStorage.setItem('alterjot_preferred_theme', answers.preferredTheme);
+      localStorage.setItem('alterjot_pen_name', finalPenName);
+      localStorage.setItem('alterjot_writing_goal', answers.writingGoal);
+      localStorage.setItem('alterjot_ambiance', answers.ambiance);
+    } catch {}
+
+    set({
+      hasCompletedOnboarding: true,
+      preferredTheme: answers.preferredTheme,
+      penName: finalPenName,
+      isOnboardingModalOpen: false,
+      currentUser: get().currentUser ? { ...get().currentUser!, penName: finalPenName } : null,
+    });
+  },
+
+  setPreferredTheme: (theme) => {
+    try {
+      localStorage.setItem('alterjot_preferred_theme', theme);
+    } catch {}
+    set({ preferredTheme: theme });
+  },
+
+  requireAuth: (callback) => {
+    if (get().isAuthenticated) {
+      if (callback) callback();
+      return true;
+    }
+    set({ isAuthModalOpen: true });
+    return false;
   },
 
   saveStatus: 'idle',
@@ -387,11 +515,12 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   },
 
   startWritingImmediately: async () => {
+    if (!get().requireAuth()) return;
     // Always start a fresh untitled manuscript ready for immediate drafting
     await get().createNovel({
       title: 'Untitled Manuscript',
       subtitle: '',
-      author: '',
+      author: get().penName,
       genre: 'General Fiction',
       status: 'In Progress',
       targetWordCount: 50000,
@@ -399,11 +528,12 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   },
 
   createNovel: async (data) => {
+    if (!get().requireAuth()) return null;
     try {
       const payload: Partial<Novel> = {
         ...data,
         title: data.title?.trim() || 'Untitled Manuscript',
-        author: data.author?.trim() || '',
+        author: data.author?.trim() || get().penName,
         genre: data.genre || 'General Fiction',
         status: data.status || 'In Progress',
         targetWordCount: data.targetWordCount || 50000,

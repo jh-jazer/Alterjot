@@ -1,22 +1,33 @@
 import React from 'react';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
-import type { NovelStatus } from '../../types';
+import type { NovelStatus, NarrativeTheme } from '../../types';
+import { NARRATIVE_THEMES } from '../../data/narrativeThemes';
 import {
   ArrowRight,
   BookOpen,
   Trophy,
   Feather,
+  Sparkles,
+  Flame,
+  Cog,
+  Ghost,
+  Cpu,
+  Compass,
 } from 'lucide-react';
 
 export const DashboardView: React.FC = () => {
   const novels = useWorkspaceStore((s) => s.novels);
   const penName = useWorkspaceStore((s) => s.penName);
+  const preferredTheme = useWorkspaceStore((s) => s.preferredTheme);
+  const setPreferredTheme = useWorkspaceStore((s) => s.setPreferredTheme);
   const openStudio = useWorkspaceStore((s) => s.openStudio);
   const openLibrary = useWorkspaceStore((s) => s.openLibrary);
   const openPlay = useWorkspaceStore((s) => s.openPlay);
   const openRanking = useWorkspaceStore((s) => s.openRanking);
   const createNovel = useWorkspaceStore((s) => s.createNovel);
   const startWritingImmediately = useWorkspaceStore((s) => s.startWritingImmediately);
+
+  const activeTheme = NARRATIVE_THEMES[preferredTheme] || NARRATIVE_THEMES['apocalyptic'];
 
   const totalWords = novels.reduce((acc, n) => acc + (n.totalWordCount || 0), 0);
 
@@ -64,9 +75,9 @@ export const DashboardView: React.FC = () => {
   // Weekly World Action: lets the author write something about this world
   const handleTryWeeklyWorld = async () => {
     const novel = await createNovel({
-      title: 'The Clockwork Archipelago',
-      genre: 'Speculative Fantasy',
-      synopsis: 'A world of brass sky-islands suspended over mercury seas. The Great Celestial Pendulum has begun swaying backwards, unspooling centuries of forgotten memories.',
+      title: activeTheme.weeklyWorld.title,
+      genre: activeTheme.weeklyWorld.novelGenre,
+      synopsis: activeTheme.weeklyWorld.novelSynopsis,
       status: 'In Progress',
     });
     if (novel) {
@@ -79,9 +90,9 @@ export const DashboardView: React.FC = () => {
   // Triad Prompt Action: write with character, place, and world
   const handleTryTriad = async () => {
     const novel = await createNovel({
-      title: 'Echoes of the Submerged Scriptorium',
-      genre: 'Literary Fantasy',
-      synopsis: 'Featuring Silas Thorne in the flooded cathedral of the Submerged Scriptorium, set in the shifting gravity of Solas Inverted.',
+      title: activeTheme.threeElements.novelTitle,
+      genre: activeTheme.threeElements.novelGenre,
+      synopsis: activeTheme.threeElements.novelSynopsis,
       status: 'In Progress',
     });
     if (novel) {
@@ -110,16 +121,67 @@ export const DashboardView: React.FC = () => {
     <div className="flex-1 overflow-y-auto bg-canvas text-ink select-none pb-24 md:pb-10">
       {/* Clean centered container with responsive padding on left and right */}
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8 sm:space-y-12">
-        
+        {/* THEME PREFERENCE SELECTOR BANNER */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-canvas-card border border-canvas-border shadow-xs">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+              <Compass className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-serif font-bold text-ink">Narrative Universe Theme:</span>
+                <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/25 dark:text-brand-300 font-bold flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-brand-600" />
+                  <span>{activeTheme.badge}</span>
+                </span>
+              </div>
+              <p className="text-[11px] text-ink-muted">
+                {activeTheme.tagline}
+              </p>
+            </div>
+          </div>
+
+          {/* Theme Quick Selector */}
+          <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none font-mono text-xs">
+            {(Object.keys(NARRATIVE_THEMES) as NarrativeTheme[]).map((tKey) => {
+              const t = NARRATIVE_THEMES[tKey];
+              const isSelected = preferredTheme === tKey;
+              return (
+                <button
+                  key={tKey}
+                  type="button"
+                  onClick={() => setPreferredTheme(tKey)}
+                  className={`px-3 py-1.5 rounded-xl border transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                    isSelected
+                      ? 'bg-brand-600 border-brand-700 text-white font-bold shadow-xs'
+                      : 'bg-canvas-surface border-canvas-border text-ink-muted hover:text-ink hover:bg-canvas-hover'
+                  }`}
+                >
+                  {tKey === 'apocalyptic' && <Flame className="w-3.5 h-3.5" />}
+                  {tKey === 'steampunk' && <Cog className="w-3.5 h-3.5" />}
+                  {tKey === 'dark-fantasy' && <Ghost className="w-3.5 h-3.5" />}
+                  {tKey === 'cyberpunk' && <Cpu className="w-3.5 h-3.5" />}
+                  <span>{tKey === 'apocalyptic' ? 'Apocalyptic' : tKey === 'dark-fantasy' ? 'Dark Fantasy' : t.name.split('&')[0].trim()}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* FIRST PART OF DASHBOARD: TWO COLUMNS (Weekly World & Creative Triad) */}
         <section className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
             
             {/* LEFT COLUMN: WEEKLY WORLD */}
             <div className="space-y-3">
-              <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink tracking-tight">
-                Weekly World
-              </h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink tracking-tight">
+                  Weekly World
+                </h2>
+                <span className="text-[10px] font-mono text-ink-faint uppercase tracking-wider">
+                  {activeTheme.name.split('&')[0].trim()}
+                </span>
+              </div>
 
               {/* Dark cinematic card matching reference layout */}
               <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-4 sm:p-6 shadow-xl border border-black/10 flex flex-col justify-between min-h-[310px]">
@@ -130,8 +192,8 @@ export const DashboardView: React.FC = () => {
                   {/* Book Cover Sample with subtle 3D spine depth */}
                   <div className="w-32 sm:w-40 aspect-[2/3] flex-shrink-0 relative select-none group">
                     <img
-                      src="/images/weekly-world-cover.jpg"
-                      alt="The Clockwork Archipelago Book Cover Sample"
+                      src={activeTheme.weeklyWorld.coverImage}
+                      alt={`${activeTheme.weeklyWorld.title} Book Cover`}
                       className="w-full h-full object-cover rounded-xl shadow-2xl border border-white/10 group-hover:scale-[1.02] transition-transform duration-300"
                     />
                     <div className="absolute left-0 top-0 bottom-0 w-2.5 bg-gradient-to-r from-black/50 via-white/10 to-transparent rounded-l-xl pointer-events-none" />
@@ -141,15 +203,15 @@ export const DashboardView: React.FC = () => {
                   <div className="flex-1 min-w-0 space-y-2.5 text-left flex flex-col justify-between">
                     <div>
                       <span className="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-semibold block">
-                        Universe: Aethelgard Isles
+                        {activeTheme.weeklyWorld.universe}
                       </span>
                       <h3 className="text-lg sm:text-xl font-serif font-bold text-white tracking-tight mt-0.5 line-clamp-2">
-                        The Clockwork Archipelago
+                        {activeTheme.weeklyWorld.title}
                       </h3>
                     </div>
 
                     <p className="text-xs sm:text-sm text-neutral-300 font-serif leading-relaxed line-clamp-4">
-                      In a realm suspended over liquid mercury, celestial gears physicalize time. The Great Pendulum has begun swaying backwards—unspooling centuries of forgotten memories while spectral echoes demand stolen time back.
+                      {activeTheme.weeklyWorld.description}
                     </p>
 
                     {/* Carousel indicator dots */}
@@ -179,9 +241,14 @@ export const DashboardView: React.FC = () => {
 
             {/* RIGHT COLUMN: THREE ELEMENTS CHALLENGE */}
             <div className="space-y-3">
-              <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink tracking-tight">
-                Three Elements Challenge
-              </h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink tracking-tight">
+                  Three Elements Challenge
+                </h2>
+                <span className="text-[10px] font-mono text-ink-faint uppercase tracking-wider">
+                  Weekly Triad
+                </span>
+              </div>
 
               {/* Clean list panel with right-aligned images */}
               <div className="rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment p-4 sm:p-6 flex flex-col justify-between">
@@ -194,17 +261,17 @@ export const DashboardView: React.FC = () => {
                           Character
                         </span>
                         <h4 className="text-sm sm:text-base font-serif font-bold text-ink group-hover:text-brand-700 transition-colors truncate">
-                          Silas Thorne
+                          {activeTheme.threeElements.character.name}
                         </h4>
                       </div>
                       <p className="text-xs text-ink-muted font-sans mt-0.5 line-clamp-2 leading-relaxed">
-                        Disgraced clocktower artisan with a pocket watch counting down his heartbeats; cannot lie without skipping a beat.
+                        {activeTheme.threeElements.character.description}
                       </p>
                     </div>
                     <div className="w-20 sm:w-28 h-14 sm:h-18 rounded-xl overflow-hidden border border-canvas-border flex-shrink-0 shadow-xs">
                       <img
-                        src="/images/character-silas.jpg"
-                        alt="Silas Thorne"
+                        src={activeTheme.threeElements.character.image}
+                        alt={activeTheme.threeElements.character.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
@@ -218,17 +285,17 @@ export const DashboardView: React.FC = () => {
                           Place
                         </span>
                         <h4 className="text-sm sm:text-base font-serif font-bold text-ink group-hover:text-brand-700 transition-colors truncate">
-                          The Submerged Scriptorium
+                          {activeTheme.threeElements.place.name}
                         </h4>
                       </div>
                       <p className="text-xs text-ink-muted font-sans mt-0.5 line-clamp-2 leading-relaxed">
-                        A cathedral library submerged in bioluminescent salt water, where scholars dive to read waterproof glass manuscripts.
+                        {activeTheme.threeElements.place.description}
                       </p>
                     </div>
                     <div className="w-20 sm:w-28 h-14 sm:h-18 rounded-xl overflow-hidden border border-canvas-border flex-shrink-0 shadow-xs">
                       <img
-                        src="/images/place-scriptorium.jpg"
-                        alt="The Submerged Scriptorium"
+                        src={activeTheme.threeElements.place.image}
+                        alt={activeTheme.threeElements.place.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
@@ -242,17 +309,17 @@ export const DashboardView: React.FC = () => {
                           World
                         </span>
                         <h4 className="text-sm sm:text-base font-serif font-bold text-ink group-hover:text-brand-700 transition-colors truncate">
-                          Solas Inverted
+                          {activeTheme.threeElements.world.name}
                         </h4>
                       </div>
                       <p className="text-xs text-ink-muted font-sans mt-0.5 line-clamp-2 leading-relaxed">
-                        A realm where gravity reverses whenever an eclipse strikes, forcing architecture to span across both ceilings and floors.
+                        {activeTheme.threeElements.world.description}
                       </p>
                     </div>
                     <div className="w-20 sm:w-28 h-14 sm:h-18 rounded-xl overflow-hidden border border-canvas-border flex-shrink-0 shadow-xs">
                       <img
-                        src="/images/world-solas.jpg"
-                        alt="Solas Inverted"
+                        src={activeTheme.threeElements.world.image}
+                        alt={activeTheme.threeElements.world.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
