@@ -197,9 +197,6 @@ export const DashboardView: React.FC = () => {
                     <span>{recommendation.badgeLabel}</span>
                   </span>
                 </div>
-                <span className="text-[10px] font-mono text-ink-faint uppercase tracking-wider" title={recommendation.reason}>
-                  {recommendation.isPopular ? '#1 Community Spotlight' : slidingWorldTheme.badge}
-                </span>
               </div>
 
               {/* Dark cinematic card with auto-slide */}
@@ -324,8 +321,9 @@ export const DashboardView: React.FC = () => {
                 <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink tracking-tight">
                   Three Elements Challenge
                 </h2>
-                <span className="text-[10px] font-mono text-ink-faint uppercase tracking-wider">
-                  Weekly Triad
+                <span className="inline-flex items-center gap-1 text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 shadow-2xs">
+                  <Flame className="w-3 h-3 text-amber-600" />
+                  <span>Popular</span>
                 </span>
               </div>
 
