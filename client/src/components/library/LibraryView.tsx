@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
-import type { Novel, NovelStatus } from '../../types';
+import type { Novel } from '../../types';
 import { NewNovelModal } from './NewNovelModal';
 import {
   Book,
@@ -103,19 +103,8 @@ export const LibraryView: React.FC = () => {
     setIsDashboardOpen(true);
   };
 
-  const getStatusBadge = (status: NovelStatus) => {
-    switch (status) {
-      case 'Planning':
-        return 'bg-[#faeed1] text-[#7c4a03] border-[#e3c788]';
-      case 'In Progress':
-        return 'bg-[#dcf0f2] text-[#1b5966] border-[#9ec8ce]';
-      case 'First Draft':
-        return 'bg-[#e1e9f8] text-[#2e4785] border-[#a8bee7]';
-      case 'Revision':
-        return 'bg-[#fae6de] text-[#913d1e] border-[#e7b6a4]';
-      case 'Completed':
-        return 'bg-[#dff0e4] text-[#245b32] border-[#a0cea9]';
-    }
+  const getStatusBadge = (_status?: string) => {
+    return 'bg-canvas-surface text-ink-muted border-canvas-border';
   };
 
   return (
@@ -260,19 +249,10 @@ export const LibraryView: React.FC = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 min-h-[430px] sm:min-h-[460px]">
-              {filteredNovels.map((novel, idx) => {
+              {filteredNovels.map((novel) => {
                 const totalWords = novel.totalWordCount || 0;
                 const targetGoal = novel.targetWordCount || 80000;
                 const progressPct = Math.min(100, Math.round((totalWords / targetGoal) * 100));
-
-                const spineColors = [
-                  'from-[#c2593f] to-[#a2402a]',
-                  'from-[#b45309] to-[#92400e]',
-                  'from-[#2e4785] to-[#1e3a8a]',
-                  'from-[#225744] to-[#14532d]',
-                  'from-[#86294d] to-[#701a3d]',
-                ];
-                const spineGradient = spineColors[idx % spineColors.length];
 
                 return (
                   <div
@@ -280,8 +260,8 @@ export const LibraryView: React.FC = () => {
                     onClick={() => handleOpenBook(novel._id)}
                     className="rounded-2xl border border-canvas-border bg-canvas-card hover:border-brand-500/70 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-col justify-between overflow-hidden relative"
                   >
-                    {/* Top ribbon accent */}
-                    <div className={`h-1.5 w-full bg-gradient-to-r ${spineGradient}`} />
+                    {/* Top ribbon accent (unified for all manuscripts) */}
+                    <div className="h-1.5 w-full bg-gradient-to-r from-brand-700 via-amber-600/70 to-brand-800" />
 
                     <div className="p-3.5 sm:p-4 flex-1 flex flex-row gap-3 sm:gap-3.5 items-stretch">
                       {/* Book Cover Container */}

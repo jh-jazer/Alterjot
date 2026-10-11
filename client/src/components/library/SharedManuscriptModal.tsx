@@ -67,8 +67,8 @@ export const SharedManuscriptModal: React.FC<SharedManuscriptModalProps> = ({
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-3xl max-h-[90vh] bg-canvas-card border border-canvas-border rounded-2xl sm:rounded-3xl shadow-parchment-2xl flex flex-col overflow-hidden text-ink animate-scaleUp"
       >
-        {/* Top Spine Ribbon */}
-        <div className={`h-2.5 w-full bg-gradient-to-r ${manuscript.spineGradient}`} />
+        {/* Top Spine Ribbon (unified for all manuscripts) */}
+        <div className="h-2.5 w-full bg-gradient-to-r from-brand-700 via-amber-600/70 to-brand-800" />
 
         {/* Header Section */}
         <div className="p-5 sm:p-7 border-b border-canvas-border/80 bg-canvas-surface/40 relative">

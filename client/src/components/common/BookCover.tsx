@@ -9,74 +9,12 @@ interface BookCoverProps {
   className?: string;
 }
 
-// Curated clothbound book colors based on genre
-const GENRE_PALETTES: Record<string, { bg: string; border: string; accent: string; text: string }> = {
-  steampunk: {
-    bg: 'bg-gradient-to-br from-[#4a2618] to-[#2c150c]',
-    border: 'border-amber-400/40',
-    accent: 'text-amber-300',
-    text: 'text-amber-100',
-  },
-  'cosmic horror': {
-    bg: 'bg-gradient-to-br from-[#121936] to-[#0a0d1f]',
-    border: 'border-indigo-400/35',
-    accent: 'text-indigo-300',
-    text: 'text-indigo-100',
-  },
-  'gothic fantasy': {
-    bg: 'bg-gradient-to-br from-[#4c1221] to-[#2a0711]',
-    border: 'border-rose-400/40',
-    accent: 'text-rose-300',
-    text: 'text-rose-100',
-  },
-  'high fantasy': {
-    bg: 'bg-gradient-to-br from-[#123624] to-[#081e13]',
-    border: 'border-emerald-400/40',
-    accent: 'text-emerald-300',
-    text: 'text-emerald-100',
-  },
-  cyberpunk: {
-    bg: 'bg-gradient-to-br from-[#102d3e] to-[#071824]',
-    border: 'border-cyan-400/40',
-    accent: 'text-cyan-300',
-    text: 'text-cyan-100',
-  },
-  'dark fantasy': {
-    bg: 'bg-gradient-to-br from-[#272635] to-[#14131d]',
-    border: 'border-amber-400/30',
-    accent: 'text-amber-300',
-    text: 'text-neutral-100',
-  },
-  'weird west': {
-    bg: 'bg-gradient-to-br from-[#4d3319] to-[#2b1c0d]',
-    border: 'border-amber-400/35',
-    accent: 'text-amber-300',
-    text: 'text-amber-100',
-  },
-  'space opera': {
-    bg: 'bg-gradient-to-br from-[#2f183d] to-[#180a22]',
-    border: 'border-fuchsia-400/35',
-    accent: 'text-fuchsia-300',
-    text: 'text-fuchsia-100',
-  },
-  mystery: {
-    bg: 'bg-gradient-to-br from-[#15343b] to-[#0b1c21]',
-    border: 'border-teal-400/35',
-    accent: 'text-teal-300',
-    text: 'text-teal-100',
-  },
-  'post-apocalyptic': {
-    bg: 'bg-gradient-to-br from-[#3e2716] to-[#221308]',
-    border: 'border-amber-500/35',
-    accent: 'text-amber-300',
-    text: 'text-amber-100',
-  },
-  default: {
-    bg: 'bg-gradient-to-br from-[#1e293b] to-[#0f172a]',
-    border: 'border-amber-300/35',
-    accent: 'text-amber-300',
-    text: 'text-amber-50',
-  },
+// Unified timeless clothbound book cover palette for all manuscripts
+const UNIFIED_COVER_PALETTE = {
+  bg: 'bg-gradient-to-br from-[#26211c] via-[#1c1815] to-[#120f0d]',
+  border: 'border-amber-400/35',
+  accent: 'text-amber-300/85',
+  text: 'text-[#fef3c7]',
 };
 
 export const BookCover: React.FC<BookCoverProps> = ({
@@ -88,12 +26,7 @@ export const BookCover: React.FC<BookCoverProps> = ({
   className = '',
 }) => {
   const [imageError, setImageError] = useState(false);
-
-  const cleanGenre = (genre || '').toLowerCase().trim();
-  const palette =
-    GENRE_PALETTES[cleanGenre] ||
-    Object.entries(GENRE_PALETTES).find(([k]) => cleanGenre.includes(k))?.[1] ||
-    GENRE_PALETTES.default;
+  const palette = UNIFIED_COVER_PALETTE;
 
   // Sizing definitions
   const sizeClasses = {

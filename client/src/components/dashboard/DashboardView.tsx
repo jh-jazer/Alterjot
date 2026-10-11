@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
-import type { NovelStatus } from '../../types';
 import {
   ArrowRight,
   BookOpen,
@@ -73,19 +72,8 @@ export const DashboardView: React.FC = () => {
   const rankInfo = getAuthorRank(totalWords);
   const rankProgress = Math.min(100, Math.round((totalWords / rankInfo.nextThreshold) * 100));
 
-  const getStatusBadge = (status: NovelStatus) => {
-    switch (status) {
-      case 'Planning':
-        return 'bg-[#faeed1] text-[#7c4a03] border-[#e3c788]';
-      case 'In Progress':
-        return 'bg-[#dcf0f2] text-[#1b5966] border-[#9ec8ce]';
-      case 'First Draft':
-        return 'bg-[#e1e9f8] text-[#2e4785] border-[#a8bee7]';
-      case 'Revision':
-        return 'bg-[#fae6de] text-[#913d1e] border-[#e7b6a4]';
-      case 'Completed':
-        return 'bg-[#dff0e4] text-[#245b32] border-[#a0cea9]';
-    }
+  const getStatusBadge = (_status?: string) => {
+    return 'bg-canvas-surface text-ink-muted border-canvas-border';
   };
 
   return (
@@ -269,8 +257,8 @@ export const DashboardView: React.FC = () => {
                         }}
                         className="min-h-[195px] h-full rounded-2xl border border-canvas-border bg-canvas-card hover:border-brand-500/60 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-row overflow-hidden relative p-3 sm:p-4 gap-3 sm:gap-4 items-stretch"
                       >
-                        {/* Top ribbon accent */}
-                        <div className={`h-1.5 w-full absolute top-0 left-0 bg-gradient-to-r ${sharedNovel.spineGradient}`} />
+                        {/* Top ribbon accent (unified for all manuscripts) */}
+                        <div className="h-1.5 w-full absolute top-0 left-0 bg-gradient-to-r from-brand-700 via-amber-600/70 to-brand-800" />
 
                         {/* Book Cover Container */}
                         <div className="flex-shrink-0 flex items-center justify-center pt-0.5">
@@ -385,18 +373,10 @@ export const DashboardView: React.FC = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 min-h-[430px] sm:min-h-[460px]">
-                  {novels.slice(0, 6).map((novel, idx) => {
+                  {novels.slice(0, 6).map((novel) => {
                     const totalWords = novel.totalWordCount || 0;
                     const targetGoal = novel.targetWordCount || 80000;
                     const progressPct = Math.min(100, Math.round((totalWords / targetGoal) * 100));
-
-                    const spineColors = [
-                      'from-[#c2593f] to-[#a2402a]',
-                      'from-[#b45309] to-[#92400e]',
-                      'from-[#2e4785] to-[#1e3a8a]',
-                      'from-[#225744] to-[#14532d]',
-                    ];
-                    const spineGradient = spineColors[idx % spineColors.length];
 
                     return (
                       <div
@@ -404,8 +384,8 @@ export const DashboardView: React.FC = () => {
                         onClick={() => openStudio(novel._id)}
                         className="min-h-[195px] h-full rounded-2xl border border-canvas-border bg-canvas-card hover:border-brand-500/60 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-row overflow-hidden relative p-3 sm:p-4 gap-3 sm:gap-4 items-stretch"
                       >
-                        {/* Top ribbon accent */}
-                        <div className={`h-1.5 w-full absolute top-0 left-0 bg-gradient-to-r ${spineGradient}`} />
+                        {/* Top ribbon accent (unified for all manuscripts) */}
+                        <div className="h-1.5 w-full absolute top-0 left-0 bg-gradient-to-r from-brand-700 via-amber-600/70 to-brand-800" />
 
                         {/* Book Cover Container */}
                         <div className="flex-shrink-0 flex items-center justify-center pt-0.5">
