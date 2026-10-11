@@ -33,6 +33,7 @@ export const GlobalNavbar: React.FC = () => {
   const setPenName = useWorkspaceStore((s) => s.setPenName);
 
   const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
+  const currentUser = useWorkspaceStore((s) => s.currentUser);
   const setIsAuthModalOpen = useWorkspaceStore((s) => s.setIsAuthModalOpen);
   const logout = useWorkspaceStore((s) => s.logout);
 
@@ -252,8 +253,12 @@ export const GlobalNavbar: React.FC = () => {
               title={isAuthenticated ? `Pen Name: ${penName} (Click to manage)` : 'Sign In to Author Account'}
               aria-label="Author Profile"
             >
-              <div className="w-6 h-6 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center font-serif text-xs font-bold shadow-xs">
-                <User className="w-3.5 h-3.5" />
+              <div className="w-6 h-6 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center font-serif text-xs font-bold shadow-xs overflow-hidden">
+                {currentUser?.avatarUrl ? (
+                  <img src={currentUser.avatarUrl} alt={penName} className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-3.5 h-3.5" />
+                )}
               </div>
             </button>
 
@@ -261,12 +266,16 @@ export const GlobalNavbar: React.FC = () => {
             {isProfileOpen && isAuthenticated && (
               <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-24px)] p-3.5 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 animate-in fade-in zoom-in-95 duration-150">
                 <div className="flex items-center gap-2.5 mb-3">
-                  <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center font-serif text-xs font-bold shadow-xs">
-                    <User className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center font-serif text-xs font-bold shadow-xs overflow-hidden">
+                    {currentUser?.avatarUrl ? (
+                      <img src={currentUser.avatarUrl} alt={penName} className="w-full h-full object-cover" />
+                    ) : (
+                      <User className="w-4 h-4" />
+                    )}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-xs font-serif font-semibold text-ink truncate">{penName}</div>
-                    <div className="text-[10px] font-mono text-ink-muted">Author Pen Name</div>
+                    <div className="text-[10px] font-mono text-ink-muted truncate">{currentUser?.email || 'Author Pen Name'}</div>
                   </div>
                 </div>
 

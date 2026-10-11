@@ -6,6 +6,7 @@ import novelRoutes from './routes/novelRoutes.js';
 import chapterRoutes from './routes/chapterRoutes.js';
 import sceneRoutes from './routes/sceneRoutes.js';
 import codexRoutes from './routes/codexRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 import { memoryStore } from './store/memoryStore.js';
 
 dotenv.config();
@@ -49,6 +50,7 @@ app.use('/api/novels', novelRoutes);
 app.use('/api/chapters', chapterRoutes);
 app.use('/api/scenes', sceneRoutes);
 app.use('/api/codex', codexRoutes);
+app.use('/api/auth', authRoutes);
 
 // Error Handling
 app.use((err, req, res, next) => {

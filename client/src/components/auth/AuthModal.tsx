@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
+import { GoogleSignInButton } from './GoogleSignInButton';
 import { X, Feather, Lock, Mail, User, Sparkles, ArrowRight, BookOpen } from 'lucide-react';
 
 export const AuthModal: React.FC = () => {
@@ -83,6 +84,21 @@ export const AuthModal: React.FC = () => {
           >
             Create Scribe Account
           </button>
+        </div>
+
+        {/* Google OAuth Sign In */}
+        <div className="mb-4">
+          <GoogleSignInButton onSuccess={() => setIsAuthModalOpen(false)} />
+        </div>
+
+        {/* Divider */}
+        <div className="relative my-3.5">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-canvas-border" />
+          </div>
+          <div className="relative flex justify-center text-[10px] font-mono uppercase tracking-widest text-ink-faint">
+            <span className="bg-canvas-card px-2">or continue with pen name</span>
+          </div>
         </div>
 
         {/* Form */}

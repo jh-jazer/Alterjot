@@ -4,8 +4,52 @@ class MemoryStore {
     this.chapters = [];
     this.scenes = [];
     this.codex = [];
+    this.users = [];
     console.log('⚡ [MemoryStore] Initialized clean library with zero sample data.');
   }
+
+  // --- USERS / AUTH ---
+  findUserByGoogleId(googleId) {
+    return this.users.find((u) => u.googleId === googleId);
+  }
+
+  findUserByEmail(email) {
+    return this.users.find((u) => u.email.toLowerCase() === (email || '').toLowerCase());
+  }
+
+  findUserById(id) {
+    return this.users.find((u) => u._id === id);
+  }
+
+  createOrUpdateGoogleUser({ googleId, email, penName, avatarUrl }) {
+    let user = this.findUserByGoogleId(googleId) || this.findUserByEmail(email);
+    const now = new Date().toISOString();
+    if (user) {
+      user.googleId = googleId;
+      if (penName && (!user.penName || user.penName === 'Author')) {
+        user.penName = penName;
+      }
+      if (avatarUrl) {
+        user.avatarUrl = avatarUrl;
+      }
+      user.updatedAt = now;
+      return user;
+    }
+
+    user = {
+      _id: 'user_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+      googleId,
+      email: (email || '').toLowerCase(),
+      penName: penName || (email ? email.split('@')[0] : 'Author'),
+      avatarUrl: avatarUrl || '',
+      authProvider: 'google',
+      createdAt: now,
+      updatedAt: now,
+    };
+    this.users.push(user);
+    return user;
+  }
+
 
   // --- NOVELS ---
   getNovels() {

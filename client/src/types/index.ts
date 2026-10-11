@@ -136,4 +136,7 @@ export interface AuthUser {
   id: string;
   penName: string;
   email?: string;
+  avatarUrl?: string;
+  googleId?: string;
 }
+

@@ -162,4 +162,18 @@ export const api = {
     const res = await fetch(`${API_BASE}/codex/${id}`, { method: 'DELETE' });
     return handleResponse<{ success: boolean }>(res);
   },
+
+  // Auth
+  loginWithGoogle: async (credential: string): Promise<{ success: boolean; user: import('../types').AuthUser; message?: string }> => {
+    const res = await fetch(`${API_BASE}/auth/google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential }),
+    });
+    return handleResponse<{ success: boolean; user: import('../types').AuthUser; message?: string }>(res);
+  },
+  getAuthConfig: async (): Promise<{ success: boolean; googleAuthEnabled: boolean; clientIdConfigured: boolean }> => {
+    const res = await fetch(`${API_BASE}/auth/config`);
+    return handleResponse<{ success: boolean; googleAuthEnabled: boolean; clientIdConfigured: boolean }>(res);
+  },
 };

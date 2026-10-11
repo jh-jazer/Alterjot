@@ -106,6 +106,7 @@ interface WorkspaceState {
   preferredTheme: NarrativeTheme;
 
   login: (penName: string, email?: string) => void;
+  loginWithGoogleCredential: (credential: string) => Promise<boolean>;
   logout: () => void;
   setIsAuthModalOpen: (open: boolean, mode?: 'signin' | 'signup') => void;
   setIsOnboardingModalOpen: (open: boolean) => void;
@@ -149,6 +150,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
           id: localStorage.getItem('alterjot_user_id') || 'author_default',
           penName: localStorage.getItem('alterjot_pen_name') || 'Ernest Quill',
           email: localStorage.getItem('alterjot_user_email') || 'scribe@alterjot.com',
+          avatarUrl: localStorage.getItem('alterjot_user_avatar') || undefined,
         }
       : null,
   isAuthModalOpen: false,
@@ -339,11 +341,60 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     });
   },
 
+  loginWithGoogleCredential: async (credential: string) => {
+    try {
+      let finalUser: AuthUser;
+
+      try {
+        const response = await api.loginWithGoogle(credential);
+        finalUser = response.user;
+      } catch (serverErr) {
+        console.warn('[Auth] Server Google verification failed or offline, using decoded token fallback:', serverErr);
+        // Client-side fallback: safely decode JWT payload
+        const parts = credential.split('.');
+        if (parts.length === 3) {
+          const payloadJson = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+          finalUser = {
+            id: payloadJson.sub || 'author_google_' + Date.now(),
+            googleId: payloadJson.sub,
+            email: payloadJson.email || '',
+            penName: payloadJson.name || payloadJson.email?.split('@')[0] || 'Author',
+            avatarUrl: payloadJson.picture || '',
+          };
+        } else {
+          throw serverErr;
+        }
+      }
+
+      try {
+        localStorage.setItem('alterjot_auth', 'true');
+        localStorage.setItem('alterjot_pen_name', finalUser.penName);
+        localStorage.setItem('alterjot_user_id', finalUser.id);
+        if (finalUser.email) localStorage.setItem('alterjot_user_email', finalUser.email);
+        if (finalUser.avatarUrl) localStorage.setItem('alterjot_user_avatar', finalUser.avatarUrl);
+      } catch {}
+
+      const hasOnboarded = typeof window !== 'undefined' && localStorage.getItem('alterjot_onboarded') === 'true';
+      set({
+        isAuthenticated: true,
+        currentUser: finalUser,
+        penName: finalUser.penName,
+        isAuthModalOpen: false,
+        isOnboardingModalOpen: !hasOnboarded,
+      });
+      return true;
+    } catch (err) {
+      console.error('[Auth] Failed to complete Google sign in:', err);
+      return false;
+    }
+  },
+
   logout: () => {
     try {
       localStorage.removeItem('alterjot_auth');
       localStorage.removeItem('alterjot_user_id');
       localStorage.removeItem('alterjot_user_email');
+      localStorage.removeItem('alterjot_user_avatar');
     } catch {}
     set({
       isAuthenticated: false,

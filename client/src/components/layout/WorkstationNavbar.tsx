@@ -30,6 +30,7 @@ export const WorkstationNavbar: React.FC = () => {
   const theme = useWorkspaceStore((s) => s.theme);
   const toggleTheme = useWorkspaceStore((s) => s.toggleTheme);
   const penName = useWorkspaceStore((s) => s.penName);
+  const currentUser = useWorkspaceStore((s) => s.currentUser);
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [tempTitle, setTempTitle] = useState('');
@@ -206,8 +207,12 @@ export const WorkstationNavbar: React.FC = () => {
             className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-canvas-card border border-canvas-border text-ink text-xs font-serif shadow-xs"
             title={`Drafting as ${penName}`}
           >
-            <div className="w-5 h-5 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center text-[10px] font-bold">
-              <User className="w-3 h-3" />
+            <div className="w-5 h-5 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center text-[10px] font-bold overflow-hidden">
+              {currentUser?.avatarUrl ? (
+                <img src={currentUser.avatarUrl} alt={penName} className="w-full h-full object-cover" />
+              ) : (
+                <User className="w-3 h-3" />
+              )}
             </div>
             <span className="max-w-[90px] lg:max-w-[120px] truncate font-medium">
               {penName}
