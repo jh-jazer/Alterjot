@@ -171,7 +171,7 @@ export const DashboardView: React.FC = () => {
       {/* Clean centered container with responsive padding on left and right */}
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8 sm:space-y-12">
         {/* FIRST PART OF DASHBOARD: TWO COLUMNS (World Challenge & Three Elements Challenge) */}
-        <section className="space-y-4 pt-4 sm:pt-8">
+        <section className="space-y-4 pt-6 sm:pt-12 pb-6 sm:pb-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
             
             {/* LEFT COLUMN: WORLD CHALLENGE (SLIDING) */}
@@ -304,8 +304,8 @@ export const DashboardView: React.FC = () => {
                 </div>
               </div>
 
-              {/* Try more challenges in Playground below World Challenge */}
-              <div className="flex justify-end pt-1 px-1">
+              {/* Try more challenges in Playground below World Challenge (aligned to left) */}
+              <div className="flex justify-start pt-2 px-0.5">
                 <button
                   type="button"
                   onClick={openPlay}
