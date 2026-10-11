@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="brandGradMask" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b84d34" />
+      <stop offset="50%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#ea9042" />
+    </linearGradient>
+    <radialGradient id="featherGlowMask" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Full bleed for maskable safe zone -->
+  <rect width="512" height="512" fill="url(#brandGradMask)" />
+  <rect width="512" height="512" fill="url(#featherGlowMask)" />
+
+  <!-- Safe Zone Graphic (padded inside 80% circle) -->
+  <g transform="translate(256, 256) scale(11) translate(-12, -12)">
+    <path
+      d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"
+      fill="rgba(255, 255, 255, 0.98)"
+      stroke="#ffffff"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <line
+      x1="16" y1="8"
+      x2="2" y2="22"
+      stroke="#b84d34"
+      stroke-width="1.8"
+      stroke-linecap="round"
+    />
+    <line
+      x1="17.5" y1="15"
+      x2="9" y2="15"
+      stroke="rgba(184, 77, 52, 0.7)"
+      stroke-width="1.2"
+      stroke-linecap="round"
+    />
+  </g>
+</svg>

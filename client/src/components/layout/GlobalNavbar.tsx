@@ -11,8 +11,10 @@ import {
   BookOpen,
   ChevronDown,
   LogIn,
+  Download,
 } from 'lucide-react';
 import { ProfileDropdown } from '../profile/ProfileDropdown';
+import { usePWA } from '../../hooks/usePWA';
 
 export const GlobalNavbar: React.FC = () => {
   const currentView = useWorkspaceStore((s) => s.currentView);
@@ -38,6 +40,8 @@ export const GlobalNavbar: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const writeMenuRef = useRef<HTMLDivElement>(null);
+
+  const { canInstall, isInstalled, installApp } = usePWA();
 
   // Handle escape key to dismiss menus
   useEffect(() => {
@@ -190,8 +194,21 @@ export const GlobalNavbar: React.FC = () => {
           <div className="flex-1" />
         )}
 
-        {/* Right Side: Theme Toggle + Profile Icon Only + Write Button */}
+        {/* Right Side: Install App (PWA) + Theme Toggle + Profile Icon Only + Write Button */}
         <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+          {/* Install Alterjot App Button (PWA) */}
+          {canInstall && !isInstalled && (
+            <button
+              type="button"
+              onClick={installApp}
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-brand-500/40 bg-brand-50 hover:bg-brand-100 text-brand-800 dark:bg-brand-950/40 dark:border-brand-500/50 dark:text-brand-300 font-mono text-xs font-semibold shadow-xs transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+              title="Install Alterjot as a Desktop / Mobile Application"
+            >
+              <Download className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
+              <span>Install App</span>
+            </button>
+          )}
+
           {/* Theme Toggle (Retro Light / Nocturne Dark with smooth spreading circle) */}
           <button
             type="button"

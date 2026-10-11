@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate:icons": "node scripts/generate-icons.cjs"
   },
   "dependencies": {
     "@tiptap/extension-character-count": "^3.31.4",

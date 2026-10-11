@@ -21,7 +21,9 @@ import {
   CheckCheck,
   Sparkles,
   Zap,
+  Download,
 } from 'lucide-react';
+import { usePWA } from '../../hooks/usePWA';
 
 interface ProfileDropdownProps {
   isOpen: boolean;
@@ -91,6 +93,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   const toggleTheme = useWorkspaceStore((s) => s.toggleTheme);
   const typography = useWorkspaceStore((s) => s.typography);
   const setTypography = useWorkspaceStore((s) => s.setTypography);
+  const { canInstall, isInstalled, installApp } = usePWA();
 
   // View state: 'menu' (root list of Profile, Notifications, Settings) or specific section
   const [activeView, setActiveView] = useState<'menu' | 'profile' | 'notifications' | 'settings'>('menu');
@@ -348,6 +351,33 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
               </div>
               <ChevronRight className="w-4 h-4 text-ink-muted group-hover:text-ink group-hover:translate-x-0.5 transition-all flex-shrink-0" />
             </button>
+
+            {/* 4. Install App Option (PWA) */}
+            {canInstall && !isInstalled && (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  installApp();
+                }}
+                className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-canvas-hover border border-transparent hover:border-canvas-border transition-all group text-left cursor-pointer"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                    <Download className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-serif font-semibold text-ink group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
+                      Install Alterjot App
+                    </div>
+                    <div className="text-[10px] text-ink-muted truncate">
+                      Add to desktop or mobile home screen
+                    </div>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-ink-muted group-hover:text-ink group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+              </button>
+            )}
           </div>
 
           {/* Sign Out Button */}

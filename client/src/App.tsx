@@ -14,6 +14,7 @@ import { ExportModal } from './components/export/ExportModal';
 import { AuthModal } from './components/auth/AuthModal';
 import { OnboardingModal } from './components/onboarding/OnboardingModal';
 import { MobileBottomNav } from './components/layout/MobileBottomNav';
+import { PWAStatusBanner } from './components/pwa/PWAStatusBanner';
 
 export const App: React.FC = () => {
   const loadInitialWorkspace = useWorkspaceStore((s) => s.loadInitialWorkspace);
@@ -61,6 +62,9 @@ export const App: React.FC = () => {
 
       {/* Mobile Bottom Navigation */}
       <MobileBottomNav />
+
+      {/* PWA Offline & Install Banner */}
+      <PWAStatusBanner />
     </div>
   );
 };
