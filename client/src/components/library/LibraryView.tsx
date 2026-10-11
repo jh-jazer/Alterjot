@@ -13,6 +13,7 @@ import {
   TrendingUp,
   Search,
 } from 'lucide-react';
+import { BookCover } from '../common/BookCover';
 
 export const LibraryView: React.FC = () => {
   const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
@@ -277,75 +278,90 @@ export const LibraryView: React.FC = () => {
                   <div
                     key={novel._id}
                     onClick={() => handleOpenBook(novel._id)}
-                    className="rounded-2xl border border-canvas-border bg-canvas-card hover:border-brand-500/70 transition-all duration-200 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-col justify-between overflow-hidden relative"
+                    className="rounded-2xl border border-canvas-border bg-canvas-card hover:border-brand-500/70 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-col justify-between overflow-hidden relative"
                   >
                     {/* Top ribbon accent */}
-                    <div className={`h-2.5 w-full bg-gradient-to-r ${spineGradient}`} />
+                    <div className={`h-1.5 w-full bg-gradient-to-r ${spineGradient}`} />
 
-                    <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        {/* Genre & Status */}
-                        <div className="flex items-center justify-between gap-2 mb-2">
-                          <span className="text-[10px] font-mono uppercase tracking-wider text-brand-700 font-semibold truncate">
-                            {novel.genre}
-                          </span>
-                          <span
-                            className={`text-[9px] font-mono px-2 py-0.5 rounded-full border tracking-wide uppercase font-medium shadow-xs ${getStatusBadge(
-                              novel.status
-                            )}`}
-                          >
-                            {novel.status}
-                          </span>
-                        </div>
-
-                        {/* Title & Subtitle */}
-                        <h3 className="text-lg sm:text-xl font-serif font-bold text-ink group-hover:text-brand-700 transition-colors line-clamp-2">
-                          {novel.title}
-                        </h3>
-                        {novel.subtitle && (
-                          <p className="text-xs text-ink-muted italic font-serif mt-0.5 line-clamp-1">
-                            {novel.subtitle}
-                          </p>
-                        )}
-
-                        <div className="text-[11px] text-ink-faint font-mono mt-1">
-                          By {novel.author || 'Anonymous'}
-                        </div>
-
-                        {/* Synopsis */}
-                        {novel.synopsis && (
-                          <p className="text-xs text-ink-muted mt-2.5 line-clamp-2 leading-relaxed font-sans">
-                            {novel.synopsis}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Progress Bar & Word Metrics */}
-                      <div className="mt-4 sm:mt-5 pt-3 sm:pt-3.5 border-t border-canvas-border">
-                        <div className="flex items-baseline justify-between text-xs font-mono mb-1.5">
-                          <span className="text-ink font-semibold">
-                            {totalWords.toLocaleString()} <span className="text-ink-faint text-[10px]">words</span>
-                          </span>
-                          <span className="text-brand-700 font-bold">{progressPct}%</span>
-                        </div>
-
-                        <div className="w-full bg-canvas-surface rounded-full h-1.5 overflow-hidden border border-canvas-border/60">
-                          <div
-                            className="bg-brand-600 h-full rounded-full transition-all duration-500"
-                            style={{ width: `${Math.max(3, progressPct)}%` }}
+                    <div className="p-3.5 sm:p-4 flex-1 flex flex-row gap-3 sm:gap-3.5 items-stretch">
+                      {/* Book Cover Container */}
+                      <div className="flex-shrink-0 flex items-center justify-center pt-0.5">
+                        <div className="transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-1">
+                          <BookCover
+                            title={novel.title}
+                            author={novel.author}
+                            genre={novel.genre}
+                            size="sm"
                           />
                         </div>
+                      </div>
 
-                        <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mt-2.5">
-                          <span className="flex items-center gap-1">
-                            <Layers className="w-3 h-3 text-ink-faint" />
-                            <span>{novel.chapterCount ?? 1} chapters</span>
-                          </span>
+                      {/* Content Details */}
+                      <div className="flex-1 min-w-0 flex flex-col justify-between">
+                        <div>
+                          {/* Genre & Status */}
+                          <div className="flex items-center justify-between gap-1.5 mb-1">
+                            <span className="text-[10px] font-mono uppercase tracking-wider text-brand-700 font-semibold truncate">
+                              {novel.genre}
+                            </span>
+                            <span
+                              className={`text-[9px] font-mono px-2 py-0.5 rounded-full border tracking-wide uppercase font-medium shadow-xs ${getStatusBadge(
+                                novel.status
+                              )}`}
+                            >
+                              {novel.status}
+                            </span>
+                          </div>
 
-                          <span className="flex items-center gap-1">
-                            <Target className="w-3 h-3 text-ink-faint" />
-                            <span>Goal: {targetGoal.toLocaleString()}</span>
-                          </span>
+                          {/* Title & Subtitle */}
+                          <h3 className="text-sm sm:text-base font-serif font-bold text-ink group-hover:text-brand-700 transition-colors line-clamp-1">
+                            {novel.title}
+                          </h3>
+                          {novel.subtitle && (
+                            <p className="text-xs text-ink-muted italic font-serif mt-0.5 line-clamp-1">
+                              {novel.subtitle}
+                            </p>
+                          )}
+
+                          <div className="text-[11px] text-ink-faint font-mono mt-0.5 truncate">
+                            By {novel.author || 'Anonymous'}
+                          </div>
+
+                          {/* Synopsis */}
+                          {novel.synopsis && (
+                            <p className="text-xs text-ink-muted mt-1 line-clamp-2 leading-relaxed font-sans">
+                              {novel.synopsis}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Progress Bar & Word Metrics */}
+                        <div className="mt-3 pt-2 border-t border-canvas-border">
+                          <div className="flex items-baseline justify-between text-xs font-mono mb-1">
+                            <span className="text-ink font-semibold text-xs">
+                              {totalWords.toLocaleString()} <span className="text-ink-faint text-[10px]">words</span>
+                            </span>
+                            <span className="text-brand-700 font-bold">{progressPct}%</span>
+                          </div>
+
+                          <div className="w-full bg-canvas-surface rounded-full h-1.5 overflow-hidden border border-canvas-border/60">
+                            <div
+                              className="bg-brand-600 h-full rounded-full transition-all duration-500"
+                              style={{ width: `${Math.max(3, progressPct)}%` }}
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-between text-[10px] font-mono text-ink-muted mt-2">
+                            <span className="flex items-center gap-1">
+                              <Layers className="w-3 h-3 text-ink-faint" />
+                              <span>{novel.chapterCount ?? 1} ch</span>
+                            </span>
+
+                            <span className="flex items-center gap-1">
+                              <Target className="w-3 h-3 text-ink-faint" />
+                              <span>Goal: {targetGoal.toLocaleString()}</span>
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>

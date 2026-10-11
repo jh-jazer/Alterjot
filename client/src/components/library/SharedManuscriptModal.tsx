@@ -10,6 +10,7 @@ import {
   ListOrdered,
   Feather,
 } from 'lucide-react';
+import { BookCover } from '../common/BookCover';
 
 interface SharedManuscriptModalProps {
   manuscript: SharedManuscript | null;
@@ -81,41 +82,56 @@ export const SharedManuscriptModal: React.FC<SharedManuscriptModalProps> = ({
             <X className="w-5 h-5" />
           </button>
 
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pr-10">
-            <div className="space-y-1.5 min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-brand-500/10 text-brand-700 dark:text-brand-300 font-bold border border-brand-500/20">
-                  {manuscript.genre}
-                </span>
-                <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-canvas-surface border border-canvas-border text-ink-muted">
-                  {manuscript.status}
-                </span>
-                <span className="inline-flex items-center gap-1 text-[10px] font-mono text-amber-600 dark:text-amber-400 font-semibold">
-                  <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                  {manuscript.rating.toFixed(2)}
-                </span>
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 sm:gap-6 pr-10">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5 min-w-0 flex-1">
+              {/* Dedicated Book Cover Container in Modal */}
+              <div className="flex-shrink-0">
+                <div className="shadow-xl rounded-r-lg rounded-l-xs">
+                  <BookCover
+                    title={manuscript.title}
+                    author={manuscript.author}
+                    genre={manuscript.genre}
+                    coverImage={manuscript.coverImage}
+                    size="md"
+                  />
+                </div>
               </div>
 
-              <h2
-                id="shared-manuscript-title"
-                className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-ink tracking-tight"
-              >
-                {manuscript.title}
-              </h2>
+              <div className="space-y-1.5 min-w-0 flex-1 text-center sm:text-left">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-brand-500/10 text-brand-700 dark:text-brand-300 font-bold border border-brand-500/20">
+                    {manuscript.genre}
+                  </span>
+                  <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-canvas-surface border border-canvas-border text-ink-muted">
+                    {manuscript.status}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[10px] font-mono text-amber-600 dark:text-amber-400 font-semibold">
+                    <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                    {manuscript.rating.toFixed(2)}
+                  </span>
+                </div>
 
-              {manuscript.subtitle && (
-                <p className="text-xs sm:text-sm text-ink-muted font-serif italic">
-                  {manuscript.subtitle}
-                </p>
-              )}
+                <h2
+                  id="shared-manuscript-title"
+                  className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-ink tracking-tight"
+                >
+                  {manuscript.title}
+                </h2>
 
-              <div className="flex items-center gap-2 pt-1 text-xs font-mono text-ink-muted">
-                <User className="w-3.5 h-3.5 text-brand-600" />
-                <span className="font-semibold text-ink">{manuscript.author}</span>
-                <span>•</span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
-                  {manuscript.authorRank}
-                </span>
+                {manuscript.subtitle && (
+                  <p className="text-xs sm:text-sm text-ink-muted font-serif italic">
+                    {manuscript.subtitle}
+                  </p>
+                )}
+
+                <div className="flex items-center justify-center sm:justify-start gap-2 pt-1 text-xs font-mono text-ink-muted">
+                  <User className="w-3.5 h-3.5 text-brand-600" />
+                  <span className="font-semibold text-ink">{manuscript.author}</span>
+                  <span>•</span>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                    {manuscript.authorRank}
+                  </span>
+                </div>
               </div>
             </div>
 

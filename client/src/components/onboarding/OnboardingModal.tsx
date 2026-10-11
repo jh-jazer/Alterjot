@@ -107,7 +107,7 @@ export const OnboardingModal: React.FC = () => {
               </label>
               <span className="text-[11px] font-mono text-brand-600 dark:text-brand-400 font-bold flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5" />
-                Customizes Weekly World & Triad
+                Customizes World Challenge & Triad
               </span>
             </div>
 
@@ -166,7 +166,7 @@ export const OnboardingModal: React.FC = () => {
               <div className="text-xs">
                 <span className="font-semibold text-ink font-serif">Selected Universe Motif: </span>
                 <span className="text-ink-muted">
-                  Your desk will feature <strong className="text-brand-700 dark:text-brand-300 font-bold">{currentThemeData.weeklyWorld.title}</strong> as your Weekly World, accompanied by character, place, and world cards matching the <strong className="text-ink">{currentThemeData.name}</strong> lore.
+                  Your desk will feature <strong className="text-brand-700 dark:text-brand-300 font-bold">{currentThemeData.weeklyWorld.title}</strong> as your World Challenge, accompanied by character, place, and world cards matching the <strong className="text-ink">{currentThemeData.name}</strong> lore.
                 </span>
               </div>
             </div>
