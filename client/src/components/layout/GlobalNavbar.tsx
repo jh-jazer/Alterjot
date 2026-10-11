@@ -10,10 +10,9 @@ import {
   Zap,
   BookOpen,
   ChevronDown,
-  FileText,
   LogIn,
-  LogOut,
 } from 'lucide-react';
+import { ProfileDropdown } from '../profile/ProfileDropdown';
 
 export const GlobalNavbar: React.FC = () => {
   const currentView = useWorkspaceStore((s) => s.currentView);
@@ -22,47 +21,23 @@ export const GlobalNavbar: React.FC = () => {
   const openPlay = useWorkspaceStore((s) => s.openPlay);
   const openRanking = useWorkspaceStore((s) => s.openRanking);
 
-  const novels = useWorkspaceStore((s) => s.novels);
-  const scenes = useWorkspaceStore((s) => s.scenes);
-
   const theme = useWorkspaceStore((s) => s.theme);
   const toggleTheme = useWorkspaceStore((s) => s.toggleTheme);
   const startWritingImmediately = useWorkspaceStore((s) => s.startWritingImmediately);
 
   const penName = useWorkspaceStore((s) => s.penName);
-  const setPenName = useWorkspaceStore((s) => s.setPenName);
 
   const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
   const currentUser = useWorkspaceStore((s) => s.currentUser);
   const setIsAuthModalOpen = useWorkspaceStore((s) => s.setIsAuthModalOpen);
-  const logout = useWorkspaceStore((s) => s.logout);
-
-  // Currency 1: Common - 1 word = 1 currency
-  const currencyWords = novels.reduce((acc, n) => acc + (n.totalWordCount || 0), 0);
-
-  // Currency 2: Per sentence written
-  const sentenceMatches = scenes.reduce((acc, s) => {
-    const text = s.plainText || '';
-    const match = text.match(/[^.!?]+[.!?]+(\s|$)/g);
-    return acc + (match ? match.length : 0);
-  }, 0);
-  const currencySentences = Math.max(sentenceMatches, Math.floor(currencyWords / 15));
-
-  // Currency 3: Per chapter written
-  const currencyChapters = novels.reduce((acc, n) => acc + (n.chapterCount || 1), 0);
 
   const librarySearchQuery = useWorkspaceStore((s) => s.librarySearchQuery);
   const setLibrarySearchQuery = useWorkspaceStore((s) => s.setLibrarySearchQuery);
 
   const [isWriteMenuOpen, setIsWriteMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [tempPenName, setTempPenName] = useState(penName);
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const writeMenuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setTempPenName(penName);
-  }, [penName]);
 
   // Handle escape key to dismiss menus
   useEffect(() => {
@@ -93,12 +68,6 @@ export const GlobalNavbar: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  const handleSavePenName = () => {
-    const finalPenName = tempPenName.trim() || 'Ernest Quill';
-    setPenName(finalPenName);
-    setIsProfileOpen(false);
-  };
 
   return (
     <header className="border-b border-canvas-border bg-canvas/90 backdrop-blur-md sticky top-0 z-30 select-none">
@@ -264,112 +233,11 @@ export const GlobalNavbar: React.FC = () => {
 
             {/* Profile Dropdown Popover */}
             {isProfileOpen && isAuthenticated && (
-              <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-24px)] p-3.5 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 animate-in fade-in zoom-in-95 duration-150">
-                <div className="flex items-center gap-2.5 mb-3">
-                  <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center font-serif text-xs font-bold shadow-xs overflow-hidden">
-                    {currentUser?.avatarUrl ? (
-                      <img src={currentUser.avatarUrl} alt={penName} className="w-full h-full object-cover" />
-                    ) : (
-                      <User className="w-4 h-4" />
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="text-xs font-serif font-semibold text-ink truncate">{penName}</div>
-                    <div className="text-[10px] font-mono text-ink-muted truncate">{currentUser?.email || 'Author Pen Name'}</div>
-                  </div>
-                </div>
-
-                {/* 3 Author Currencies Vault */}
-                <div className="p-2.5 rounded-xl bg-canvas-surface border border-canvas-border space-y-1.5 mb-3">
-                  <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-ink-faint font-semibold">
-                    <span>Atelier Vault</span>
-                    <span className="text-brand-600 font-bold">Currencies</span>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-1.5 pt-1 text-center">
-                    {/* Currency 1: Common (1 per word) */}
-                    <div className="p-2 rounded-lg bg-canvas-card border border-canvas-border flex flex-col items-center justify-center shadow-xs" title="Common Currency: 1 per word written">
-                      <div className="w-5 h-5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-1">
-                        <Feather className="w-3 h-3" />
-                      </div>
-                      <span className="text-xs font-mono font-bold text-ink truncate w-full">
-                        {currencyWords.toLocaleString()}
-                      </span>
-                      <span className="text-[9px] font-mono text-ink-muted uppercase tracking-tight mt-0.5">
-                        Words
-                      </span>
-                    </div>
-
-                    {/* Currency 2: Per sentence */}
-                    <div className="p-2 rounded-lg bg-canvas-card border border-canvas-border flex flex-col items-center justify-center shadow-xs" title="Sentence Currency: 1 per sentence written">
-                      <div className="w-5 h-5 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-1">
-                        <FileText className="w-3 h-3" />
-                      </div>
-                      <span className="text-xs font-mono font-bold text-ink truncate w-full">
-                        {currencySentences.toLocaleString()}
-                      </span>
-                      <span className="text-[9px] font-mono text-ink-muted uppercase tracking-tight mt-0.5">
-                        Sentences
-                      </span>
-                    </div>
-
-                    {/* Currency 3: Per chapter written */}
-                    <div className="p-2 rounded-lg bg-canvas-card border border-canvas-border flex flex-col items-center justify-center shadow-xs" title="Chapter Currency: 1 per chapter written">
-                      <div className="w-5 h-5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-1">
-                        <BookOpen className="w-3 h-3" />
-                      </div>
-                      <span className="text-xs font-mono font-bold text-ink truncate w-full">
-                        {currencyChapters.toLocaleString()}
-                      </span>
-                      <span className="text-[9px] font-mono text-ink-muted uppercase tracking-tight mt-0.5">
-                        Chapters
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-canvas-border space-y-2">
-                  <label className="block text-[10px] font-mono uppercase tracking-wider text-ink-faint font-semibold">
-                    Change Pen Name
-                  </label>
-                  <div className="flex items-center gap-1.5">
-                    <input
-                      type="text"
-                      value={tempPenName}
-                      onChange={(e) => setTempPenName(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleSavePenName();
-                        if (e.key === 'Escape') setIsProfileOpen(false);
-                      }}
-                      className="flex-1 px-2.5 py-1 text-xs font-serif rounded-lg bg-canvas-surface border border-canvas-border focus:border-brand-500 focus:outline-none text-ink"
-                      placeholder="Enter pen name"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleSavePenName}
-                      className="px-2.5 py-1 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-mono font-medium transition-colors"
-                    >
-                      Save
-                    </button>
-                  </div>
-                </div>
-
-                {/* Sign Out Button */}
-                <div className="pt-2.5 mt-2.5 border-t border-canvas-border flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-ink-faint">Logged in as Scribe</span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setIsProfileOpen(false);
-                      logout();
-                    }}
-                    className="flex items-center gap-1.5 text-xs font-mono text-rose-600 dark:text-rose-400 hover:text-rose-700 py-1 px-2 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
-                  >
-                    <LogOut className="w-3.5 h-3.5" />
-                    <span>Sign Out</span>
-                  </button>
-                </div>
-              </div>
+              <ProfileDropdown
+                isOpen={isProfileOpen}
+                onClose={() => setIsProfileOpen(false)}
+                align="right"
+              />
             )}
           </div>
 

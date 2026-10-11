@@ -14,6 +14,7 @@ import {
   Moon,
   User,
 } from 'lucide-react';
+import { ProfileDropdown } from '../profile/ProfileDropdown';
 
 export const WorkstationNavbar: React.FC = () => {
   const openLibrary = useWorkspaceStore((s) => s.openLibrary);
@@ -34,6 +35,7 @@ export const WorkstationNavbar: React.FC = () => {
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [tempTitle, setTempTitle] = useState('');
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const handleStartEditTitle = () => {
     if (!activeNovel) return;
@@ -202,21 +204,35 @@ export const WorkstationNavbar: React.FC = () => {
             </div>
           </button>
 
-          {/* Author Pen Name Badge */}
-          <div
-            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-canvas-card border border-canvas-border text-ink text-xs font-serif shadow-xs"
-            title={`Drafting as ${penName}`}
-          >
-            <div className="w-5 h-5 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center text-[10px] font-bold overflow-hidden">
-              {currentUser?.avatarUrl ? (
-                <img src={currentUser.avatarUrl} alt={penName} className="w-full h-full object-cover" />
-              ) : (
-                <User className="w-3 h-3" />
-              )}
-            </div>
-            <span className="max-w-[90px] lg:max-w-[120px] truncate font-medium">
-              {penName}
-            </span>
+          {/* Author Pen Name Badge (Clickable Profile Menu) */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsProfileOpen((prev) => !prev)}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-canvas-card border border-canvas-border hover:border-brand-500/60 hover:bg-canvas-hover text-ink text-xs font-serif shadow-xs transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500/30 active:scale-95"
+              title={`Pen Name: ${penName} (Click to manage Profile, Notifications, Settings)`}
+              aria-label="Author Profile"
+            >
+              <div className="w-5 h-5 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center text-[10px] font-bold overflow-hidden">
+                {currentUser?.avatarUrl ? (
+                  <img src={currentUser.avatarUrl} alt={penName} className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-3 h-3" />
+                )}
+              </div>
+              <span className="hidden sm:inline max-w-[90px] lg:max-w-[120px] truncate font-medium">
+                {penName}
+              </span>
+            </button>
+
+            {/* Profile Dropdown Popover in Studio Workstation */}
+            {isProfileOpen && (
+              <ProfileDropdown
+                isOpen={isProfileOpen}
+                onClose={() => setIsProfileOpen(false)}
+                align="right"
+              />
+            )}
           </div>
         </div>
       </div>
