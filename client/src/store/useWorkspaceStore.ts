@@ -339,6 +339,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       isAuthModalOpen: false,
       isOnboardingModalOpen: !hasOnboarded,
     });
+    get().loadInitialWorkspace();
   },
 
   loginWithGoogleCredential: async (credential: string) => {
@@ -382,6 +383,9 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         isAuthModalOpen: false,
         isOnboardingModalOpen: !hasOnboarded,
       });
+
+      // Reload author's private manuscripts
+      get().loadInitialWorkspace();
       return true;
     } catch (err) {
       console.error('[Auth] Failed to complete Google sign in:', err);
@@ -401,6 +405,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       currentUser: null,
       currentView: 'dashboard',
     });
+    // Reload guest manuscripts
+    get().loadInitialWorkspace();
   },
 
   setIsAuthModalOpen: (open, mode = 'signin') => {

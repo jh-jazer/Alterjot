@@ -2,6 +2,15 @@ import type { Novel, Chapter, Scene, CodexEntry } from '../types';
 
 const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
 
+function authFetch(input: RequestInfo | URL, init: RequestInit = {}): Promise<Response> {
+  const userId = typeof window !== 'undefined' ? localStorage.getItem('alterjot_user_id') || '' : '';
+  const headers = new Headers(init.headers || {});
+  if (userId) {
+    headers.set('x-user-id', userId);
+  }
+  return fetch(input, { ...init, headers });
+}
+
 async function handleResponse<T>(res: Response): Promise<T> {
   if (!res.ok) {
     const errorBody = await res.json().catch(() => ({}));
@@ -14,21 +23,21 @@ async function handleResponse<T>(res: Response): Promise<T> {
 export const api = {
   // Health
   getHealth: async () => {
-    const res = await fetch(`${API_BASE}/health`);
+    const res = await authFetch(`${API_BASE}/health`);
     return res.json();
   },
 
   // Novels
   getNovels: async (): Promise<Novel[]> => {
-    const res = await fetch(`${API_BASE}/novels`);
+    const res = await authFetch(`${API_BASE}/novels`);
     return handleResponse<Novel[]>(res);
   },
   getNovel: async (id: string): Promise<Novel> => {
-    const res = await fetch(`${API_BASE}/novels/${id}`);
+    const res = await authFetch(`${API_BASE}/novels/${id}`);
     return handleResponse<Novel>(res);
   },
   createNovel: async (data: Partial<Novel>): Promise<Novel> => {
-    const res = await fetch(`${API_BASE}/novels`, {
+    const res = await authFetch(`${API_BASE}/novels`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -36,7 +45,7 @@ export const api = {
     return handleResponse<Novel>(res);
   },
   updateNovel: async (id: string, data: Partial<Novel>): Promise<Novel> => {
-    const res = await fetch(`${API_BASE}/novels/${id}`, {
+    const res = await authFetch(`${API_BASE}/novels/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -44,21 +53,21 @@ export const api = {
     return handleResponse<Novel>(res);
   },
   deleteNovel: async (id: string): Promise<{ success: boolean }> => {
-    const res = await fetch(`${API_BASE}/novels/${id}`, { method: 'DELETE' });
+    const res = await authFetch(`${API_BASE}/novels/${id}`, { method: 'DELETE' });
     return handleResponse<{ success: boolean }>(res);
   },
   exportManuscript: async (id: string, format: 'markdown' | 'text' = 'markdown') => {
-    const res = await fetch(`${API_BASE}/novels/${id}/export?format=${format}`);
+    const res = await authFetch(`${API_BASE}/novels/${id}/export?format=${format}`);
     return handleResponse<{ title: string; format: string; totalWordCount: number; content: string }>(res);
   },
 
   // Chapters
   getChapters: async (novelId: string): Promise<Chapter[]> => {
-    const res = await fetch(`${API_BASE}/chapters?novelId=${novelId}`);
+    const res = await authFetch(`${API_BASE}/chapters?novelId=${novelId}`);
     return handleResponse<Chapter[]>(res);
   },
   createChapter: async (data: Partial<Chapter>): Promise<Chapter> => {
-    const res = await fetch(`${API_BASE}/chapters`, {
+    const res = await authFetch(`${API_BASE}/chapters`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -66,7 +75,7 @@ export const api = {
     return handleResponse<Chapter>(res);
   },
   updateChapter: async (id: string, data: Partial<Chapter>): Promise<Chapter> => {
-    const res = await fetch(`${API_BASE}/chapters/${id}`, {
+    const res = await authFetch(`${API_BASE}/chapters/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -74,7 +83,7 @@ export const api = {
     return handleResponse<Chapter>(res);
   },
   reorderChapters: async (novelId: string, orderedIds: string[]): Promise<Chapter[]> => {
-    const res = await fetch(`${API_BASE}/chapters/reorder`, {
+    const res = await authFetch(`${API_BASE}/chapters/reorder`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ novelId, orderedIds }),
@@ -82,7 +91,7 @@ export const api = {
     return handleResponse<Chapter[]>(res);
   },
   deleteChapter: async (id: string): Promise<{ success: boolean }> => {
-    const res = await fetch(`${API_BASE}/chapters/${id}`, { method: 'DELETE' });
+    const res = await authFetch(`${API_BASE}/chapters/${id}`, { method: 'DELETE' });
     return handleResponse<{ success: boolean }>(res);
   },
 
@@ -91,15 +100,15 @@ export const api = {
     const params = new URLSearchParams();
     if (chapterId) params.append('chapterId', chapterId);
     if (novelId) params.append('novelId', novelId);
-    const res = await fetch(`${API_BASE}/scenes?${params.toString()}`);
+    const res = await authFetch(`${API_BASE}/scenes?${params.toString()}`);
     return handleResponse<Scene[]>(res);
   },
   getScene: async (id: string): Promise<Scene> => {
-    const res = await fetch(`${API_BASE}/scenes/${id}`);
+    const res = await authFetch(`${API_BASE}/scenes/${id}`);
     return handleResponse<Scene>(res);
   },
   createScene: async (data: Partial<Scene>): Promise<Scene> => {
-    const res = await fetch(`${API_BASE}/scenes`, {
+    const res = await authFetch(`${API_BASE}/scenes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -107,7 +116,7 @@ export const api = {
     return handleResponse<Scene>(res);
   },
   patchScene: async (id: string, data: Partial<Scene>): Promise<Scene> => {
-    const res = await fetch(`${API_BASE}/scenes/${id}`, {
+    const res = await authFetch(`${API_BASE}/scenes/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -115,7 +124,7 @@ export const api = {
     return handleResponse<Scene>(res);
   },
   updateScene: async (id: string, data: Partial<Scene>): Promise<Scene> => {
-    const res = await fetch(`${API_BASE}/scenes/${id}`, {
+    const res = await authFetch(`${API_BASE}/scenes/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -123,7 +132,7 @@ export const api = {
     return handleResponse<Scene>(res);
   },
   reorderScenes: async (chapterId: string, orderedIds: string[]): Promise<Scene[]> => {
-    const res = await fetch(`${API_BASE}/scenes/reorder`, {
+    const res = await authFetch(`${API_BASE}/scenes/reorder`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chapterId, orderedIds }),
@@ -131,7 +140,7 @@ export const api = {
     return handleResponse<Scene[]>(res);
   },
   deleteScene: async (id: string): Promise<{ success: boolean }> => {
-    const res = await fetch(`${API_BASE}/scenes/${id}`, { method: 'DELETE' });
+    const res = await authFetch(`${API_BASE}/scenes/${id}`, { method: 'DELETE' });
     return handleResponse<{ success: boolean }>(res);
   },
 
@@ -139,11 +148,11 @@ export const api = {
   getCodex: async (novelId: string, category?: string): Promise<CodexEntry[]> => {
     const params = new URLSearchParams({ novelId });
     if (category) params.append('category', category);
-    const res = await fetch(`${API_BASE}/codex?${params.toString()}`);
+    const res = await authFetch(`${API_BASE}/codex?${params.toString()}`);
     return handleResponse<CodexEntry[]>(res);
   },
   createCodex: async (data: Partial<CodexEntry>): Promise<CodexEntry> => {
-    const res = await fetch(`${API_BASE}/codex`, {
+    const res = await authFetch(`${API_BASE}/codex`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -151,7 +160,7 @@ export const api = {
     return handleResponse<CodexEntry>(res);
   },
   updateCodex: async (id: string, data: Partial<CodexEntry>): Promise<CodexEntry> => {
-    const res = await fetch(`${API_BASE}/codex/${id}`, {
+    const res = await authFetch(`${API_BASE}/codex/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
@@ -159,13 +168,13 @@ export const api = {
     return handleResponse<CodexEntry>(res);
   },
   deleteCodex: async (id: string): Promise<{ success: boolean }> => {
-    const res = await fetch(`${API_BASE}/codex/${id}`, { method: 'DELETE' });
+    const res = await authFetch(`${API_BASE}/codex/${id}`, { method: 'DELETE' });
     return handleResponse<{ success: boolean }>(res);
   },
 
   // Auth
   loginWithGoogle: async (credential: string): Promise<{ success: boolean; user: import('../types').AuthUser; message?: string }> => {
-    const res = await fetch(`${API_BASE}/auth/google`, {
+    const res = await authFetch(`${API_BASE}/auth/google`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ credential }),
@@ -173,7 +182,7 @@ export const api = {
     return handleResponse<{ success: boolean; user: import('../types').AuthUser; message?: string }>(res);
   },
   getAuthConfig: async (): Promise<{ success: boolean; googleAuthEnabled: boolean; clientIdConfigured: boolean }> => {
-    const res = await fetch(`${API_BASE}/auth/config`);
+    const res = await authFetch(`${API_BASE}/auth/config`);
     return handleResponse<{ success: boolean; googleAuthEnabled: boolean; clientIdConfigured: boolean }>(res);
   },
 };

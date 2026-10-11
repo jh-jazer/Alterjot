@@ -14,12 +14,31 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+// CORS Hardening: Allow production frontend, Vercel preview deployments, and local dev
+const allowedOrigins = [
+  'https://alterjot.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:5000',
+  process.env.CLIENT_ORIGIN,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: '*',
+    origin: (origin, callback) => {
+      // Allow server-to-server requests, Vercel rewrites proxy, or curl (no origin header)
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app') ||
+        origin.startsWith('http://localhost:')
+      ) {
+        return callback(null, true);
+      }
+      return callback(new Error('CORS blocked: Request origin not allowed by Alterjot API'));
+    },
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id'],
+    credentials: true,
   })
 );
 app.use(express.json({ limit: '10mb' }));

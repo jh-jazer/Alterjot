@@ -52,8 +52,12 @@ class MemoryStore {
 
 
   // --- NOVELS ---
-  getNovels() {
-    return this.novels.map((n) => {
+  getNovels(userId) {
+    let list = this.novels;
+    if (userId) {
+      list = list.filter((n) => !n.userId || n.userId === userId);
+    }
+    return list.map((n) => {
       const chapterCount = this.chapters.filter((c) => c.novelId === n._id).length;
       const sceneCount = this.scenes.filter((s) => s.novelId === n._id).length;
       return {
@@ -72,6 +76,7 @@ class MemoryStore {
     const novel = {
       _id: 'novel_' + Date.now(),
       title: data.title || 'Untitled Manuscript',
+      userId: data.userId || '',
       subtitle: data.subtitle || '',
       author: data.author || '',
       genre: data.genre || 'General Fiction',

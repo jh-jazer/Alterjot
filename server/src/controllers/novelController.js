@@ -6,11 +6,16 @@ import { memoryStore } from '../store/memoryStore.js';
 
 export async function getNovels(req, res) {
   try {
+    const userId = req.headers['x-user-id'] || req.query.userId || '';
     if (isConnectedToAtlas()) {
-      const novels = await Novel.find().sort({ updatedAt: -1 });
+      // If a userId is passed, isolate novels to this author and legacy unassigned starter novels
+      const query = userId
+        ? { $or: [{ userId }, { userId: '' }, { userId: { $exists: false } }] }
+        : {};
+      const novels = await Novel.find(query).sort({ updatedAt: -1 });
       return res.json({ success: true, data: novels });
     }
-    const novels = memoryStore.getNovels();
+    const novels = memoryStore.getNovels(userId);
     return res.json({ success: true, data: novels });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
@@ -35,8 +40,14 @@ export async function getNovelById(req, res) {
 
 export async function createNovel(req, res) {
   try {
+    const userId = req.headers['x-user-id'] || req.body.userId || '';
+    const payload = {
+      ...req.body,
+      ...(userId ? { userId } : {}),
+    };
+
     if (isConnectedToAtlas()) {
-      const novel = await Novel.create(req.body);
+      const novel = await Novel.create(payload);
       // create initial chapter & scene
       const chapter = await Chapter.create({
         novelId: novel._id,
@@ -65,7 +76,7 @@ export async function createNovel(req, res) {
       });
       return res.status(201).json({ success: true, data: novel });
     }
-    const novel = memoryStore.createNovel(req.body);
+    const novel = memoryStore.createNovel(payload);
     return res.status(201).json({ success: true, data: novel });
   } catch (err) {
     return res.status(400).json({ success: false, error: err.message });
@@ -75,9 +86,14 @@ export async function createNovel(req, res) {
 export async function updateNovel(req, res) {
   try {
     const { id } = req.params;
+    const userId = req.headers['x-user-id'] || req.body.userId;
     if (isConnectedToAtlas()) {
+      const existing = await Novel.findById(id);
+      if (!existing) return res.status(404).json({ success: false, error: 'Novel not found' });
+      if (existing.userId && userId && existing.userId !== userId) {
+        return res.status(403).json({ success: false, error: 'Access denied: You do not own this manuscript.' });
+      }
       const novel = await Novel.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
-      if (!novel) return res.status(404).json({ success: false, error: 'Novel not found' });
       return res.json({ success: true, data: novel });
     }
     const novel = memoryStore.updateNovel(id, req.body);
@@ -91,9 +107,14 @@ export async function updateNovel(req, res) {
 export async function deleteNovel(req, res) {
   try {
     const { id } = req.params;
+    const userId = req.headers['x-user-id'] || req.query.userId;
     if (isConnectedToAtlas()) {
-      const novel = await Novel.findByIdAndDelete(id);
-      if (!novel) return res.status(404).json({ success: false, error: 'Novel not found' });
+      const existing = await Novel.findById(id);
+      if (!existing) return res.status(404).json({ success: false, error: 'Novel not found' });
+      if (existing.userId && userId && existing.userId !== userId) {
+        return res.status(403).json({ success: false, error: 'Access denied: You do not own this manuscript.' });
+      }
+      await Novel.findByIdAndDelete(id);
       await Chapter.deleteMany({ novelId: id });
       await Scene.deleteMany({ novelId: id });
       return res.json({ success: true, message: 'Novel deleted' });

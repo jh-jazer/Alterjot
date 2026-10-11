@@ -8,6 +8,11 @@ const NovelSchema = new mongoose.Schema(
       trim: true,
       default: 'Untitled Novel',
     },
+    userId: {
+      type: String,
+      default: '',
+      index: true,
+    },
     subtitle: {
       type: String,
       default: '',
