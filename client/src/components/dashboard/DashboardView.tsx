@@ -303,6 +303,19 @@ export const DashboardView: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Try more challenges in Playground below World Challenge */}
+              <div className="flex justify-end pt-1 px-1">
+                <button
+                  type="button"
+                  onClick={openPlay}
+                  className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-ink-muted hover:text-brand-700 dark:hover:text-brand-300 transition-colors group cursor-pointer"
+                  title="Go to Play page for more challenges and creative timer"
+                >
+                  <span>Try more challenges in Playground</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-brand-600 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
             </div>
 
             {/* RIGHT COLUMN: THREE ELEMENTS CHALLENGE (STATIC - DOES NOT SLIDE) */}
@@ -403,19 +416,6 @@ export const DashboardView: React.FC = () => {
                     <span>Write with these Three</span>
                   </button>
                 </div>
-              </div>
-
-              {/* Try more prompts text OUTSIDE the panel and below it */}
-              <div className="flex justify-end pt-1 px-1">
-                <button
-                  type="button"
-                  onClick={openPlay}
-                  className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-ink-muted hover:text-brand-700 dark:hover:text-brand-300 transition-colors group cursor-pointer"
-                  title="Go to Play page for more prompts and creative timer"
-                >
-                  <span>Try more prompts in Playground</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-brand-600 group-hover:translate-x-1 transition-transform" />
-                </button>
               </div>
             </div>
           </div>
