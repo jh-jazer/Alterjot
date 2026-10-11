@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
-import type { NovelStatus, NarrativeTheme } from '../../types';
+import type { NovelStatus } from '../../types';
 import { NARRATIVE_THEMES } from '../../data/narrativeThemes';
+import { calculateRecommendedTheme } from '../../services/recommendationEngine';
 import {
   ArrowRight,
   BookOpen,
@@ -9,17 +10,15 @@ import {
   Feather,
   Sparkles,
   Flame,
-  Cog,
-  Ghost,
-  Cpu,
-  Compass,
 } from 'lucide-react';
 
 export const DashboardView: React.FC = () => {
   const novels = useWorkspaceStore((s) => s.novels);
+  const scenes = useWorkspaceStore((s) => s.scenes);
+  const codexEntries = useWorkspaceStore((s) => s.codexEntries);
   const penName = useWorkspaceStore((s) => s.penName);
   const preferredTheme = useWorkspaceStore((s) => s.preferredTheme);
-  const setPreferredTheme = useWorkspaceStore((s) => s.setPreferredTheme);
+  const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
   const openStudio = useWorkspaceStore((s) => s.openStudio);
   const openLibrary = useWorkspaceStore((s) => s.openLibrary);
   const openPlay = useWorkspaceStore((s) => s.openPlay);
@@ -27,7 +26,12 @@ export const DashboardView: React.FC = () => {
   const createNovel = useWorkspaceStore((s) => s.createNovel);
   const startWritingImmediately = useWorkspaceStore((s) => s.startWritingImmediately);
 
-  const activeTheme = NARRATIVE_THEMES[preferredTheme] || NARRATIVE_THEMES['apocalyptic'];
+  // Dynamic recommendation algorithm: surfaces Most Popular when not signed in, and personalized affinity when signed in
+  const recommendation = useMemo(() => {
+    return calculateRecommendedTheme(novels, scenes, codexEntries, preferredTheme, isAuthenticated);
+  }, [novels, scenes, codexEntries, preferredTheme, isAuthenticated]);
+
+  const activeTheme = NARRATIVE_THEMES[recommendation.theme] || NARRATIVE_THEMES['dark-fantasy'];
 
   const totalWords = novels.reduce((acc, n) => acc + (n.totalWordCount || 0), 0);
 
@@ -121,53 +125,6 @@ export const DashboardView: React.FC = () => {
     <div className="flex-1 overflow-y-auto bg-canvas text-ink select-none pb-24 md:pb-10">
       {/* Clean centered container with responsive padding on left and right */}
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8 sm:space-y-12">
-        {/* THEME PREFERENCE SELECTOR BANNER */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-canvas-card border border-canvas-border shadow-xs">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
-              <Compass className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-serif font-bold text-ink">Narrative Universe Theme:</span>
-                <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/25 dark:text-brand-300 font-bold flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-brand-600" />
-                  <span>{activeTheme.badge}</span>
-                </span>
-              </div>
-              <p className="text-[11px] text-ink-muted">
-                {activeTheme.tagline}
-              </p>
-            </div>
-          </div>
-
-          {/* Theme Quick Selector */}
-          <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 scrollbar-none font-mono text-xs">
-            {(Object.keys(NARRATIVE_THEMES) as NarrativeTheme[]).map((tKey) => {
-              const t = NARRATIVE_THEMES[tKey];
-              const isSelected = preferredTheme === tKey;
-              return (
-                <button
-                  key={tKey}
-                  type="button"
-                  onClick={() => setPreferredTheme(tKey)}
-                  className={`px-3 py-1.5 rounded-xl border transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
-                    isSelected
-                      ? 'bg-brand-600 border-brand-700 text-white font-bold shadow-xs'
-                      : 'bg-canvas-surface border-canvas-border text-ink-muted hover:text-ink hover:bg-canvas-hover'
-                  }`}
-                >
-                  {tKey === 'apocalyptic' && <Flame className="w-3.5 h-3.5" />}
-                  {tKey === 'steampunk' && <Cog className="w-3.5 h-3.5" />}
-                  {tKey === 'dark-fantasy' && <Ghost className="w-3.5 h-3.5" />}
-                  {tKey === 'cyberpunk' && <Cpu className="w-3.5 h-3.5" />}
-                  <span>{tKey === 'apocalyptic' ? 'Apocalyptic' : tKey === 'dark-fantasy' ? 'Dark Fantasy' : t.name.split('&')[0].trim()}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         {/* FIRST PART OF DASHBOARD: TWO COLUMNS (Weekly World & Creative Triad) */}
         <section className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
@@ -175,11 +132,28 @@ export const DashboardView: React.FC = () => {
             {/* LEFT COLUMN: WEEKLY WORLD */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink tracking-tight">
-                  Weekly World
-                </h2>
-                <span className="text-[10px] font-mono text-ink-faint uppercase tracking-wider">
-                  {activeTheme.name.split('&')[0].trim()}
+                <div className="flex items-center gap-2">
+                  <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink tracking-tight">
+                    Weekly World
+                  </h2>
+                  <span
+                    className={`inline-flex items-center gap-1 text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full shadow-2xs border ${
+                      recommendation.isPopular
+                        ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30'
+                        : 'bg-brand-500/10 text-brand-700 dark:text-brand-300 border-brand-500/20'
+                    }`}
+                    title={recommendation.reason}
+                  >
+                    {recommendation.isPopular ? (
+                      <Flame className="w-3 h-3 text-amber-600" />
+                    ) : (
+                      <Sparkles className="w-3 h-3 text-brand-600" />
+                    )}
+                    <span>{recommendation.badgeLabel}</span>
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-ink-faint uppercase tracking-wider" title={recommendation.reason}>
+                  {recommendation.isPopular ? '#1 Community Spotlight' : activeTheme.badge}
                 </span>
               </div>
 
