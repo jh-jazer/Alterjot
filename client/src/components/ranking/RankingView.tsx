@@ -8,38 +8,14 @@ import {
   Crown,
 } from 'lucide-react';
 
+import { TOP_10_AUTHORS } from '../../data/communityData';
+
 export const RankingView: React.FC = () => {
   const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
   const setIsAuthModalOpen = useWorkspaceStore((s) => s.setIsAuthModalOpen);
   const novels = useWorkspaceStore((s) => s.novels);
   const penName = useWorkspaceStore((s) => s.penName);
   const startWritingImmediately = useWorkspaceStore((s) => s.startWritingImmediately);
-
-  if (!isAuthenticated) {
-    return (
-      <div className="flex-1 overflow-y-auto bg-canvas text-ink p-4 sm:p-8 flex items-center justify-center min-h-[70vh]">
-        <div className="max-w-md w-full text-center p-6 sm:p-8 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg space-y-4">
-          <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center mx-auto shadow-sm">
-            <Trophy className="w-7 h-7" />
-          </div>
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-wider text-amber-600 font-bold">Author Standings</span>
-            <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink mt-1">Sign In Required</h2>
-            <p className="text-xs text-ink-muted font-sans mt-2 leading-relaxed">
-              Sign in to view your global ranking tier, track lifetime wordcount milestones, and climb scribe leaderboards.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => setIsAuthModalOpen(true, 'signin')}
-            className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-sm shadow-md shadow-brand-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-          >
-            <span>Sign In to Access Standings</span>
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   const totalWords = novels.reduce((acc, n) => acc + (n.totalWordCount || 0), 0);
 
@@ -80,19 +56,31 @@ export const RankingView: React.FC = () => {
   const rankInfo = getAuthorRank(totalWords);
   const progressPercent = Math.min(100, Math.round((totalWords / rankInfo.nextThreshold) * 100));
 
-  // Simulated Atelier Leaderboard with current user highlighted
-  const leaderboardEntries = [
-    { rank: 1, author: 'Helena Vance', title: 'The Clockwork Citadel', words: 94250, streak: 42, badge: 'Grand Master' },
-    { rank: 2, author: 'C. W. Holloway', title: 'Echoes of the Void', words: 71320, streak: 28, badge: 'Master Lorekeeper' },
-    { rank: 3, author: 'Anya Sterling', title: 'A Waltz in Charcoal', words: 58900, streak: 19, badge: 'Seasoned Novelist' },
-    { rank: 4, author: penName, title: novels[0]?.title || 'Untitled Manuscript', words: totalWords, streak: 7, isCurrentUser: true, badge: rankInfo.title },
-    { rank: 5, author: 'Dante Mercer', title: 'The Glass Alchemist', words: 32400, streak: 14, badge: 'Seasoned Novelist' },
-    { rank: 6, author: 'S. K. Thorne', title: 'Winter Over Blackwood', words: 18450, streak: 11, badge: 'Journeyman Author' },
-    { rank: 7, author: 'Mira Lawson', title: 'Letters from the Lighthouse', words: 12100, streak: 9, badge: 'Journeyman Author' },
-  ];
+  // Leaderboard data: woven with user if authenticated, or top 10 if guest
+  const sortedLeaderboard = React.useMemo(() => {
+    if (!isAuthenticated) {
+      return TOP_10_AUTHORS.map((item, idx) => ({ ...item, rank: idx + 1, isCurrentUser: false }));
+    }
 
-  // Sort leaderboard dynamically so user's real total words positions them correctly
-  const sortedLeaderboard = [...leaderboardEntries].sort((a, b) => b.words - a.words);
+    const userEntry = {
+      rank: 4,
+      author: penName,
+      title: novels[0]?.title || 'Untitled Manuscript',
+      genre: novels[0]?.genre || 'General Fiction',
+      words: totalWords,
+      streak: 7,
+      badge: rankInfo.title,
+      avatarColor: 'from-brand-600 to-brand-800 text-white',
+      isCurrentUser: true,
+    };
+
+    const combined = [
+      ...TOP_10_AUTHORS.filter((a) => a.author.toLowerCase() !== penName.toLowerCase()),
+      userEntry,
+    ].sort((a, b) => b.words - a.words);
+
+    return combined.map((item, idx) => ({ ...item, rank: idx + 1 }));
+  }, [isAuthenticated, penName, novels, totalWords, rankInfo.title]);
 
   return (
     <div className="flex-1 overflow-y-auto bg-canvas text-ink select-none pb-24 md:pb-10">
@@ -131,77 +119,117 @@ export const RankingView: React.FC = () => {
           </button>
         </div>
 
-        {/* AUTHOR CURRENT TIER CARD (Matching Dashboard Author Standing Banner) */}
-        <div className="p-4 sm:p-6 rounded-2xl bg-[#1e1c19] text-white border border-black/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
-          <div className="absolute right-0 top-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* AUTHOR CURRENT TIER CARD (for Authenticated Users) OR GUEST WELCOME CARD (for Guests) */}
+        {isAuthenticated ? (
+          <div className="p-4 sm:p-6 rounded-2xl bg-[#1e1c19] text-white border border-black/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
+            <div className="absolute right-0 top-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 relative z-10">
-            <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
-              <Trophy className="w-5 sm:w-6 h-5 sm:h-6" />
+            <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 relative z-10">
+              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
+                <Trophy className="w-5 sm:w-6 h-5 sm:h-6" />
+              </div>
+
+              <div className="space-y-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-semibold">
+                    Your Atelier Standing
+                  </span>
+                  <span className="text-xs font-mono text-neutral-400">
+                    • {penName}
+                  </span>
+                </div>
+
+                {/* Author Ranking Place and Title */}
+                <div className="flex items-baseline gap-2.5 sm:gap-6 flex-wrap">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-[10px] sm:text-[11px] font-mono text-neutral-400 uppercase font-bold">
+                      Place
+                    </span>
+                    <span className="text-xl sm:text-3xl font-serif font-extrabold text-white tracking-tight">
+                      #{sortedLeaderboard.findIndex((i) => i.isCurrentUser) + 1 || 4}
+                    </span>
+                  </div>
+
+                  <div className="h-4 sm:h-5 w-px bg-white/20 self-center" />
+
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-[10px] sm:text-[11px] font-mono text-neutral-400 uppercase font-bold">
+                      Title
+                    </span>
+                    <span className="text-lg sm:text-2xl font-serif font-bold text-amber-300">
+                      {rankInfo.title}
+                    </span>
+                  </div>
+
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase font-medium">
+                    {rankInfo.badge}
+                  </span>
+                </div>
+
+                {/* Progress Bar towards next title */}
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1 text-xs font-mono text-neutral-400">
+                  <span>{totalWords.toLocaleString()} words</span>
+                  <span>•</span>
+                  <span>{progressPercent}% to {rankInfo.nextThreshold.toLocaleString()} w</span>
+                  <div className="w-20 sm:w-24 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                    <div
+                      className="h-full bg-amber-500 rounded-full transition-all duration-500"
+                      style={{ width: `${Math.max(4, progressPercent)}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-semibold">
-                  Your Atelier Standing
-                </span>
-                <span className="text-xs font-mono text-neutral-400">
-                  • {penName}
-                </span>
-              </div>
-
-              {/* Author Ranking Place and Title */}
-              <div className="flex items-baseline gap-2.5 sm:gap-6 flex-wrap">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-[10px] sm:text-[11px] font-mono text-neutral-400 uppercase font-bold">
-                    Place
-                  </span>
-                  <span className="text-xl sm:text-3xl font-serif font-extrabold text-white tracking-tight">
-                    #{sortedLeaderboard.findIndex((i) => i.isCurrentUser) + 1 || 4}
-                  </span>
-                </div>
-
-                <div className="h-4 sm:h-5 w-px bg-white/20 self-center" />
-
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-[10px] sm:text-[11px] font-mono text-neutral-400 uppercase font-bold">
-                    Title
-                  </span>
-                  <span className="text-lg sm:text-2xl font-serif font-bold text-amber-300">
-                    {rankInfo.title}
-                  </span>
-                </div>
-
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase font-medium">
-                  {rankInfo.badge}
-                </span>
-              </div>
-
-              {/* Progress Bar towards next title */}
-              <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1 text-xs font-mono text-neutral-400">
-                <span>{totalWords.toLocaleString()} words</span>
-                <span>•</span>
-                <span>{progressPercent}% to {rankInfo.nextThreshold.toLocaleString()} w</span>
-                <div className="w-20 sm:w-24 h-1.5 rounded-full bg-white/10 overflow-hidden">
-                  <div
-                    className="h-full bg-amber-500 rounded-full transition-all duration-500"
-                    style={{ width: `${Math.max(4, progressPercent)}%` }}
-                  />
+            <div className="flex items-center gap-3 flex-shrink-0 relative z-10 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-center w-full md:w-auto justify-between md:justify-start">
+              <div className="flex items-center gap-2.5">
+                <Crown className="w-5 h-5 text-amber-400" />
+                <div className="text-left">
+                  <span className="block text-[9px] font-mono uppercase tracking-wider text-neutral-400 font-semibold">Active Shelf</span>
+                  <span className="text-xs font-mono font-bold text-white">{novels.length} Books</span>
                 </div>
               </div>
             </div>
           </div>
+        ) : (
+          <div className="p-4 sm:p-6 rounded-2xl bg-[#1e1c19] text-white border border-black/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
+            <div className="absolute right-0 top-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="flex items-center gap-3 flex-shrink-0 relative z-10 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-center w-full md:w-auto justify-between md:justify-start">
-            <div className="flex items-center gap-2.5">
-              <Crown className="w-5 h-5 text-amber-400" />
-              <div className="text-left">
-                <span className="block text-[9px] font-mono uppercase tracking-wider text-neutral-400 font-semibold">Active Shelf</span>
-                <span className="text-xs font-mono font-bold text-white">{novels.length} Books</span>
+            <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 relative z-10">
+              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
+                <Trophy className="w-5 sm:w-6 h-5 sm:h-6" />
+              </div>
+
+              <div className="space-y-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-semibold">
+                    Guest Atelier Standing
+                  </span>
+                  <span className="text-xs font-mono text-neutral-400">
+                    • Viewing Global Standings
+                  </span>
+                </div>
+
+                <h3 className="text-lg sm:text-xl font-serif font-bold text-white">
+                  Claim Your Quill & Join the Ranks
+                </h3>
+                <p className="text-xs text-neutral-400 font-sans max-w-lg">
+                  Sign in with your pen name to track lifetime word output, earn title badges from Apprentice to Master Lorekeeper, and climb the scribe ladder.
+                </p>
               </div>
             </div>
+
+            <div className="flex items-center gap-3 flex-shrink-0 relative z-10 w-full md:w-auto">
+              <button
+                type="button"
+                onClick={() => setIsAuthModalOpen(true, 'signin')}
+                className="w-full md:w-auto px-6 py-2.5 rounded-full bg-brand-600 hover:bg-brand-500 text-white text-xs font-mono font-semibold uppercase tracking-wider shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer text-center"
+              >
+                Sign In to Join Ranks
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* LEADERBOARD TABLE */}
         <section className="space-y-4">

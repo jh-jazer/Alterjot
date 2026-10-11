@@ -302,9 +302,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     }
   },
   openRanking: () => {
-    if (get().requireAuth(() => set({ currentView: 'ranking' }))) {
-      set({ currentView: 'ranking' });
-    }
+    set({ currentView: 'ranking' });
   },
   openStudio: async (novelId) => {
     if (!get().requireAuth()) return;
