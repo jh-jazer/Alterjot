@@ -52,7 +52,7 @@ export const WorkstationNavbar: React.FC = () => {
   if (panelState.isZenMode) return null;
 
   return (
-    <header className="w-full border-b border-canvas-border bg-canvas/95 backdrop-blur-md sticky top-0 z-30 select-none">
+    <header className="w-full border-b border-canvas-border bg-canvas sticky top-0 z-30 select-none">
       <div className="w-full px-2 sm:px-4 lg:px-6 h-14 flex items-center justify-between gap-1.5 sm:gap-3">
         {/* Left Section: Workstation Structure, Library Exit & Manuscript Breadcrumbs */}
         <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">

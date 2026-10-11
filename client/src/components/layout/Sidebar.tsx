@@ -128,7 +128,7 @@ export const Sidebar: React.FC = () => {
         title="Close Manuscript Tree"
       />
 
-      <aside className="fixed md:relative inset-y-0 left-0 z-40 w-4/5 max-w-xs md:max-w-none md:w-80 border-r border-canvas-border bg-canvas/95 backdrop-blur-xl flex flex-col h-full shadow-2xl md:shadow-md select-none animate-in slide-in-from-left duration-200">
+      <aside className="fixed md:relative inset-y-0 left-0 z-40 w-4/5 max-w-xs md:max-w-none md:w-80 border-r border-canvas-border bg-canvas flex flex-col h-full shadow-2xl md:shadow-md select-none animate-in slide-in-from-left duration-200">
         {/* Novel Header Info */}
         <div className="p-4 border-b border-canvas-border bg-canvas-subtle/60">
           <div className="flex items-center justify-between mb-1">

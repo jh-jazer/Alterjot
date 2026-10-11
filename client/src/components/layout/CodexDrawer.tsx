@@ -71,7 +71,7 @@ export const CodexDrawer: React.FC = () => {
         title="Close World Codex"
       />
 
-      <aside className="fixed md:relative inset-y-0 right-0 z-40 w-5/6 max-w-sm md:max-w-none md:w-96 border-l border-canvas-border bg-canvas/95 backdrop-blur-xl flex flex-col h-full shadow-2xl md:shadow-parchment-lg select-none animate-in slide-in-from-right duration-200">
+      <aside className="fixed md:relative inset-y-0 right-0 z-40 w-5/6 max-w-sm md:max-w-none md:w-96 border-l border-canvas-border bg-canvas flex flex-col h-full shadow-2xl md:shadow-parchment-lg select-none animate-in slide-in-from-right duration-200">
       <div className="p-4 border-b border-canvas-border flex items-center justify-between bg-canvas-subtle/50">
         <div className="flex items-center gap-2">
           <BookMarked className="w-4 h-4 text-brand-700" />
