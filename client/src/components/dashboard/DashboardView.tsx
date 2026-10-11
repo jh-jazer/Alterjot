@@ -7,6 +7,9 @@ import {
   Trophy,
   User,
   Star,
+  Book,
+  Plus,
+  Feather,
 } from 'lucide-react';
 import { SHARED_MANUSCRIPTS, type SharedManuscript } from '../../data/communityData';
 import { Top10Leaderboard } from '../ranking/Top10Leaderboard';
@@ -247,213 +250,247 @@ export const DashboardView: React.FC = () => {
               </div>
             </div>
 
-            {/* Manuscripts Grid: Shared Works when not authenticated (or if shared tab is selected) */}
-            {!isAuthenticated || shelfTab === 'shared' ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-                {SHARED_MANUSCRIPTS.map((sharedNovel) => {
-                  const totalWords = sharedNovel.totalWordCount || 0;
-                  const targetGoal = sharedNovel.targetWordCount || 80000;
-                  const progressPct = Math.min(100, Math.round((totalWords / targetGoal) * 100));
+            {/* Constant Size Manuscripts Panel Container */}
+            <div className="min-h-[430px] sm:min-h-[460px] flex flex-col justify-start">
+              {/* Manuscripts Grid: Shared Works when not authenticated (or if shared tab is selected) */}
+              {!isAuthenticated || shelfTab === 'shared' ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 min-h-[430px] sm:min-h-[460px]">
+                  {SHARED_MANUSCRIPTS.map((sharedNovel) => {
+                    const totalWords = sharedNovel.totalWordCount || 0;
+                    const targetGoal = sharedNovel.targetWordCount || 80000;
+                    const progressPct = Math.min(100, Math.round((totalWords / targetGoal) * 100));
 
-                  return (
-                    <div
-                      key={sharedNovel.id}
-                      onClick={() => {
-                        setSelectedSharedManuscript(sharedNovel);
-                        setIsSharedModalOpen(true);
-                      }}
-                      className="rounded-2xl border border-canvas-border bg-canvas-card hover:border-brand-500/60 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-row overflow-hidden relative p-3 sm:p-4 gap-3 sm:gap-4 items-stretch"
-                    >
-                      {/* Top ribbon accent */}
-                      <div className={`h-1.5 w-full absolute top-0 left-0 bg-gradient-to-r ${sharedNovel.spineGradient}`} />
+                    return (
+                      <div
+                        key={sharedNovel.id}
+                        onClick={() => {
+                          setSelectedSharedManuscript(sharedNovel);
+                          setIsSharedModalOpen(true);
+                        }}
+                        className="min-h-[195px] h-full rounded-2xl border border-canvas-border bg-canvas-card hover:border-brand-500/60 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-row overflow-hidden relative p-3 sm:p-4 gap-3 sm:gap-4 items-stretch"
+                      >
+                        {/* Top ribbon accent */}
+                        <div className={`h-1.5 w-full absolute top-0 left-0 bg-gradient-to-r ${sharedNovel.spineGradient}`} />
 
-                      {/* Book Cover Container */}
-                      <div className="flex-shrink-0 flex items-center justify-center pt-0.5">
-                        <div className="transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-1">
-                          <BookCover
-                            title={sharedNovel.title}
-                            author={sharedNovel.author}
-                            genre={sharedNovel.genre}
-                            coverImage={sharedNovel.coverImage}
-                            size="sm"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Content Details Container */}
-                      <div className="flex-1 min-w-0 flex flex-col justify-between pt-0.5">
-                        <div>
-                          <div className="flex items-center justify-between gap-1.5 mb-1">
-                            <span className="text-[10px] font-mono uppercase tracking-wider text-brand-700 font-semibold truncate">
-                              {sharedNovel.genre}
-                            </span>
-                            <span
-                              className={`text-[9px] font-mono px-2 py-0.5 rounded-full border uppercase font-medium ${getStatusBadge(
-                                sharedNovel.status
-                              )}`}
-                            >
-                              {sharedNovel.status}
-                            </span>
-                          </div>
-
-                          <h4 className="font-serif font-bold text-sm sm:text-base text-ink group-hover:text-brand-700 transition-colors line-clamp-1">
-                            {sharedNovel.title}
-                          </h4>
-
-                          {/* Author Attribution */}
-                          <div className="flex items-center gap-1.5 mt-0.5 mb-1 text-[11px] font-mono text-ink-muted">
-                            <User className="w-3 h-3 text-brand-600 flex-shrink-0" />
-                            <span className="font-medium text-ink truncate">by {sharedNovel.author}</span>
-                            <span className="text-[10px] text-ink-faint truncate">• {sharedNovel.authorRank}</span>
-                          </div>
-
-                          {sharedNovel.synopsis && (
-                            <p className="text-xs text-ink-muted font-sans line-clamp-2 mt-1 leading-relaxed">
-                              {sharedNovel.synopsis}
-                            </p>
-                          )}
-                        </div>
-
-                        <div className="mt-3 pt-2.5 border-t border-canvas-border">
-                          <div className="flex items-baseline justify-between text-xs font-mono mb-1">
-                            <span className="font-semibold text-ink text-xs">
-                              {totalWords.toLocaleString()} <span className="text-[10px] text-ink-faint font-normal">words</span>
-                            </span>
-                            <span className="text-[11px] text-ink-muted">
-                              {sharedNovel.chapterCount} ch ({progressPct}%)
-                            </span>
-                          </div>
-
-                          <div className="h-1.5 w-full bg-canvas-surface rounded-full overflow-hidden border border-canvas-border/50">
-                            <div
-                              className="h-full bg-brand-600 rounded-full transition-all duration-500"
-                              style={{ width: `${Math.max(2, progressPct)}%` }}
+                        {/* Book Cover Container */}
+                        <div className="flex-shrink-0 flex items-center justify-center pt-0.5">
+                          <div className="transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-1">
+                            <BookCover
+                              title={sharedNovel.title}
+                              author={sharedNovel.author}
+                              genre={sharedNovel.genre}
+                              coverImage={sharedNovel.coverImage}
+                              size="sm"
                             />
                           </div>
+                        </div>
 
-                          <div className="flex items-center justify-between pt-2 text-[10px] font-mono text-ink-faint">
-                            <span className="group-hover:text-brand-700 transition-colors flex items-center gap-1 font-semibold">
-                              <span>Read Excerpt</span>
-                              <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                            </span>
-                            <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-semibold">
-                              <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                              {sharedNovel.rating.toFixed(2)}
-                            </span>
+                        {/* Content Details Container */}
+                        <div className="flex-1 min-w-0 flex flex-col justify-between pt-0.5">
+                          <div>
+                            <div className="flex items-center justify-between gap-1.5 mb-1">
+                              <span className="text-[10px] font-mono uppercase tracking-wider text-brand-700 font-semibold truncate">
+                                {sharedNovel.genre}
+                              </span>
+                              <span
+                                className={`text-[9px] font-mono px-2 py-0.5 rounded-full border uppercase font-medium ${getStatusBadge(
+                                  sharedNovel.status
+                                )}`}
+                              >
+                                {sharedNovel.status}
+                              </span>
+                            </div>
+
+                            <h4 className="font-serif font-bold text-sm sm:text-base text-ink group-hover:text-brand-700 transition-colors line-clamp-1">
+                              {sharedNovel.title}
+                            </h4>
+
+                            {/* Author Attribution */}
+                            <div className="flex items-center gap-1.5 mt-0.5 mb-1 text-[11px] font-mono text-ink-muted">
+                              <User className="w-3 h-3 text-brand-600 flex-shrink-0" />
+                              <span className="font-medium text-ink truncate">by {sharedNovel.author}</span>
+                              <span className="text-[10px] text-ink-faint truncate">• {sharedNovel.authorRank}</span>
+                            </div>
+
+                            {sharedNovel.synopsis && (
+                              <p className="text-xs text-ink-muted font-sans line-clamp-2 mt-1 leading-relaxed">
+                                {sharedNovel.synopsis}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="mt-3 pt-2.5 border-t border-canvas-border">
+                            <div className="flex items-baseline justify-between text-xs font-mono mb-1">
+                              <span className="font-semibold text-ink text-xs">
+                                {totalWords.toLocaleString()} <span className="text-[10px] text-ink-faint font-normal">words</span>
+                              </span>
+                              <span className="text-[11px] text-ink-muted">
+                                {sharedNovel.chapterCount} ch ({progressPct}%)
+                              </span>
+                            </div>
+
+                            <div className="h-1.5 w-full bg-canvas-surface rounded-full overflow-hidden border border-canvas-border/50">
+                              <div
+                                className="h-full bg-brand-600 rounded-full transition-all duration-500"
+                                style={{ width: `${Math.max(2, progressPct)}%` }}
+                              />
+                            </div>
+
+                            <div className="flex items-center justify-between pt-2 text-[10px] font-mono text-ink-faint">
+                              <span className="group-hover:text-brand-700 transition-colors flex items-center gap-1 font-semibold">
+                                <span>Read Excerpt</span>
+                                <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                              </span>
+                              <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-semibold">
+                                <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                                {sharedNovel.rating.toFixed(2)}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : novels.length === 0 ? (
-              <div className="p-8 rounded-2xl bg-canvas-card border border-dashed border-canvas-border text-center shadow-xs">
-                <div className="w-12 h-12 rounded-xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-brand-700 mx-auto mb-3 shadow-xs">
-                  <BookOpen className="w-6 h-6" />
+                    );
+                  })}
                 </div>
-                <h4 className="font-serif font-bold text-base text-ink mb-1">
-                  Your shelf is quiet
-                </h4>
-                <p className="text-xs text-ink-muted max-w-sm mx-auto mb-4 font-sans">
-                  No manuscripts on your desk yet. Use the World Challenge or Triad prompts above to start writing.
-                </p>
-                <button
-                  type="button"
-                  onClick={startWritingImmediately}
-                  className="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-xs shadow-xs transition-all hover:scale-105 cursor-pointer"
-                >
-                  Start Writing Now
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-                {novels.slice(0, 6).map((novel, idx) => {
-                  const totalWords = novel.totalWordCount || 0;
-                  const targetGoal = novel.targetWordCount || 80000;
-                  const progressPct = Math.min(100, Math.round((totalWords / targetGoal) * 100));
-
-                  const spineColors = [
-                    'from-[#c2593f] to-[#a2402a]',
-                    'from-[#b45309] to-[#92400e]',
-                    'from-[#2e4785] to-[#1e3a8a]',
-                    'from-[#225744] to-[#14532d]',
-                  ];
-                  const spineGradient = spineColors[idx % spineColors.length];
-
-                  return (
-                    <div
-                      key={novel._id}
-                      onClick={() => openStudio(novel._id)}
-                      className="rounded-2xl border border-canvas-border bg-canvas-card hover:border-brand-500/60 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-row overflow-hidden relative p-3 sm:p-4 gap-3 sm:gap-4 items-stretch"
+              ) : novels.length === 0 ? (
+                /* Constant Panel Size When Empty */
+                <div className="w-full min-h-[430px] sm:min-h-[460px] rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment flex flex-col items-center justify-center p-8 sm:p-12 text-center relative overflow-hidden group">
+                  <div className="w-16 h-16 rounded-2xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-brand-700 mx-auto mb-4 shadow-xs group-hover:scale-105 transition-transform duration-300">
+                    <BookOpen className="w-8 h-8 text-brand-600" />
+                  </div>
+                  <h4 className="font-serif font-bold text-lg sm:text-xl text-ink mb-1.5">
+                    Your Shelf is Quiet
+                  </h4>
+                  <p className="text-xs sm:text-sm text-ink-muted max-w-md mx-auto mb-6 font-sans leading-relaxed">
+                    No manuscripts on your desk yet. Use the World Challenge or Three Elements prompt above to begin drafting, or explore shared works from other authors.
+                  </p>
+                  <div className="flex items-center gap-3 flex-wrap justify-center">
+                    <button
+                      type="button"
+                      onClick={startWritingImmediately}
+                      className="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-xs shadow-sm shadow-brand-600/30 transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5"
                     >
-                      {/* Top ribbon accent */}
-                      <div className={`h-1.5 w-full absolute top-0 left-0 bg-gradient-to-r ${spineGradient}`} />
+                      <Feather className="w-3.5 h-3.5" />
+                      <span>Start Writing Now</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShelfTab('shared')}
+                      className="px-5 py-2.5 rounded-xl bg-canvas-surface hover:bg-canvas-hover border border-canvas-border text-ink font-serif font-medium text-xs shadow-xs transition-all hover:scale-102 active:scale-98 cursor-pointer flex items-center gap-1.5"
+                    >
+                      <Book className="w-3.5 h-3.5 text-brand-600" />
+                      <span>Browse Shared Works</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 min-h-[430px] sm:min-h-[460px]">
+                  {novels.slice(0, 6).map((novel, idx) => {
+                    const totalWords = novel.totalWordCount || 0;
+                    const targetGoal = novel.targetWordCount || 80000;
+                    const progressPct = Math.min(100, Math.round((totalWords / targetGoal) * 100));
 
-                      {/* Book Cover Container */}
-                      <div className="flex-shrink-0 flex items-center justify-center pt-0.5">
-                        <div className="transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-1">
-                          <BookCover
-                            title={novel.title}
-                            author={novel.author}
-                            genre={novel.genre}
-                            size="sm"
-                          />
-                        </div>
-                      </div>
+                    const spineColors = [
+                      'from-[#c2593f] to-[#a2402a]',
+                      'from-[#b45309] to-[#92400e]',
+                      'from-[#2e4785] to-[#1e3a8a]',
+                      'from-[#225744] to-[#14532d]',
+                    ];
+                    const spineGradient = spineColors[idx % spineColors.length];
 
-                      {/* Content Details Container */}
-                      <div className="flex-1 min-w-0 flex flex-col justify-between pt-0.5">
-                        <div>
-                          <div className="flex items-center justify-between gap-1.5 mb-1">
-                            <span className="text-[10px] font-mono uppercase tracking-wider text-brand-700 font-semibold truncate">
-                              {novel.genre}
-                            </span>
-                            <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full border uppercase font-medium ${getStatusBadge(novel.status)}`}>
-                              {novel.status}
-                            </span>
-                          </div>
+                    return (
+                      <div
+                        key={novel._id}
+                        onClick={() => openStudio(novel._id)}
+                        className="min-h-[195px] h-full rounded-2xl border border-canvas-border bg-canvas-card hover:border-brand-500/60 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-row overflow-hidden relative p-3 sm:p-4 gap-3 sm:gap-4 items-stretch"
+                      >
+                        {/* Top ribbon accent */}
+                        <div className={`h-1.5 w-full absolute top-0 left-0 bg-gradient-to-r ${spineGradient}`} />
 
-                          <h4 className="font-serif font-bold text-sm sm:text-base text-ink group-hover:text-brand-700 transition-colors line-clamp-1">
-                            {novel.title}
-                          </h4>
-
-                          {novel.subtitle && (
-                            <p className="text-xs text-ink-muted italic font-serif line-clamp-1 mt-0.5">
-                              {novel.subtitle}
-                            </p>
-                          )}
-
-                          {novel.synopsis && (
-                            <p className="text-xs text-ink-muted font-sans line-clamp-2 mt-1 leading-relaxed">
-                              {novel.synopsis}
-                            </p>
-                          )}
-                        </div>
-
-                        <div className="mt-3 pt-2.5 border-t border-canvas-border">
-                          <div className="flex items-baseline justify-between text-xs font-mono mb-1">
-                            <span className="font-semibold text-ink text-xs">
-                              {totalWords.toLocaleString()} <span className="text-[10px] text-ink-faint font-normal">words</span>
-                            </span>
-                            <span className="text-[11px] text-ink-muted">
-                              {progressPct}% of goal
-                            </span>
-                          </div>
-
-                          <div className="h-1.5 w-full bg-canvas-surface rounded-full overflow-hidden border border-canvas-border/50">
-                            <div
-                              className="h-full bg-brand-600 rounded-full transition-all duration-500"
-                              style={{ width: `${Math.max(2, progressPct)}%` }}
+                        {/* Book Cover Container */}
+                        <div className="flex-shrink-0 flex items-center justify-center pt-0.5">
+                          <div className="transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-1">
+                            <BookCover
+                              title={novel.title}
+                              author={novel.author}
+                              genre={novel.genre}
+                              size="sm"
                             />
                           </div>
                         </div>
+
+                        {/* Content Details Container */}
+                        <div className="flex-1 min-w-0 flex flex-col justify-between pt-0.5">
+                          <div>
+                            <div className="flex items-center justify-between gap-1.5 mb-1">
+                              <span className="text-[10px] font-mono uppercase tracking-wider text-brand-700 font-semibold truncate">
+                                {novel.genre}
+                              </span>
+                              <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full border uppercase font-medium ${getStatusBadge(novel.status)}`}>
+                                {novel.status}
+                              </span>
+                            </div>
+
+                            <h4 className="font-serif font-bold text-sm sm:text-base text-ink group-hover:text-brand-700 transition-colors line-clamp-1">
+                              {novel.title}
+                            </h4>
+
+                            {novel.subtitle && (
+                              <p className="text-xs text-ink-muted italic font-serif line-clamp-1 mt-0.5">
+                                {novel.subtitle}
+                              </p>
+                            )}
+
+                            {novel.synopsis && (
+                              <p className="text-xs text-ink-muted font-sans line-clamp-2 mt-1 leading-relaxed">
+                                {novel.synopsis}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="mt-3 pt-2.5 border-t border-canvas-border">
+                            <div className="flex items-baseline justify-between text-xs font-mono mb-1">
+                              <span className="font-semibold text-ink text-xs">
+                                {totalWords.toLocaleString()} <span className="text-[10px] text-ink-faint font-normal">words</span>
+                              </span>
+                              <span className="text-[11px] text-ink-muted">
+                                {progressPct}% of goal
+                              </span>
+                            </div>
+
+                            <div className="h-1.5 w-full bg-canvas-surface rounded-full overflow-hidden border border-canvas-border/50">
+                              <div
+                                className="h-full bg-brand-600 rounded-full transition-all duration-500"
+                                style={{ width: `${Math.max(2, progressPct)}%` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                    );
+                  })}
+
+                  {/* Add New Volume Card when user has fewer than 6 manuscripts */}
+                  {novels.length < 6 && (
+                    <button
+                      type="button"
+                      onClick={startWritingImmediately}
+                      className="min-h-[195px] h-full rounded-2xl border-2 border-dashed border-canvas-border hover:border-brand-500/60 bg-canvas-card/40 hover:bg-canvas-card flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-all duration-300 group shadow-xs hover:shadow-parchment"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-canvas-surface border border-canvas-border group-hover:border-brand-500/40 group-hover:bg-brand-50 dark:group-hover:bg-brand-600/20 text-brand-600 flex items-center justify-center mb-2.5 transition-all group-hover:scale-110">
+                        <Plus className="w-5 h-5" />
+                      </div>
+                      <span className="font-serif font-bold text-sm text-ink group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors">
+                        Start New Manuscript
+                      </span>
+                      <span className="text-[11px] text-ink-muted mt-1 font-sans">
+                        Draft an original story volume
+                      </span>
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </section>
 

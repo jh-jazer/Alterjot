@@ -221,7 +221,7 @@ export const LibraryView: React.FC = () => {
           </div>
 
           {novels.length === 0 ? (
-            <div className="py-16 sm:py-20 px-4 sm:px-6 rounded-2xl bg-canvas-card border border-dashed border-canvas-border text-center shadow-xs">
+            <div className="min-h-[430px] sm:min-h-[460px] py-16 sm:py-20 px-4 sm:px-6 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment text-center flex flex-col items-center justify-center">
               <div className="w-14 sm:w-16 h-14 sm:h-16 rounded-2xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-brand-700 mx-auto mb-4 shadow-xs">
                 <Book className="w-7 sm:w-8 h-7 sm:h-8" />
               </div>
@@ -240,7 +240,7 @@ export const LibraryView: React.FC = () => {
               </button>
             </div>
           ) : filteredNovels.length === 0 ? (
-            <div className="py-16 sm:py-20 px-4 sm:px-6 rounded-2xl bg-canvas-card border border-dashed border-canvas-border text-center shadow-xs">
+            <div className="min-h-[430px] sm:min-h-[460px] py-16 sm:py-20 px-4 sm:px-6 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment text-center flex flex-col items-center justify-center">
               <div className="w-12 sm:w-14 h-12 sm:h-14 rounded-2xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-ink-muted mx-auto mb-3 shadow-xs">
                 <Search className="w-5 sm:w-6 h-5 sm:h-6 text-brand-600" />
               </div>
@@ -259,7 +259,7 @@ export const LibraryView: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 min-h-[430px] sm:min-h-[460px]">
               {filteredNovels.map((novel, idx) => {
                 const totalWords = novel.totalWordCount || 0;
                 const targetGoal = novel.targetWordCount || 80000;
