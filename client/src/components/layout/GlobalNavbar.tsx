@@ -69,6 +69,14 @@ export const GlobalNavbar: React.FC = () => {
     };
   }, []);
 
+  const handleBrandClick = () => {
+    if (window.location.pathname !== '/' || window.location.search || window.location.hash) {
+      window.location.href = '/';
+    } else {
+      window.location.reload();
+    }
+  };
+
   return (
     <header className="border-b border-canvas-border bg-canvas/90 backdrop-blur-md sticky top-0 z-30 select-none">
       {/* Side margin container: aligned with landing & library pages */}
@@ -78,9 +86,9 @@ export const GlobalNavbar: React.FC = () => {
           {/* Website Name (Very Left) */}
           <button
             type="button"
-            onClick={openDashboard}
-            className="flex items-center gap-2 sm:gap-2.5 hover:opacity-85 transition-opacity group"
-            title="Go to Alterjot Dashboard"
+            onClick={handleBrandClick}
+            className="flex items-center gap-2 sm:gap-2.5 hover:opacity-85 transition-opacity group cursor-pointer"
+            title="Refresh Alterjot"
           >
             <div className="w-7 h-7 sm:w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-600 flex items-center justify-center text-white shadow-sm shadow-brand-600/30 group-hover:scale-105 transition-transform">
               <Feather className="w-3.5 h-3.5 sm:w-4 h-4" />
