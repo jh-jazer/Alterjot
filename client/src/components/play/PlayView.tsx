@@ -10,6 +10,7 @@ import {
   Dices,
   ArrowRight,
 } from 'lucide-react';
+import { ChallengesSection } from '../dashboard/ChallengesSection';
 
 export const PlayView: React.FC = () => {
   const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
@@ -121,7 +122,7 @@ export const PlayView: React.FC = () => {
   return (
     <div className="flex-1 overflow-y-auto bg-canvas text-ink select-none pb-24 md:pb-10">
       {/* Clean centered container with responsive padding on left and right */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-6 sm:space-y-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8 sm:space-y-12">
         
         {/* Play Banner Header (matching Dashboard cinematic dark card aesthetic) */}
         <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-5 sm:p-7 shadow-xl border border-black/10 flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
@@ -141,7 +142,7 @@ export const PlayView: React.FC = () => {
               The Play Arena
             </h1>
             <p className="text-xs sm:text-sm text-neutral-300 font-serif max-w-xl leading-relaxed">
-              Spark rapid inspiration with timed Pomodoro sprints, randomized narrative catalysts, and word roulette challenges.
+              Spark rapid inspiration with timed Pomodoro sprints, randomized narrative catalysts, and active writing challenges.
             </p>
           </div>
 
@@ -154,6 +155,12 @@ export const PlayView: React.FC = () => {
             <span>Freeform Writing</span>
           </button>
         </div>
+
+        {/* WORLD CHALLENGE & THREE ELEMENTS CHALLENGE */}
+        <ChallengesSection showPlaygroundLink={false} />
+
+        {/* Section Divider */}
+        <div className="border-t border-canvas-border/70 pt-2" />
 
         {/* TWO-COLUMN PLAY MODULES */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
