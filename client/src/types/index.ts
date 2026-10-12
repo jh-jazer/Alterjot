@@ -1,8 +1,10 @@
 export type SceneStatus = 'Draft' | 'In Review' | 'Final';
 export type ChapterStatus = 'Draft' | 'In Review' | 'Final';
 export type NovelStatus = 'Planning' | 'In Progress' | 'First Draft' | 'Revision' | 'Completed';
-export type CodexCategory = 'Characters' | 'Locations' | 'Factions' | 'Timeline';
+export type CodexCategory = 'Characters' | 'Locations' | 'Factions' | 'Timeline' | 'Hazards' | 'Scavenge';
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'cached-offline' | 'error';
+export type TimelineEra = 'Pre-Collapse' | 'The Fall' | 'Post-Apocalypse' | 'Deep Wasteland';
+export type ThreatLevel = 'Low' | 'Elevated' | 'Extreme' | 'Catastrophic';
 
 export interface Novel {
   _id: string;
@@ -41,6 +43,8 @@ export interface SceneMetadata {
   inUniverseDate: string;
   objective: string;
   notes: string;
+  timelineEra?: TimelineEra;
+  threatLevel?: ThreatLevel;
 }
 
 export interface Scene {

@@ -16,7 +16,8 @@ interface TypographySettings {
 }
 
 interface WorkspaceState {
-  currentView: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking';
+  currentView: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge';
+  activeChallengeId: string | null;
   activeNovelId: string | null;
   activeChapterId: string | null;
   activeSceneId: string | null;
@@ -50,13 +51,15 @@ interface WorkspaceState {
   librarySearchQuery: string;
   setLibrarySearchQuery: (query: string) => void;
 
-  setCurrentView: (view: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking') => void;
+  setCurrentView: (view: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge') => void;
   openDashboard: () => void;
   openLanding: () => void;
   openLibrary: () => void;
   openPlay: () => void;
   openRanking: () => void;
   openStudio: (novelId?: string) => Promise<void>;
+  openChallenge: (challengeId: string) => void;
+  closeChallenge: () => void;
 
   setPanelState: (partial: Partial<PanelState>) => void;
   toggleSidebar: () => void;
@@ -115,8 +118,30 @@ interface WorkspaceState {
   requireAuth: (callback?: () => void) => boolean;
 }
 
-// Read initial theme preference: default to 'light' (Light Retro)
-const initialTheme = (typeof window !== 'undefined' && (localStorage.getItem('alterjot_theme') as 'light' | 'dark')) || 'light';
+// Storage helpers for Alterjot with backward compatibility for existing keys
+const getStorageItem = (key: string): string | null => {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(`alterjot_${key}`) || localStorage.getItem(`endfiles_${key}`);
+};
+
+const setStorageItem = (key: string, val: string): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(`alterjot_${key}`, val);
+    localStorage.setItem(`endfiles_${key}`, val);
+  } catch {}
+};
+
+const removeStorageItem = (key: string): void => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(`alterjot_${key}`);
+    localStorage.removeItem(`endfiles_${key}`);
+  } catch {}
+};
+
+// Read initial theme preference: default to 'dark' for bunker atmosphere or existing stored
+const initialTheme = (typeof window !== 'undefined' && (getStorageItem('theme') as 'light' | 'dark')) || 'dark';
 if (typeof document !== 'undefined') {
   if (initialTheme === 'dark') {
     document.documentElement.classList.add('dark');
@@ -130,34 +155,33 @@ let isTransitioningTheme = false;
 
 export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   currentView: 'dashboard',
+  activeChallengeId: null,
   activeNovelId: null,
   activeChapterId: null,
   activeSceneId: null,
 
-  penName: (typeof window !== 'undefined' && localStorage.getItem('alterjot_pen_name')) || 'Ernest Quill',
+  penName: (typeof window !== 'undefined' && getStorageItem('pen_name')) || 'Ernest Quill',
   setPenName: (name) => {
-    try {
-      localStorage.setItem('alterjot_pen_name', name);
-    } catch {}
+    setStorageItem('pen_name', name);
     set({ penName: name });
   },
 
   // Auth & Onboarding State
-  isAuthenticated: (typeof window !== 'undefined' && localStorage.getItem('alterjot_auth') === 'true') || false,
+  isAuthenticated: (typeof window !== 'undefined' && getStorageItem('auth') === 'true') || false,
   currentUser:
-    typeof window !== 'undefined' && localStorage.getItem('alterjot_auth') === 'true'
+    typeof window !== 'undefined' && getStorageItem('auth') === 'true'
       ? {
-          id: localStorage.getItem('alterjot_user_id') || 'author_default',
-          penName: localStorage.getItem('alterjot_pen_name') || 'Ernest Quill',
-          email: localStorage.getItem('alterjot_user_email') || 'scribe@alterjot.com',
-          avatarUrl: localStorage.getItem('alterjot_user_avatar') || undefined,
+          id: getStorageItem('user_id') || 'author_default',
+          penName: getStorageItem('pen_name') || 'Ernest Quill',
+          email: getStorageItem('user_email') || 'scribe@alterjot.com',
+          avatarUrl: getStorageItem('user_avatar') || undefined,
         }
       : null,
   isAuthModalOpen: false,
   authModalMode: 'signin',
-  hasCompletedOnboarding: (typeof window !== 'undefined' && localStorage.getItem('alterjot_onboarded') === 'true') || false,
+  hasCompletedOnboarding: (typeof window !== 'undefined' && getStorageItem('onboarded') === 'true') || false,
   isOnboardingModalOpen: false,
-  preferredTheme: ((typeof window !== 'undefined' && localStorage.getItem('alterjot_preferred_theme')) as NarrativeTheme) || 'apocalyptic',
+  preferredTheme: ((typeof window !== 'undefined' && getStorageItem('preferred_theme')) as NarrativeTheme) || 'apocalyptic',
 
   novels: [],
   chapters: [],
@@ -209,7 +233,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         document.documentElement.classList.remove('dark');
       }
       try {
-        localStorage.setItem('alterjot_theme', theme);
+        setStorageItem('theme', theme);
       } catch {
         // ignore
       }
@@ -289,27 +313,33 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   },
 
   setCurrentView: (view) => set({ currentView: view }),
-  openDashboard: () => set({ currentView: 'dashboard' }),
-  openLanding: () => set({ currentView: 'dashboard' }),
+  openDashboard: () => set({ currentView: 'dashboard', activeChallengeId: null }),
+  openLanding: () => set({ currentView: 'dashboard', activeChallengeId: null }),
   openLibrary: () => {
-    if (get().requireAuth(() => set({ currentView: 'library' }))) {
-      set({ currentView: 'library' });
+    if (get().requireAuth(() => set({ currentView: 'library', activeChallengeId: null }))) {
+      set({ currentView: 'library', activeChallengeId: null });
     }
   },
   openPlay: () => {
-    if (get().requireAuth(() => set({ currentView: 'play' }))) {
-      set({ currentView: 'play' });
+    if (get().requireAuth(() => set({ currentView: 'play', activeChallengeId: null }))) {
+      set({ currentView: 'play', activeChallengeId: null });
     }
   },
   openRanking: () => {
-    set({ currentView: 'ranking' });
+    set({ currentView: 'ranking', activeChallengeId: null });
+  },
+  openChallenge: (challengeId: string) => {
+    set({ currentView: 'challenge', activeChallengeId: challengeId });
+  },
+  closeChallenge: () => {
+    set({ currentView: 'dashboard', activeChallengeId: null });
   },
   openStudio: async (novelId) => {
     if (!get().requireAuth()) return;
     const targetId = novelId || get().activeNovelId;
     if (targetId) {
       await get().selectNovel(targetId);
-      set({ currentView: 'studio' });
+      set({ currentView: 'studio', activeChallengeId: null });
     }
   },
 
@@ -323,13 +353,13 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       email: finalEmail,
     };
     try {
-      localStorage.setItem('alterjot_auth', 'true');
-      localStorage.setItem('alterjot_pen_name', finalPenName);
-      localStorage.setItem('alterjot_user_id', user.id);
-      localStorage.setItem('alterjot_user_email', finalEmail);
+      setStorageItem('auth', 'true');
+      setStorageItem('pen_name', finalPenName);
+      setStorageItem('user_id', user.id);
+      setStorageItem('user_email', finalEmail);
     } catch {}
 
-    const hasOnboarded = typeof window !== 'undefined' && localStorage.getItem('alterjot_onboarded') === 'true';
+    const hasOnboarded = typeof window !== 'undefined' && getStorageItem('onboarded') === 'true';
     set({
       isAuthenticated: true,
       currentUser: user,
@@ -366,14 +396,14 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       }
 
       try {
-        localStorage.setItem('alterjot_auth', 'true');
-        localStorage.setItem('alterjot_pen_name', finalUser.penName);
-        localStorage.setItem('alterjot_user_id', finalUser.id);
-        if (finalUser.email) localStorage.setItem('alterjot_user_email', finalUser.email);
-        if (finalUser.avatarUrl) localStorage.setItem('alterjot_user_avatar', finalUser.avatarUrl);
+        setStorageItem('auth', 'true');
+        setStorageItem('pen_name', finalUser.penName);
+        setStorageItem('user_id', finalUser.id);
+        if (finalUser.email) setStorageItem('user_email', finalUser.email);
+        if (finalUser.avatarUrl) setStorageItem('user_avatar', finalUser.avatarUrl);
       } catch {}
 
-      const hasOnboarded = typeof window !== 'undefined' && localStorage.getItem('alterjot_onboarded') === 'true';
+      const hasOnboarded = typeof window !== 'undefined' && getStorageItem('onboarded') === 'true';
       set({
         isAuthenticated: true,
         currentUser: finalUser,
@@ -393,10 +423,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
   logout: () => {
     try {
-      localStorage.removeItem('alterjot_auth');
-      localStorage.removeItem('alterjot_user_id');
-      localStorage.removeItem('alterjot_user_email');
-      localStorage.removeItem('alterjot_user_avatar');
+      removeStorageItem('auth');
+      removeStorageItem('user_id');
+      removeStorageItem('user_email');
+      removeStorageItem('user_avatar');
     } catch {}
     set({
       isAuthenticated: false,
@@ -418,11 +448,11 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   completeOnboarding: (answers) => {
     const finalPenName = answers.penName.trim() || get().penName;
     try {
-      localStorage.setItem('alterjot_onboarded', 'true');
-      localStorage.setItem('alterjot_preferred_theme', answers.preferredTheme);
-      localStorage.setItem('alterjot_pen_name', finalPenName);
-      localStorage.setItem('alterjot_writing_goal', answers.writingGoal);
-      localStorage.setItem('alterjot_ambiance', answers.ambiance);
+      setStorageItem('onboarded', 'true');
+      setStorageItem('preferred_theme', answers.preferredTheme);
+      setStorageItem('pen_name', finalPenName);
+      setStorageItem('writing_goal', answers.writingGoal);
+      setStorageItem('ambiance', answers.ambiance);
     } catch {}
 
     set({
@@ -436,7 +466,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
   setPreferredTheme: (theme) => {
     try {
-      localStorage.setItem('alterjot_preferred_theme', theme);
+      setStorageItem('preferred_theme', theme);
     } catch {}
     set({ preferredTheme: theme });
   },
@@ -530,8 +560,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     };
 
     try {
-      localStorage.setItem(`alterjot_scene_${activeScene._id}`, JSON.stringify(updatedScene));
-      localStorage.setItem('alterjot_last_scene_id', activeScene._id);
+      setStorageItem(`scene_${activeScene._id}`, JSON.stringify(updatedScene));
+      setStorageItem('last_scene_id', activeScene._id);
     } catch (e) {
       console.warn('localStorage write failed:', e);
     }
@@ -558,7 +588,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     };
 
     try {
-      localStorage.setItem(`alterjot_scene_${activeScene._id}`, JSON.stringify(updatedScene));
+      setStorageItem(`scene_${activeScene._id}`, JSON.stringify(updatedScene));
     } catch (e) {
       console.warn('localStorage write failed:', e);
     }
@@ -597,7 +627,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       const novel = await api.createNovel(payload);
       const updatedNovels = [novel, ...get().novels];
       set({ novels: updatedNovels, activeNovelId: novel._id });
-      localStorage.setItem('alterjot_last_novel_id', novel._id);
+      setStorageItem('last_novel_id', novel._id);
 
       // Retrieve or ensure initial chapter and clean scene
       let chapters = await api.getChapters(novel._id).catch(() => []);
@@ -720,7 +750,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   selectNovel: async (novelId: string) => {
     set({ activeNovelId: novelId });
     try {
-      localStorage.setItem('alterjot_last_novel_id', novelId);
+      setStorageItem('last_novel_id', novelId);
       const [chapters, codex] = await Promise.all([
         api.getChapters(novelId),
         api.getCodex(novelId),
@@ -774,7 +804,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     }
 
     try {
-      const localTier = localStorage.getItem(`alterjot_scene_${sceneId}`);
+      const localTier = getStorageItem(`scene_${sceneId}`);
       if (localTier) {
         const parsed = JSON.parse(localTier);
         if (parsed && (!cached || new Date(parsed.updatedAt) > new Date(cached.updatedAt))) {
@@ -813,7 +843,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       if (novels.length === 0) {
         set({ activeNovelId: null });
       } else {
-        const lastNovelId = localStorage.getItem('alterjot_last_novel_id');
+        const lastNovelId = getStorageItem('last_novel_id');
         const match = novels.find((n) => n._id === lastNovelId);
         if (match) {
           await get().selectNovel(match._id);

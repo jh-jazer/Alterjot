@@ -9,6 +9,7 @@ import { LibraryView } from './components/library/LibraryView';
 import { DashboardView } from './components/dashboard/DashboardView';
 import { PlayView } from './components/play/PlayView';
 import { RankingView } from './components/ranking/RankingView';
+import { ChallengeDetailView } from './components/challenge/ChallengeDetailView';
 import { ProjectDashboardModal } from './components/dashboard/ProjectDashboardModal';
 import { ExportModal } from './components/export/ExportModal';
 import { AuthModal } from './components/auth/AuthModal';
@@ -32,7 +33,7 @@ export const App: React.FC = () => {
       {/* Top Application Bar with Side Margins */}
       <Header />
 
-      {/* Main Viewport: Dashboard (Root), Play, Ranking, Library, or Studio */}
+      {/* Main Viewport: Dashboard (Root), Play, Ranking, Library, Challenge, or Studio */}
       {currentView === 'dashboard' || currentView === 'landing' ? (
         <DashboardView />
       ) : currentView === 'play' ? (
@@ -41,6 +42,8 @@ export const App: React.FC = () => {
         <RankingView />
       ) : currentView === 'library' ? (
         <LibraryView />
+      ) : currentView === 'challenge' ? (
+        <ChallengeDetailView />
       ) : (
         <main className="flex-1 flex overflow-hidden relative">
           {/* Left: Manuscript Tree (Sidebar) */}

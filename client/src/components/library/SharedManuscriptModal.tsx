@@ -65,7 +65,7 @@ export const SharedManuscriptModal: React.FC<SharedManuscriptModalProps> = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-3xl max-h-[90vh] bg-canvas-card border border-canvas-border rounded-2xl sm:rounded-3xl shadow-parchment-2xl flex flex-col overflow-hidden text-ink animate-scaleUp"
+        className="relative w-full max-w-3xl max-h-[90vh] bg-canvas-card border border-canvas-border rounded-xl shadow-parchment-2xl flex flex-col overflow-hidden text-ink animate-scaleUp"
       >
         {/* Top Spine Ribbon (unified for all manuscripts) */}
         <div className="h-2.5 w-full bg-gradient-to-r from-brand-700 via-amber-600/70 to-brand-800" />
@@ -75,7 +75,7 @@ export const SharedManuscriptModal: React.FC<SharedManuscriptModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-xl text-ink-muted hover:text-ink hover:bg-canvas-hover transition-colors"
+            className="absolute top-5 right-5 p-2 rounded-lg text-ink-muted hover:text-ink hover:bg-canvas-hover transition-colors"
             title="Close manuscript view"
             aria-label="Close manuscript view"
           >
@@ -269,7 +269,7 @@ export const SharedManuscriptModal: React.FC<SharedManuscriptModalProps> = ({
               </div>
 
               {/* Formatted Book Reader Canvas */}
-              <div className="p-6 sm:p-8 rounded-2xl bg-canvas-surface/80 border border-canvas-border font-serif text-sm sm:text-base leading-relaxed text-ink space-y-4 select-text">
+              <div className="p-6 sm:p-8 rounded-xl bg-canvas-surface/80 border border-canvas-border font-serif text-sm sm:text-base leading-relaxed text-ink space-y-4 select-text">
                 {manuscript.sampleExcerpt.content.map((paragraph, pIdx) => (
                   <p key={pIdx} className="indent-6 sm:indent-8 first:indent-0 text-justify">
                     {pIdx === 0 ? (
@@ -327,7 +327,7 @@ export const SharedManuscriptModal: React.FC<SharedManuscriptModalProps> = ({
           <div className="text-xs font-mono text-ink-muted text-center sm:text-left">
             <span>Authored by </span>
             <strong className="text-ink">{manuscript.author}</strong>
-            <span> in the Alterjot Atelier</span>
+            <span> in the Alterjot Archive</span>
           </div>
 
           <div className="flex items-center gap-2.5 w-full sm:w-auto">

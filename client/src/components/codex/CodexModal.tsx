@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { CodexEntry, CodexCategory } from '../../types';
-import { X, Save, User, MapPin, Shield, Clock } from 'lucide-react';
+import { X, Save, User, MapPin, Shield, Clock, AlertTriangle, Package } from 'lucide-react';
 
 interface CodexModalProps {
   isOpen: boolean;
@@ -89,14 +89,14 @@ export const CodexModal: React.FC<CodexModalProps> = ({
     onClose();
   };
 
-  const categories: CodexCategory[] = ['Characters', 'Locations', 'Factions', 'Timeline'];
+  const categories: CodexCategory[] = ['Characters', 'Locations', 'Factions', 'Hazards', 'Scavenge', 'Timeline'];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-4 sm:p-6 text-ink">
+      <div className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-4 sm:p-6 text-ink">
         <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-canvas-border">
           <h3 className="text-base sm:text-lg font-serif font-bold text-ink flex items-center gap-2">
-            <span>{initialData ? 'Edit Codex Entry' : 'New World Codex Card'}</span>
+            <span>{initialData ? 'Edit Survival Codex Entry' : 'New Survival Codex Entry'}</span>
           </h3>
           <button
             type="button"
@@ -110,7 +110,7 @@ export const CodexModal: React.FC<CodexModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4 mt-3 sm:mt-4">
           <div>
             <label className="block text-xs font-mono text-ink-muted mb-1.5 uppercase font-medium">Category</label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {categories.map((cat) => (
                 <button
                   key={cat}
@@ -125,8 +125,18 @@ export const CodexModal: React.FC<CodexModalProps> = ({
                   {cat === 'Characters' && <User className="w-4 h-4 text-[#2e4785] dark:text-indigo-400" />}
                   {cat === 'Locations' && <MapPin className="w-4 h-4 text-[#225744] dark:text-teal-400" />}
                   {cat === 'Factions' && <Shield className="w-4 h-4 text-[#913d1e] dark:text-amber-400" />}
+                  {cat === 'Hazards' && <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400" />}
+                  {cat === 'Scavenge' && <Package className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />}
                   {cat === 'Timeline' && <Clock className="w-4 h-4 text-[#86294d] dark:text-rose-400" />}
-                  <span>{cat}</span>
+                  <span>
+                    {cat === 'Characters'
+                      ? 'Survivors'
+                      : cat === 'Locations'
+                      ? 'Outposts / Ruins'
+                      : cat === 'Timeline'
+                      ? 'Incidents'
+                      : cat}
+                  </span>
                 </button>
               ))}
             </div>

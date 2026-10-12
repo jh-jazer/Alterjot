@@ -38,6 +38,8 @@ export default {
           loc: 'var(--codex-loc)',
           faction: 'var(--codex-faction)',
           timeline: 'var(--codex-timeline)',
+          hazard: 'var(--codex-hazard)',
+          scavenge: 'var(--codex-scavenge)',
         }
       },
       fontFamily: {

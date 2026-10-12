@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import {
+  Radio,
   Feather,
   Sun,
   Moon,
@@ -94,12 +95,17 @@ export const GlobalNavbar: React.FC = () => {
             className="flex items-center gap-2 sm:gap-2.5 hover:opacity-85 transition-opacity group cursor-pointer"
             title="Refresh Alterjot"
           >
-            <div className="w-7 h-7 sm:w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-600 flex items-center justify-center text-white shadow-sm shadow-brand-600/30 group-hover:scale-105 transition-transform">
-              <Feather className="w-3.5 h-3.5 sm:w-4 h-4" />
+            <div className="w-7 h-7 sm:w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-600 via-orange-600 to-amber-700 flex items-center justify-center text-white shadow-sm shadow-amber-600/30 group-hover:scale-105 transition-transform">
+              <Radio className="w-3.5 h-3.5 sm:w-4 h-4 animate-pulse" />
             </div>
-            <span className="font-serif font-bold text-lg sm:text-xl text-ink tracking-tight">
-              Alterjot
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="font-serif font-bold text-lg sm:text-xl text-ink tracking-tight">
+                Alterjot
+              </span>
+              <span className="hidden lg:inline-block px-1.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-widest bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-semibold">
+                ARCHIVE
+              </span>
+            </div>
           </button>
 
           {/* Beside Website Name: DASHBOARD, PLAY, RANKING, LIBRARY (Desktop and Tablet) */}
@@ -292,7 +298,7 @@ export const GlobalNavbar: React.FC = () => {
 
               {/* Refined Anchored Dropdown Menu */}
               {isWriteMenuOpen && (
-                <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-24px)] p-2 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 animate-in fade-in zoom-in-95 duration-150 space-y-1">
+                <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-24px)] p-2 rounded-xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 animate-in fade-in zoom-in-95 duration-150 space-y-1">
                   <div className="px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-ink-faint font-semibold border-b border-canvas-border/70 mb-1">
                     Drafting Options
                   </div>
@@ -303,7 +309,7 @@ export const GlobalNavbar: React.FC = () => {
                       setIsWriteMenuOpen(false);
                       await startWritingImmediately();
                     }}
-                    className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left hover:bg-canvas-hover border border-transparent hover:border-canvas-border transition-all group cursor-pointer"
+                    className="w-full flex items-center gap-3 p-2.5 rounded-lg text-left hover:bg-canvas-hover border border-transparent hover:border-canvas-border transition-all group cursor-pointer"
                   >
                     <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
                       <Zap className="w-4 h-4" />
@@ -324,7 +330,7 @@ export const GlobalNavbar: React.FC = () => {
                       setIsWriteMenuOpen(false);
                       openLibrary();
                     }}
-                    className="w-full flex items-center gap-3 p-2.5 rounded-xl text-left hover:bg-canvas-hover border border-transparent hover:border-canvas-border transition-all group cursor-pointer"
+                    className="w-full flex items-center gap-3 p-2.5 rounded-lg text-left hover:bg-canvas-hover border border-transparent hover:border-canvas-border transition-all group cursor-pointer"
                   >
                     <div className="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
                       <BookOpen className="w-4 h-4" />

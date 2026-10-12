@@ -31,40 +31,40 @@ export const DashboardView: React.FC = () => {
 
   const totalWords = novels.reduce((acc, n) => acc + (n.totalWordCount || 0), 0);
 
-  // Author rank tiers calculation
+  // Author rank tiers calculation for apocalyptic chroniclers
   const getAuthorRank = (words: number) => {
     if (words >= 60000) {
       return {
-        title: 'Master Lorekeeper',
-        badge: 'Grand Atelier',
+        title: 'Doomsday Cartographer',
+        badge: 'Overseer of the Fall',
         nextThreshold: 100000,
-        nextTitle: 'Mythic Scribe',
+        nextTitle: 'Mythic Chronicler',
         color: 'text-amber-700 bg-amber-50 border-amber-300 dark:bg-amber-600/20 dark:text-amber-300',
       };
     }
     if (words >= 25000) {
       return {
-        title: 'Seasoned Novelist',
-        badge: 'Senior Scribe',
+        title: 'Enclave Lorekeeper',
+        badge: 'Black Box Historian',
         nextThreshold: 60000,
-        nextTitle: 'Master Lorekeeper',
+        nextTitle: 'Doomsday Cartographer',
         color: 'text-[#2e4785] bg-[#e1e9f8] border-[#a8bee7] dark:bg-indigo-600/20 dark:text-indigo-300',
       };
     }
     if (words >= 5000) {
       return {
-        title: 'Journeyman Author',
-        badge: 'Atelier Artisan',
+        title: 'Bunker Chronicler',
+        badge: 'Vault Scribe',
         nextThreshold: 25000,
-        nextTitle: 'Seasoned Novelist',
+        nextTitle: 'Enclave Lorekeeper',
         color: 'text-[#245b32] bg-[#dff0e4] border-[#a0cea9] dark:bg-emerald-600/20 dark:text-emerald-300',
       };
     }
     return {
-      title: 'Apprentice Scribe',
-      badge: 'Novice Quill',
+      title: 'Wasteland Drifter',
+      badge: 'Scavenger Scribe',
       nextThreshold: 5000,
-      nextTitle: 'Journeyman Author',
+      nextTitle: 'Bunker Chronicler',
       color: 'text-brand-800 bg-brand-50 border-brand-200 dark:bg-brand-600/20 dark:text-brand-300',
     };
   };
@@ -80,19 +80,19 @@ export const DashboardView: React.FC = () => {
     <div className="flex-1 overflow-y-auto bg-canvas text-ink select-none pb-24 md:pb-10">
       {/* Clean centered container with responsive padding on left and right */}
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8 sm:space-y-12">
-        {/* FIRST PART OF DASHBOARD: TWO COLUMNS (World Challenge & Three Elements Challenge) */}
-        <ChallengesSection showPlaygroundLink={true} className="pt-6 sm:pt-12 pb-6 sm:pb-10" />
+        {/* FIRST PART OF DASHBOARD: HOT CHALLENGE IMAGE BANNER */}
+        <ChallengesSection showPlaygroundLink={true} className="pt-2 sm:pt-4 pb-2 sm:pb-4" />
 
         {/* SECOND PART OF DASHBOARD: AUTHOR RANKING / LEADERBOARD & RECENT SHELF MANUSCRIPTS */}
         <section className="space-y-6 pt-2">
           
           {/* Leaderboard: Top 10 when not signed in; Personal Standing Banner when signed in */}
           {isAuthenticated ? (
-            <div className="p-4 sm:p-6 rounded-2xl bg-[#1e1c19] text-white border border-black/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
+            <div className="p-4 sm:p-6 rounded-xl bg-[#1e1c19] text-white border border-black/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
               <div className="absolute right-0 top-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
               <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 relative z-10">
-                <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
+                <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
                   <Trophy className="w-5 sm:w-6 h-5 sm:h-6" />
                 </div>
 
@@ -255,7 +255,7 @@ export const DashboardView: React.FC = () => {
                           setSelectedSharedManuscript(sharedNovel);
                           setIsSharedModalOpen(true);
                         }}
-                        className="min-h-[195px] h-full rounded-2xl border border-canvas-border bg-canvas-card hover:border-brand-500/60 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-row overflow-hidden relative p-3 sm:p-4 gap-3 sm:gap-4 items-stretch"
+                        className="min-h-[195px] h-full rounded-xl border border-canvas-border bg-canvas-card hover:border-brand-500/60 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-row overflow-hidden relative p-3 sm:p-4 gap-3 sm:gap-4 items-stretch"
                       >
                         {/* Top ribbon accent (unified for all manuscripts) */}
                         <div className="h-1.5 w-full absolute top-0 left-0 bg-gradient-to-r from-brand-700 via-amber-600/70 to-brand-800" />
@@ -342,8 +342,8 @@ export const DashboardView: React.FC = () => {
                 </div>
               ) : novels.length === 0 ? (
                 /* Constant Panel Size When Empty */
-                <div className="w-full min-h-[430px] sm:min-h-[460px] rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment flex flex-col items-center justify-center p-8 sm:p-12 text-center relative overflow-hidden group">
-                  <div className="w-16 h-16 rounded-2xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-brand-700 mx-auto mb-4 shadow-xs group-hover:scale-105 transition-transform duration-300">
+                <div className="w-full min-h-[430px] sm:min-h-[460px] rounded-xl bg-canvas-card border border-canvas-border shadow-parchment flex flex-col items-center justify-center p-8 sm:p-12 text-center relative overflow-hidden group">
+                  <div className="w-16 h-16 rounded-xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-brand-700 mx-auto mb-4 shadow-xs group-hover:scale-105 transition-transform duration-300">
                     <BookOpen className="w-8 h-8 text-brand-600" />
                   </div>
                   <h4 className="font-serif font-bold text-lg sm:text-xl text-ink mb-1.5">
@@ -356,7 +356,7 @@ export const DashboardView: React.FC = () => {
                     <button
                       type="button"
                       onClick={startWritingImmediately}
-                      className="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-xs shadow-sm shadow-brand-600/30 transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5"
+                      className="px-5 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-xs shadow-sm shadow-brand-600/30 transition-all hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5"
                     >
                       <Feather className="w-3.5 h-3.5" />
                       <span>Start Writing Now</span>
@@ -364,7 +364,7 @@ export const DashboardView: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShelfTab('shared')}
-                      className="px-5 py-2.5 rounded-xl bg-canvas-surface hover:bg-canvas-hover border border-canvas-border text-ink font-serif font-medium text-xs shadow-xs transition-all hover:scale-102 active:scale-98 cursor-pointer flex items-center gap-1.5"
+                      className="px-5 py-2.5 rounded-lg bg-canvas-surface hover:bg-canvas-hover border border-canvas-border text-ink font-serif font-medium text-xs shadow-xs transition-all hover:scale-102 active:scale-98 cursor-pointer flex items-center gap-1.5"
                     >
                       <Book className="w-3.5 h-3.5 text-brand-600" />
                       <span>Browse Shared Works</span>
@@ -382,7 +382,7 @@ export const DashboardView: React.FC = () => {
                       <div
                         key={novel._id}
                         onClick={() => openStudio(novel._id)}
-                        className="min-h-[195px] h-full rounded-2xl border border-canvas-border bg-canvas-card hover:border-brand-500/60 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-row overflow-hidden relative p-3 sm:p-4 gap-3 sm:gap-4 items-stretch"
+                        className="min-h-[195px] h-full rounded-xl border border-canvas-border bg-canvas-card hover:border-brand-500/60 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-row overflow-hidden relative p-3 sm:p-4 gap-3 sm:gap-4 items-stretch"
                       >
                         {/* Top ribbon accent (unified for all manuscripts) */}
                         <div className="h-1.5 w-full absolute top-0 left-0 bg-gradient-to-r from-brand-700 via-amber-600/70 to-brand-800" />
@@ -455,9 +455,9 @@ export const DashboardView: React.FC = () => {
                     <button
                       type="button"
                       onClick={startWritingImmediately}
-                      className="min-h-[195px] h-full rounded-2xl border-2 border-dashed border-canvas-border hover:border-brand-500/60 bg-canvas-card/40 hover:bg-canvas-card flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-all duration-300 group shadow-xs hover:shadow-parchment"
+                      className="min-h-[195px] h-full rounded-xl border-2 border-dashed border-canvas-border hover:border-brand-500/60 bg-canvas-card/40 hover:bg-canvas-card flex flex-col items-center justify-center p-6 text-center cursor-pointer transition-all duration-300 group shadow-xs hover:shadow-parchment"
                     >
-                      <div className="w-10 h-10 rounded-xl bg-canvas-surface border border-canvas-border group-hover:border-brand-500/40 group-hover:bg-brand-50 dark:group-hover:bg-brand-600/20 text-brand-600 flex items-center justify-center mb-2.5 transition-all group-hover:scale-110">
+                      <div className="w-10 h-10 rounded-lg bg-canvas-surface border border-canvas-border group-hover:border-brand-500/40 group-hover:bg-brand-50 dark:group-hover:bg-brand-600/20 text-brand-600 flex items-center justify-center mb-2.5 transition-all group-hover:scale-110">
                         <Plus className="w-5 h-5" />
                       </div>
                       <span className="font-serif font-bold text-sm text-ink group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors">

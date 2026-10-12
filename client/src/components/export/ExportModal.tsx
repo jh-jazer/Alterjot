@@ -45,7 +45,7 @@ export const ExportModal: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${activeNovel.title.replace(/\s+/g, '_')}_Manuscript.${ext}`;
+    a.download = `${activeNovel.title.replace(/\s+/g, '_')}_Dossier.${ext}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -54,17 +54,17 @@ export const ExportModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-3xl max-h-[90vh] flex flex-col rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-4 sm:p-6 text-ink">
+      <div className="w-full max-w-3xl max-h-[90vh] flex flex-col rounded-xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-4 sm:p-6 text-ink">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-canvas-border">
           <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="p-2 rounded-xl bg-brand-50 text-brand-700 border border-brand-200 dark:bg-brand-600/20 dark:text-brand-400 dark:border-brand-500/30">
+            <div className="p-2 rounded-lg bg-brand-50 text-brand-700 border border-brand-200 dark:bg-brand-600/20 dark:text-brand-400 dark:border-brand-500/30">
               <FileDown className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg sm:text-xl font-serif font-bold text-ink">Clean Manuscript Export</h3>
+              <h3 className="text-lg sm:text-xl font-serif font-bold text-ink">Black Box Dossier Export</h3>
               <p className="text-[11px] sm:text-xs text-ink-muted font-mono">
-                Compile entire book with structured headings & scene dividers
+                Compile complete survival chronicle with structured logs & dividers
               </p>
             </div>
           </div>

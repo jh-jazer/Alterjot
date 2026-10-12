@@ -53,7 +53,7 @@ export const PWAStatusBanner: React.FC = () => {
   if (canInstall && !isInstalled && !isDismissed) {
     return (
       <div className="fixed bottom-4 right-4 sm:right-6 z-50 max-w-sm w-[calc(100vw-2rem)] sm:w-auto animate-in fade-in slide-in-from-bottom-4 duration-300">
-        <div className="bg-canvas-card border border-canvas-border rounded-2xl p-4 shadow-parchment-lg text-ink relative">
+        <div className="bg-canvas-card border border-canvas-border rounded-xl p-4 shadow-parchment-lg text-ink relative">
           <button
             type="button"
             onClick={() => setIsDismissed(true)}
@@ -64,7 +64,7 @@ export const PWAStatusBanner: React.FC = () => {
           </button>
 
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-600 flex items-center justify-center text-white shadow-md flex-shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-tr from-brand-600 to-amber-600 flex items-center justify-center text-white shadow-md flex-shrink-0">
               <Feather className="w-5 h-5" />
             </div>
             <div className="flex-1 pr-4">
@@ -86,7 +86,7 @@ export const PWAStatusBanner: React.FC = () => {
             <button
               type="button"
               onClick={installApp}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-sm transition-all hover:shadow cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium bg-brand-600 hover:bg-brand-700 text-white rounded-lg shadow-sm transition-all hover:shadow cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Install App</span>

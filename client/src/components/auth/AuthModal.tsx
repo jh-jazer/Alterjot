@@ -36,7 +36,7 @@ export const AuthModal: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-[420px] rounded-[32px] bg-white dark:bg-[#181615] border border-neutral-100 dark:border-neutral-800 shadow-2xl p-7 sm:p-9 text-neutral-900 dark:text-neutral-100">
+      <div className="relative w-full max-w-[420px] rounded-xl bg-white dark:bg-[#181615] border border-neutral-100 dark:border-neutral-800 shadow-2xl p-7 sm:p-9 text-neutral-900 dark:text-neutral-100">
         {/* Close Button */}
         <button
           type="button"
@@ -49,7 +49,7 @@ export const AuthModal: React.FC = () => {
         </button>
 
         {/* Top Centered Glyph Container */}
-        <div className="w-12 h-12 rounded-2xl bg-[#f4f6fa] dark:bg-neutral-800 border border-neutral-200/60 dark:border-neutral-700/60 flex items-center justify-center mx-auto mb-4 text-neutral-800 dark:text-neutral-200 shadow-xs">
+        <div className="w-12 h-12 rounded-lg bg-[#f4f6fa] dark:bg-neutral-800 border border-neutral-200/60 dark:border-neutral-700/60 flex items-center justify-center mx-auto mb-4 text-neutral-800 dark:text-neutral-200 shadow-xs">
           {mode === 'forgot' ? (
             <KeyRound className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
           ) : (
@@ -76,7 +76,7 @@ export const AuthModal: React.FC = () => {
 
         {/* Success message when password reset requested */}
         {mode === 'forgot' && resetSent ? (
-          <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 text-center space-y-2 mb-4 animate-fadeIn">
+          <div className="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 text-center space-y-2 mb-4 animate-fadeIn">
             <CheckCircle2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400 mx-auto" />
             <p className="text-xs font-medium text-emerald-800 dark:text-emerald-200">
               Reset instructions sent to <span className="font-semibold">{email}</span>
@@ -108,7 +108,7 @@ export const AuthModal: React.FC = () => {
                   value={penName}
                   onChange={(e) => setPenName(e.target.value)}
                   placeholder="Pen Name"
-                  className="w-full h-12 pl-11 pr-4 rounded-2xl bg-[#f4f6fa] dark:bg-neutral-800/80 border border-neutral-200/60 dark:border-neutral-700/60 text-sm font-sans placeholder:text-neutral-400 text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 focus:ring-2 focus:ring-neutral-400/20 transition-all"
+                  className="w-full h-12 pl-11 pr-4 rounded-lg bg-[#f4f6fa] dark:bg-neutral-800/80 border border-neutral-200/60 dark:border-neutral-700/60 text-sm font-sans placeholder:text-neutral-400 text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 focus:ring-2 focus:ring-neutral-400/20 transition-all"
                 />
               </div>
             )}
@@ -122,7 +122,7 @@ export const AuthModal: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
-                className="w-full h-12 pl-11 pr-4 rounded-2xl bg-[#f4f6fa] dark:bg-neutral-800/80 border border-neutral-200/60 dark:border-neutral-700/60 text-sm font-sans placeholder:text-neutral-400 text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 focus:ring-2 focus:ring-neutral-400/20 transition-all"
+                className="w-full h-12 pl-11 pr-4 rounded-lg bg-[#f4f6fa] dark:bg-neutral-800/80 border border-neutral-200/60 dark:border-neutral-700/60 text-sm font-sans placeholder:text-neutral-400 text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 focus:ring-2 focus:ring-neutral-400/20 transition-all"
               />
             </div>
 
@@ -136,7 +136,7 @@ export const AuthModal: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
-                  className="w-full h-12 pl-11 pr-11 rounded-2xl bg-[#f4f6fa] dark:bg-neutral-800/80 border border-neutral-200/60 dark:border-neutral-700/60 text-sm font-sans placeholder:text-neutral-400 text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 focus:ring-2 focus:ring-neutral-400/20 transition-all"
+                  className="w-full h-12 pl-11 pr-11 rounded-lg bg-[#f4f6fa] dark:bg-neutral-800/80 border border-neutral-200/60 dark:border-neutral-700/60 text-sm font-sans placeholder:text-neutral-400 text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 focus:ring-2 focus:ring-neutral-400/20 transition-all"
                 />
                 <button
                   type="button"
@@ -169,7 +169,7 @@ export const AuthModal: React.FC = () => {
             {/* Primary Action Button: "Get Started" */}
             <button
               type="submit"
-              className="w-full h-12 rounded-2xl bg-[#18181b] hover:bg-black text-white dark:bg-white dark:hover:bg-neutral-100 dark:text-neutral-950 font-semibold text-sm transition-all shadow-sm active:scale-[0.99] cursor-pointer flex items-center justify-center mt-3"
+              className="w-full h-12 rounded-lg bg-[#18181b] hover:bg-black text-white dark:bg-white dark:hover:bg-neutral-100 dark:text-neutral-950 font-semibold text-sm transition-all shadow-sm active:scale-[0.99] cursor-pointer flex items-center justify-center mt-3"
             >
               <span>{mode === 'forgot' ? 'Send Reset Link' : 'Get Started'}</span>
             </button>

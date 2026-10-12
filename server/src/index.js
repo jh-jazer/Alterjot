@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 5000;
 
 // CORS Hardening: Allow production frontend, Vercel preview deployments, and local dev
 const allowedOrigins = [
+  'https://endfiles.vercel.app',
   'https://alterjot.vercel.app',
   'http://localhost:5173',
   'http://localhost:5000',

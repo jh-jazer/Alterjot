@@ -6,9 +6,18 @@ interface ThemeKeywordProfile {
   keywords: string[];
 }
 
-export const MOST_POPULAR_THEME: NarrativeTheme = 'dark-fantasy';
+export const MOST_POPULAR_THEME: NarrativeTheme = 'apocalyptic';
 
 const THEME_PROFILES: ThemeKeywordProfile[] = [
+  {
+    theme: 'apocalyptic',
+    genres: ['apocalyptic', 'post-apocalyptic', 'survival', 'dystopia', 'thriller', 'speculative fiction', 'military', 'collapse'],
+    keywords: [
+      'wasteland', 'bunker', 'shelter', 'ruin', 'fallout', 'scavenger', 'radiation',
+      'survivor', 'ash', 'outbreak', 'collapse', 'rations', 'decay', 'quarantine',
+      'perimeter', 'dust', 'desolation', 'scarcity', 'convoy', 'winter', 'geiger', 'transmission'
+    ],
+  },
   {
     theme: 'dark-fantasy',
     genres: ['fantasy', 'dark fantasy', 'epic fantasy', 'mythology', 'gothic', 'horror', 'paranormal', 'sword and sorcery'],
@@ -36,15 +45,6 @@ const THEME_PROFILES: ThemeKeywordProfile[] = [
       'alchemy', 'copper', 'piston', 'chronometer', 'laboratory', 'workshop'
     ],
   },
-  {
-    theme: 'apocalyptic',
-    genres: ['apocalyptic', 'post-apocalyptic', 'survival', 'dystopia', 'thriller', 'speculative fiction', 'military'],
-    keywords: [
-      'wasteland', 'bunker', 'shelter', 'ruin', 'fallout', 'scavenger', 'radiation',
-      'survivor', 'ash', 'outbreak', 'collapse', 'rations', 'decay', 'quarantine',
-      'perimeter', 'dust', 'desolation', 'scarcity', 'convoy', 'shelter', 'winter'
-    ],
-  },
 ];
 
 export interface RecommendationResult {
@@ -64,16 +64,16 @@ export function calculateRecommendedTheme(
   novels: Novel[],
   scenes: Scene[] = [],
   codexEntries: CodexEntry[] = [],
-  fallbackTheme: NarrativeTheme = 'dark-fantasy',
+  fallbackTheme: NarrativeTheme = 'apocalyptic',
   isAuthenticated = false
 ): RecommendationResult {
-  // If not signed in yet: Show the most popular universe
+  // If not signed in yet: Show the signature apocalyptic universe
   if (!isAuthenticated) {
     return {
       theme: MOST_POPULAR_THEME,
-      badgeLabel: 'Most Popular',
+      badgeLabel: 'Featured Dossier',
       isPopular: true,
-      reason: 'Trending #1 universe across the Alterjot Atelier',
+      reason: 'Trending #1 chronicle across the Alterjot Archive',
     };
   }
 
@@ -162,7 +162,11 @@ export function calculateRecommendedTheme(
   }
 
   // 5. Signed-in author with fresh workspace: Curate based on saved preference or popular default
-  const storedTheme = (typeof window !== 'undefined' && localStorage.getItem('alterjot_preferred_theme') as NarrativeTheme) || fallbackTheme;
+  const storedTheme =
+    (typeof window !== 'undefined' &&
+      ((localStorage.getItem('endfiles_preferred_theme') ||
+        localStorage.getItem('alterjot_preferred_theme')) as NarrativeTheme)) ||
+    fallbackTheme;
   const initialTheme = storedTheme || MOST_POPULAR_THEME;
 
   return {

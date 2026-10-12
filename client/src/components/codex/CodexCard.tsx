@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { CodexEntry } from '../../types';
 import { Badge } from '../common/Badge';
-import { User, MapPin, Shield, Clock, ChevronDown, ChevronUp, Edit2, Trash2 } from 'lucide-react';
+import { User, MapPin, Shield, Clock, ChevronDown, ChevronUp, Edit2, Trash2, AlertTriangle, Package } from 'lucide-react';
 
 interface CodexCardProps {
   entry: CodexEntry;
@@ -22,6 +22,10 @@ export const CodexCard: React.FC<CodexCardProps> = ({ entry, onEdit, onDelete })
         return <Shield className="w-3.5 h-3.5 text-[#913d1e] dark:text-amber-400" />;
       case 'Timeline':
         return <Clock className="w-3.5 h-3.5 text-[#86294d] dark:text-rose-400" />;
+      case 'Hazards':
+        return <AlertTriangle className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />;
+      case 'Scavenge':
+        return <Package className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />;
     }
   };
 

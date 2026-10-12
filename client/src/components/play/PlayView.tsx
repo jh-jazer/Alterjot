@@ -57,11 +57,38 @@ export const PlayView: React.FC = () => {
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
-  // --- STORY SPARK SLOTS ---
-  const genres = ['Speculative Noir', 'Gothic Romance', 'Historical Mythos', 'Cyberpunk Outlaw', 'Cosmic Horror', 'Solarpunk'];
-  const protagonists = ['A disgraced watchmaker', 'A court herald with a counterfeit seal', 'An archivist who dreams in dead languages', 'A runaway lighthouse keeper', 'A botanical apothecary'];
-  const catalysts = ['receives an unsent letter from their future self', 'discovers that midnight lasted an extra two hours', 'finds a map drawn on human vellum', 'is hired by a patron who does not cast a reflection', 'witnesses the city bells chime in reverse'];
-  const twists = ['the antagonist is actually protecting them', 'the artifact will only work if willingly surrendered', 'every word spoken aloud leaves a temporary physical scar', 'the mentor lied about the prophecy'];
+  // --- STORY SPARK SLOTS (Collapse & Survival) ---
+  const genres = [
+    'Post-Apocalyptic Survival',
+    'Societal Collapse & The Fall',
+    'Nuclear Winter & Fallout',
+    'Biohazard & Pandemic Ruin',
+    'EMP & Tech Blackout',
+    'Bunker & Vault Dystopia',
+  ];
+  const protagonists = [
+    'A solitary Geiger scavenger',
+    'An ex-telecom technician guarding the last ham radio tower',
+    'A quarantine medic with three expiring ampoules of antitoxin',
+    'A vault hydro-engineer whose water filters just failed',
+    'A wandering cartographer tracing dead highway sectors',
+    'A convoy scout who knows which dead cities are booby-trapped',
+  ];
+  const catalysts = [
+    'picks up a repeating radio broadcast from an abandoned military bunker',
+    'discovers the radiation dosimeter has spiked 500% in a supposedly safe sanctuary',
+    'finds the underground aquifer contaminated with industrial ash',
+    'encounters an automated defense drone executing a forgotten war order',
+    'unearths a sealed pre-collapse fallout shelter bolted from the inside',
+    'intercepts a distress flare from an uncharted offshore oil platform',
+  ];
+  const twists = [
+    'the "clean sanctuary" enclave is running on an unshielded nuclear core',
+    'the broadcast was pre-recorded sixty years before society collapsed',
+    'the antidote works, but causes permanent memory loss of the old world',
+    'the ash storm on the horizon is not natural weather but a rogue atmospheric weapon',
+    'the scavenged ration crate is stamped with their own family name',
+  ];
 
   const [currentGenre, setCurrentGenre] = useState(genres[0]);
   const [currentProtagonist, setCurrentProtagonist] = useState(protagonists[0]);
@@ -75,9 +102,30 @@ export const PlayView: React.FC = () => {
     setCurrentTwist(twists[Math.floor(Math.random() * twists.length)]);
   };
 
-  // --- WORD ROULETTE ---
-  const wordBank = ['amber', 'parchment', 'solitude', 'obsidian', 'labyrinth', 'whisper', 'chronometer', 'mirror', 'fog', 'resonance', 'feather', 'silence', 'crescent', 'chimera', 'vellum', 'horizon'];
-  const [rouletteWords, setRouletteWords] = useState(['obsidian', 'chronometer', 'solitude']);
+  // --- WORD ROULETTE (Survival Terminology) ---
+  const wordBank = [
+    'fallout',
+    'geiger',
+    'dosimeter',
+    'ash',
+    'bunker',
+    'scavenge',
+    'rations',
+    'quarantine',
+    'blackout',
+    'static',
+    'cinder',
+    'perimeter',
+    'reactor',
+    'beacon',
+    'salvage',
+    'remnant',
+    'obsidian',
+    'aquifer',
+    'convoy',
+    'relic',
+  ];
+  const [rouletteWords, setRouletteWords] = useState(['geiger', 'bunker', 'rations']);
 
   const spinWordRoulette = () => {
     const shuffled = [...wordBank].sort(() => 0.5 - Math.random());
@@ -96,8 +144,8 @@ export const PlayView: React.FC = () => {
   if (!isAuthenticated) {
     return (
       <div className="flex-1 overflow-y-auto bg-canvas text-ink p-4 sm:p-8 flex items-center justify-center min-h-[70vh]">
-        <div className="max-w-md w-full text-center p-6 sm:p-8 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg space-y-4">
-          <div className="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center mx-auto shadow-sm">
+        <div className="max-w-md w-full text-center p-6 sm:p-8 rounded-xl bg-canvas-card border border-canvas-border shadow-parchment-lg space-y-4">
+          <div className="w-14 h-14 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center mx-auto shadow-sm">
             <Dices className="w-7 h-7" />
           </div>
           <div>
@@ -110,7 +158,7 @@ export const PlayView: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsAuthModalOpen(true, 'signin')}
-            className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-sm shadow-md shadow-brand-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-sm shadow-md shadow-brand-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
           >
             <span>Sign In to Access Playground</span>
           </button>
@@ -125,7 +173,7 @@ export const PlayView: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8 sm:space-y-12">
         
         {/* Play Banner Header (matching Dashboard cinematic dark card aesthetic) */}
-        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-5 sm:p-7 shadow-xl border border-black/10 flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
+        <div className="relative rounded-xl overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-5 sm:p-7 shadow-xl border border-black/10 flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
           {/* Ambient warm glow */}
           <div className="absolute right-0 top-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -172,7 +220,7 @@ export const PlayView: React.FC = () => {
               Writing Sprint
             </h2>
 
-            <div className="p-4 sm:p-6 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment flex flex-col justify-between space-y-6">
+            <div className="p-4 sm:p-6 rounded-xl bg-canvas-card border border-canvas-border shadow-parchment flex flex-col justify-between space-y-6">
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <span className="text-xs font-mono uppercase tracking-wider font-semibold text-brand-700">
@@ -184,7 +232,7 @@ export const PlayView: React.FC = () => {
                 </div>
 
                 {/* Big Digital Countdown */}
-                <div className="text-center py-6 px-4 rounded-2xl bg-canvas-surface border border-canvas-border">
+                <div className="text-center py-6 px-4 rounded-lg bg-canvas-surface border border-canvas-border">
                   <span className="font-mono text-5xl font-bold tracking-tight text-ink">
                     {formatTime(timeLeft)}
                   </span>
@@ -210,7 +258,7 @@ export const PlayView: React.FC = () => {
                       key={m}
                       type="button"
                       onClick={() => handleSetDuration(m)}
-                      className={`px-3 py-1.5 rounded-xl border transition-colors cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-md border transition-colors cursor-pointer ${
                         sprintMinutes === m
                           ? 'bg-brand-600 text-white border-brand-700 font-semibold'
                           : 'bg-canvas-card border-canvas-border text-ink-muted hover:text-ink'
@@ -228,7 +276,7 @@ export const PlayView: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setIsRunning(!isRunning)}
-                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-white font-serif font-semibold text-xs shadow-md transition-all active:scale-95 cursor-pointer ${
+                    className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-white font-serif font-semibold text-xs shadow-md transition-all active:scale-95 cursor-pointer ${
                       isRunning ? 'bg-amber-600 hover:bg-amber-700' : 'bg-brand-600 hover:bg-brand-700'
                     }`}
                   >
@@ -239,7 +287,7 @@ export const PlayView: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleResetTimer}
-                    className="p-2.5 rounded-xl bg-canvas-surface hover:bg-canvas-hover border border-canvas-border text-ink-muted hover:text-ink transition-colors cursor-pointer"
+                    className="p-2.5 rounded-lg bg-canvas-surface hover:bg-canvas-hover border border-canvas-border text-ink-muted hover:text-ink transition-colors cursor-pointer"
                     title="Reset Timer"
                   >
                     <RotateCcw className="w-4 h-4" />
@@ -249,7 +297,7 @@ export const PlayView: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleStartSprintInStudio}
-                  className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-canvas-surface hover:bg-canvas-hover border border-canvas-border text-ink-muted hover:text-brand-700 text-xs font-mono transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-canvas-surface hover:bg-canvas-hover border border-canvas-border text-ink-muted hover:text-brand-700 text-xs font-mono transition-colors cursor-pointer"
                 >
                   <span>Open Studio with Active Sprint</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -276,28 +324,28 @@ export const PlayView: React.FC = () => {
               </button>
             </div>
 
-            <div className="p-4 sm:p-6 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment flex flex-col justify-between space-y-5">
+            <div className="p-4 sm:p-6 rounded-xl bg-canvas-card border border-canvas-border shadow-parchment flex flex-col justify-between space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 {/* Genre Slot */}
-                <div className="p-3.5 rounded-xl bg-canvas-surface border border-canvas-border space-y-1">
+                <div className="p-3.5 rounded-lg bg-canvas-surface border border-canvas-border space-y-1">
                   <span className="text-[10px] font-mono text-ink-faint uppercase font-semibold">Genre</span>
                   <div className="font-serif font-bold text-sm text-brand-700">{currentGenre}</div>
                 </div>
 
                 {/* Protagonist Slot */}
-                <div className="p-3.5 rounded-xl bg-canvas-surface border border-canvas-border space-y-1">
+                <div className="p-3.5 rounded-lg bg-canvas-surface border border-canvas-border space-y-1">
                   <span className="text-[10px] font-mono text-ink-faint uppercase font-semibold">Protagonist</span>
                   <div className="font-serif font-medium text-ink">{currentProtagonist}</div>
                 </div>
 
                 {/* Catalyst Slot */}
-                <div className="p-3.5 rounded-xl bg-canvas-surface border border-canvas-border space-y-1 sm:col-span-2">
+                <div className="p-3.5 rounded-lg bg-canvas-surface border border-canvas-border space-y-1 sm:col-span-2">
                   <span className="text-[10px] font-mono text-ink-faint uppercase font-semibold">Inciting Catalyst</span>
                   <div className="font-serif font-medium text-ink leading-relaxed">{currentCatalyst}</div>
                 </div>
 
                 {/* Twist Slot */}
-                <div className="p-3.5 rounded-xl bg-canvas-surface border border-canvas-border space-y-1 sm:col-span-2">
+                <div className="p-3.5 rounded-lg bg-canvas-surface border border-canvas-border space-y-1 sm:col-span-2">
                   <span className="text-[10px] font-mono text-ink-faint uppercase font-semibold">Wildcard Twist</span>
                   <div className="font-serif italic text-amber-800 dark:text-amber-300 leading-relaxed">
                     &ldquo;...and {currentTwist}&rdquo;
@@ -332,7 +380,7 @@ export const PlayView: React.FC = () => {
                 <button
                   type="button"
                   onClick={startWritingImmediately}
-                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif text-xs font-semibold shadow-md transition-all w-full sm:w-auto cursor-pointer hover:scale-105 active:scale-95"
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-serif text-xs font-semibold shadow-md transition-all w-full sm:w-auto cursor-pointer hover:scale-105 active:scale-95"
                 >
                   <span>Draft With This Prompt</span>
                   <ArrowRight className="w-3.5 h-3.5" />

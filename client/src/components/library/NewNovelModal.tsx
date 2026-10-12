@@ -16,7 +16,7 @@ export const NewNovelModal: React.FC<NewNovelModalProps> = ({ isOpen, onClose, e
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [author, setAuthor] = useState('');
-  const [genre, setGenre] = useState('Literary Fiction');
+  const [genre, setGenre] = useState('Post-Apocalyptic Survival');
   const [targetWordCount, setTargetWordCount] = useState(80000);
   const [synopsis, setSynopsis] = useState('');
   const [status, setStatus] = useState<NovelStatus>('In Progress');
@@ -27,7 +27,7 @@ export const NewNovelModal: React.FC<NewNovelModalProps> = ({ isOpen, onClose, e
       setTitle(editingNovel.title);
       setSubtitle(editingNovel.subtitle || '');
       setAuthor(editingNovel.author || '');
-      setGenre(editingNovel.genre || 'General Fiction');
+      setGenre(editingNovel.genre || 'Post-Apocalyptic Survival');
       setTargetWordCount(editingNovel.targetWordCount || 80000);
       setSynopsis(editingNovel.synopsis || '');
       setStatus(editingNovel.status || 'In Progress');
@@ -35,7 +35,7 @@ export const NewNovelModal: React.FC<NewNovelModalProps> = ({ isOpen, onClose, e
       setTitle('');
       setSubtitle('');
       setAuthor('');
-      setGenre('Literary Fiction');
+      setGenre('Post-Apocalyptic Survival');
       setTargetWordCount(80000);
       setSynopsis('');
       setStatus('In Progress');
@@ -46,7 +46,7 @@ export const NewNovelModal: React.FC<NewNovelModalProps> = ({ isOpen, onClose, e
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const finalTitle = title.trim() || (editingNovel ? editingNovel.title : 'Untitled Manuscript');
+    const finalTitle = title.trim() || (editingNovel ? editingNovel.title : 'Untitled Dossier');
 
     setIsSubmitting(true);
     if (editingNovel) {
@@ -76,33 +76,33 @@ export const NewNovelModal: React.FC<NewNovelModalProps> = ({ isOpen, onClose, e
   };
 
   const genrePresets = [
-    'Literary Fiction',
-    'Historical Fiction',
-    'Speculative Noir',
-    'Sci-Fi / Cyberpunk',
-    'Fantasy & Mythos',
-    'Mystery & Crime',
-    'Gothic Romance',
-    'Memoir / Essay',
+    'Post-Apocalyptic Survival',
+    'Societal Collapse & The Fall',
+    'Nuclear Winter & Fallout',
+    'Biohazard & Pandemic Ruin',
+    'EMP & Tech Blackout',
+    'Ecological Cataclysm',
+    'Bunker & Vault Dystopia',
+    'Pre-Apocalyptic Countdown',
   ];
 
   const statuses: NovelStatus[] = ['Planning', 'In Progress', 'First Draft', 'Revision', 'Completed'];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-4 sm:p-6 text-ink">
+      <div className="w-full max-w-xl max-h-[92vh] overflow-y-auto rounded-xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-4 sm:p-6 text-ink">
         {/* Header */}
         <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-canvas-border">
           <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="p-2 rounded-xl bg-brand-50 text-brand-700 border border-brand-200 dark:bg-brand-600/20 dark:text-brand-300 flex-shrink-0">
+            <div className="p-2 rounded-lg bg-brand-50 text-brand-700 border border-brand-200 dark:bg-brand-600/20 dark:text-brand-300 flex-shrink-0">
               <BookPlus className="w-5 h-5" />
             </div>
             <div>
               <h3 className="text-lg sm:text-xl font-serif font-bold text-ink">
-                {editingNovel ? 'Edit Manuscript Details' : 'Begin a New Book'}
+                {editingNovel ? 'Edit Manuscript Dossier' : 'Initialize New Collapse Dossier'}
               </h3>
               <p className="text-xs text-ink-muted font-mono">
-                {editingNovel ? 'Update title, target goal, or metadata' : 'Set up your novel canvas and target word count'}
+                {editingNovel ? 'Update title, target goal, or metadata' : 'Set up your survival chronicle canvas and target word count'}
               </p>
             </div>
           </div>

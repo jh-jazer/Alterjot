@@ -3,7 +3,10 @@ import type { Novel, Chapter, Scene, CodexEntry } from '../types';
 const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
 
 function authFetch(input: RequestInfo | URL, init: RequestInit = {}): Promise<Response> {
-  const userId = typeof window !== 'undefined' ? localStorage.getItem('alterjot_user_id') || '' : '';
+  const userId =
+    typeof window !== 'undefined'
+      ? localStorage.getItem('endfiles_user_id') || localStorage.getItem('alterjot_user_id') || ''
+      : '';
   const headers = new Headers(init.headers || {});
   if (userId) {
     headers.set('x-user-id', userId);

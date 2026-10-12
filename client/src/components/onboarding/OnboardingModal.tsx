@@ -3,7 +3,7 @@ import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import { NARRATIVE_THEMES } from '../../data/narrativeThemes';
 import type { NarrativeTheme } from '../../types';
 import {
-  Feather,
+  Radio,
   Sparkles,
   Flame,
   Cog,
@@ -22,8 +22,8 @@ export const OnboardingModal: React.FC = () => {
 
   const [authorName, setAuthorName] = useState(penName || 'Ernest Quill');
   const [selectedTheme, setSelectedTheme] = useState<NarrativeTheme>('apocalyptic');
-  const [writingGoal, setWritingGoal] = useState('Epic Novel (50,000+ words)');
-  const [ambiance, setAmbiance] = useState('Nocturne Silence (Pure Distraction-Free Focus)');
+  const [writingGoal, setWritingGoal] = useState('Epic Survival Novel (50,000+ words)');
+  const [ambiance, setAmbiance] = useState('Dust & Whispering Wind');
 
   if (!isOnboardingModalOpen) return null;
 
@@ -45,40 +45,40 @@ export const OnboardingModal: React.FC = () => {
   };
 
   const goalOptions = [
-    { label: 'Epic Novel (50k+ words)', desc: 'Multi-chapter manuscript architecture' },
-    { label: 'Novella & Serial (15k–30k words)', desc: 'Focused narrative arcs & novellas' },
-    { label: 'Daily Writing Sprints (500w/day)', desc: 'Building consistent daily momentum' },
-    { label: 'Worldbuilding & Lore Codex', desc: 'Factions, characters, and mythology' },
+    { label: 'Epic Survival Novel (50k+ words)', desc: 'Multi-chapter collapse chronicle' },
+    { label: 'Black Box Novella (15k–30k words)', desc: 'Focused survival arcs & incident logs' },
+    { label: 'Daily Scavenger Sprints (500w/day)', desc: 'Consistent wasteland writing cadence' },
+    { label: 'Survival Codex & Worldbuilding', desc: 'Factions, hazards, outposts, and gear' },
   ];
 
   const ambianceOptions = [
-    { label: 'Nocturne Silence (Deep Focus)', desc: 'Pure distraction-free typography' },
     { label: 'Dust & Whispering Wind', desc: 'Desolate, evocative wasteland aura' },
-    { label: 'Typewriter Ribbon & Clockwork', desc: 'Mechanical retro editorial cadence' },
+    { label: 'Bunker Terminal Silence', desc: 'Distraction-free high contrast focus' },
+    { label: 'Typewriter Ribbon & Static', desc: 'Mechanical retro-survivalist cadence' },
   ];
 
   const currentThemeData = NARRATIVE_THEMES[selectedTheme];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-fadeIn overflow-y-auto">
-      <div className="w-full max-w-3xl my-6 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-5 sm:p-8 text-ink max-h-[92vh] overflow-y-auto">
+      <div className="w-full max-w-3xl my-6 rounded-xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-5 sm:p-8 text-ink max-h-[92vh] overflow-y-auto">
         {/* Header Banner */}
         <div className="flex items-center gap-3 pb-5 border-b border-canvas-border">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 to-amber-600 flex items-center justify-center text-white shadow-md shadow-brand-600/30 flex-shrink-0">
-            <Feather className="w-6 h-6" />
+          <div className="w-12 h-12 rounded-lg bg-gradient-to-tr from-amber-600 via-orange-600 to-amber-700 flex items-center justify-center text-white shadow-md shadow-amber-600/30 flex-shrink-0">
+            <Radio className="w-6 h-6 animate-pulse" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/25 dark:text-brand-300 font-bold">
-                Author Dossier Intake
+                Survivor Intake
               </span>
-              <span className="text-xs font-mono text-ink-muted hidden sm:inline">• 4 Quick Questions</span>
+              <span className="text-xs font-mono text-ink-muted hidden sm:inline">• Calibration Protocol</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink mt-0.5">
-              Welcome to Your Alterjot Atelier
+              Welcome to Alterjot
             </h2>
             <p className="text-xs text-ink-muted font-sans mt-0.5">
-              Let&apos;s calibrate your workspace, narrative universe, and creative challenges.
+              The distraction-free manuscript studio for novelists, worldbuilders, and storytellers.
             </p>
           </div>
         </div>
@@ -95,7 +95,7 @@ export const OnboardingModal: React.FC = () => {
               value={authorName}
               onChange={(e) => setAuthorName(e.target.value)}
               placeholder="e.g. Ernest Quill, Octavia Butler"
-              className="w-full px-3.5 py-2.5 text-sm rounded-xl bg-canvas-surface border border-canvas-border text-ink placeholder-ink-faint focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-500/20 shadow-xs font-serif"
+              className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-canvas-surface border border-canvas-border text-ink placeholder-ink-faint focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-500/20 shadow-xs font-serif"
             />
           </div>
 
@@ -120,7 +120,7 @@ export const OnboardingModal: React.FC = () => {
                     key={themeKey}
                     type="button"
                     onClick={() => setSelectedTheme(themeKey)}
-                    className={`p-3.5 rounded-xl border text-left transition-all relative flex flex-col justify-between cursor-pointer ${
+                    className={`p-3.5 rounded-lg border text-left transition-all relative flex flex-col justify-between cursor-pointer ${
                       isSelected
                         ? 'border-brand-600 bg-brand-50/70 dark:bg-brand-600/15 ring-2 ring-brand-500/30 shadow-sm'
                         : 'border-canvas-border bg-canvas-surface hover:border-brand-400/50 hover:bg-canvas-hover'
@@ -134,7 +134,7 @@ export const OnboardingModal: React.FC = () => {
 
                     <div>
                       <div className="flex items-center gap-2 mb-1.5">
-                        <div className="p-1.5 rounded-lg bg-canvas-card border border-canvas-border">
+                        <div className="p-1.5 rounded-md bg-canvas-card border border-canvas-border">
                           {themeIcons[themeKey]}
                         </div>
                         <div className="min-w-0 pr-5">
@@ -161,7 +161,7 @@ export const OnboardingModal: React.FC = () => {
             </div>
 
             {/* Preview of chosen theme */}
-            <div className="p-3 rounded-xl bg-canvas-surface border border-canvas-border flex items-start gap-3">
+            <div className="p-3 rounded-lg bg-canvas-surface border border-canvas-border flex items-start gap-3">
               <Compass className="w-4 h-4 text-brand-600 mt-0.5 flex-shrink-0" />
               <div className="text-xs">
                 <span className="font-semibold text-ink font-serif">Selected Universe Motif: </span>
@@ -184,7 +184,7 @@ export const OnboardingModal: React.FC = () => {
                   key={opt.label}
                   type="button"
                   onClick={() => setWritingGoal(opt.label)}
-                  className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
+                  className={`p-2.5 rounded-lg border text-left text-xs transition-all cursor-pointer ${
                     writingGoal === opt.label
                       ? 'border-brand-600 bg-brand-50/70 dark:bg-brand-600/15 font-semibold text-brand-900 dark:text-brand-200'
                       : 'border-canvas-border bg-canvas-surface text-ink-muted hover:border-canvas-border hover:bg-canvas-hover'
@@ -208,7 +208,7 @@ export const OnboardingModal: React.FC = () => {
                   key={opt.label}
                   type="button"
                   onClick={() => setAmbiance(opt.label)}
-                  className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
+                  className={`p-2.5 rounded-lg border text-left text-xs transition-all cursor-pointer ${
                     ambiance === opt.label
                       ? 'border-brand-600 bg-brand-50/70 dark:bg-brand-600/15 font-semibold text-brand-900 dark:text-brand-200'
                       : 'border-canvas-border bg-canvas-surface text-ink-muted hover:border-canvas-border hover:bg-canvas-hover'
@@ -228,7 +228,7 @@ export const OnboardingModal: React.FC = () => {
             </p>
             <button
               type="submit"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-sm shadow-md shadow-brand-600/30 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-sm shadow-md shadow-brand-600/30 transition-all hover:scale-105 active:scale-95 cursor-pointer"
             >
               <span>Enter Atelier in {currentThemeData.name.split('&')[0].trim()}</span>
               <ArrowRight className="w-4 h-4" />

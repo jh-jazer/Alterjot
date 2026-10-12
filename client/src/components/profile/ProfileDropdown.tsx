@@ -105,7 +105,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   // Notifications state
   const [notifications, setNotifications] = useState<NotificationItem[]>(() => {
     try {
-      const saved = localStorage.getItem('alterjot_notifications_data');
+      const saved = localStorage.getItem('alterjot_notifications_data') || localStorage.getItem('endfiles_notifications_data');
       return saved ? JSON.parse(saved) : DEFAULT_NOTIFICATIONS;
     } catch {
       return DEFAULT_NOTIFICATIONS;
@@ -115,7 +115,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   // Settings state persisted in localStorage
   const [dailyGoal, setDailyGoal] = useState<number>(() => {
     try {
-      return Number(localStorage.getItem('alterjot_daily_word_goal')) || 500;
+      return Number(localStorage.getItem('alterjot_daily_word_goal') || localStorage.getItem('endfiles_daily_word_goal')) || 500;
     } catch {
       return 500;
     }
@@ -123,7 +123,8 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
   const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('alterjot_sound_effects') !== 'false';
+      const stored = localStorage.getItem('alterjot_sound_effects') || localStorage.getItem('endfiles_sound_effects');
+      return stored !== 'false';
     } catch {
       return true;
     }
@@ -131,7 +132,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
   const [autoSaveFreq, setAutoSaveFreq] = useState<'instant' | '30s' | '60s'>(() => {
     try {
-      return (localStorage.getItem('alterjot_autosave_freq') as any) || '30s';
+      return ((localStorage.getItem('alterjot_autosave_freq') || localStorage.getItem('endfiles_autosave_freq')) as any) || '30s';
     } catch {
       return '30s';
     }
@@ -182,6 +183,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   const saveNotifications = (items: NotificationItem[]) => {
     setNotifications(items);
     try {
+      localStorage.setItem('endfiles_notifications_data', JSON.stringify(items));
       localStorage.setItem('alterjot_notifications_data', JSON.stringify(items));
     } catch {}
   };
@@ -221,6 +223,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   const handleSaveDailyGoal = (goal: number) => {
     setDailyGoal(goal);
     try {
+      localStorage.setItem('endfiles_daily_word_goal', String(goal));
       localStorage.setItem('alterjot_daily_word_goal', String(goal));
     } catch {}
   };
@@ -229,6 +232,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
     const next = !soundEnabled;
     setSoundEnabled(next);
     try {
+      localStorage.setItem('endfiles_sound_effects', String(next));
       localStorage.setItem('alterjot_sound_effects', String(next));
     } catch {}
   };
@@ -236,6 +240,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   const handleSetAutoSave = (freq: 'instant' | '30s' | '60s') => {
     setAutoSaveFreq(freq);
     try {
+      localStorage.setItem('endfiles_autosave_freq', freq);
       localStorage.setItem('alterjot_autosave_freq', freq);
     } catch {}
   };
@@ -247,7 +252,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
       ref={containerRef}
       className={`absolute ${
         align === 'right' ? 'right-0' : 'left-0'
-      } mt-2 w-84 sm:w-[350px] max-w-[calc(100vw-24px)] rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150 text-ink select-none`}
+      } mt-2 w-84 sm:w-[350px] max-w-[calc(100vw-24px)] rounded-xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150 text-ink select-none`}
     >
       {/* 1. ROOT MENU VIEW: User sees Profile, Notifications, Settings */}
       {activeView === 'menu' && (

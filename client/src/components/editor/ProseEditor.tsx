@@ -53,7 +53,7 @@ export const ProseEditor: React.FC = () => {
       }),
       CharacterCount,
       Placeholder.configure({
-        placeholder: 'Begin drafting your scene...',
+        placeholder: 'Record transmission log: Document what remains...',
         emptyNodeClass: 'is-editor-empty',
       }),
       Typography,
@@ -186,8 +186,8 @@ export const ProseEditor: React.FC = () => {
         <div
           className={`w-full transition-all duration-300 ${
             isZenMode
-              ? 'max-w-3xl my-3 sm:my-6 bg-canvas-card/90 rounded-xl sm:rounded-2xl border border-canvas-border/80 shadow-parchment-lg p-2 sm:p-4 md:p-6'
-              : 'max-w-4xl bg-canvas-card rounded-xl sm:rounded-2xl border border-canvas-border shadow-parchment'
+              ? 'max-w-3xl my-3 sm:my-6 bg-canvas-card/90 rounded-md sm:rounded-lg border border-canvas-border/80 shadow-parchment-lg p-2 sm:p-4 md:p-6'
+              : 'max-w-4xl bg-canvas-card rounded-md sm:rounded-lg border border-canvas-border shadow-parchment'
           }`}
         >
           {/* Optional Scene Title Header (Freeform & Flexible) */}

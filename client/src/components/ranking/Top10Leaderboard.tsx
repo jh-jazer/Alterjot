@@ -5,8 +5,6 @@ import {
   Trophy,
   Flame,
   User,
-  ArrowRight,
-  Sparkles,
   BookOpen,
 } from 'lucide-react';
 
@@ -20,7 +18,6 @@ export const Top10Leaderboard: React.FC<Top10LeaderboardProps> = ({
   const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
   const penName = useWorkspaceStore((s) => s.penName);
   const novels = useWorkspaceStore((s) => s.novels);
-  const openRanking = useWorkspaceStore((s) => s.openRanking);
   const setIsAuthModalOpen = useWorkspaceStore((s) => s.setIsAuthModalOpen);
 
   const totalWords = novels.reduce((acc, n) => acc + (n.totalWordCount || 0), 0);
@@ -58,51 +55,22 @@ export const Top10Leaderboard: React.FC<Top10LeaderboardProps> = ({
   return (
     <div className="space-y-4">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="space-y-0.5">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-500 flex items-center justify-center flex-shrink-0">
-              <Trophy className="w-4 h-4" />
-            </div>
-            <h3 className="text-xl font-serif font-bold text-ink tracking-tight flex items-center gap-2">
-              Leaderboard
-              <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 font-semibold">
-                Top 10 Scribes
-              </span>
-            </h3>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-500 flex items-center justify-center flex-shrink-0">
+            <Trophy className="w-4 h-4" />
           </div>
-          <p className="text-xs text-ink-muted font-mono">
-            Highest manuscript velocity and word output across the atelier
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2.5 self-start sm:self-auto">
-          {!isAuthenticated ? (
-            <button
-              type="button"
-              onClick={() => setIsAuthModalOpen(true, 'signin')}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-serif text-xs font-semibold shadow-xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
-              title="Sign in to record words and join the leaderboard"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Sign In to Join Ranks</span>
-            </button>
-          ) : null}
-
-          <button
-            type="button"
-            onClick={openRanking}
-            className="inline-flex items-center gap-1 text-xs font-mono text-brand-700 hover:text-brand-800 dark:text-brand-400 font-semibold group cursor-pointer"
-            title="Open full leaderboard view"
-          >
-            <span>View Full Standings</span>
-            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-          </button>
+          <h3 className="text-xl font-serif font-bold text-ink tracking-tight flex items-center gap-2">
+            Leaderboard
+            <span className="text-[10px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 font-semibold">
+              Top 10 Scribes
+            </span>
+          </h3>
         </div>
       </div>
 
       {/* Top 10 Table Container */}
-      <div className="rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment overflow-hidden">
+      <div className="rounded-xl bg-canvas-card border border-canvas-border shadow-parchment overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-sans">
             <thead className="bg-canvas-surface border-b border-canvas-border text-[10px] font-mono uppercase text-ink-muted tracking-wider">

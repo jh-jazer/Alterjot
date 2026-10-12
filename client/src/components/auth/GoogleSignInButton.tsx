@@ -123,7 +123,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
         <button
           type="button"
           onClick={handleCustomClick}
-          className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/80 hover:bg-neutral-50 dark:hover:bg-neutral-700/60 text-sm font-medium text-neutral-800 dark:text-neutral-100 transition-all shadow-xs active:scale-[0.99] cursor-pointer"
+          className="w-full flex items-center justify-center gap-2.5 py-3 px-4 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800/80 hover:bg-neutral-50 dark:hover:bg-neutral-700/60 text-sm font-medium text-neutral-800 dark:text-neutral-100 transition-all shadow-xs active:scale-[0.99] cursor-pointer"
         >
           {/* Authentic Google Multi-Color G Icon */}
           <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
@@ -158,7 +158,7 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({ onSucces
       </div>
 
       {errorMessage && (
-        <div className="flex items-center gap-1.5 text-xs text-rose-600 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 p-2 rounded-xl mt-2 w-full">
+        <div className="flex items-center gap-1.5 text-xs text-rose-600 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 p-2 rounded-lg mt-2 w-full">
           <AlertCircle className="w-3.5 h-3.5 shrink-0" />
           <span className="truncate">{errorMessage}</span>
         </div>

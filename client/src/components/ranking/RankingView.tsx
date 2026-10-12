@@ -19,35 +19,35 @@ export const RankingView: React.FC = () => {
 
   const totalWords = novels.reduce((acc, n) => acc + (n.totalWordCount || 0), 0);
 
-  // Author Tier Calculation
+  // Author Tier Calculation for apocalyptic chroniclers
   const getAuthorRank = (words: number) => {
     if (words >= 60000) {
       return {
-        title: 'Master Lorekeeper',
-        badge: 'Grand Atelier',
+        title: 'Doomsday Cartographer',
+        badge: 'Overseer of the Fall',
         color: 'text-amber-700 bg-amber-50 border-amber-300 dark:bg-amber-600/20 dark:text-amber-300',
         nextThreshold: 100000,
       };
     }
     if (words >= 25000) {
       return {
-        title: 'Seasoned Novelist',
-        badge: 'Senior Scribe',
+        title: 'Enclave Lorekeeper',
+        badge: 'Black Box Historian',
         color: 'text-[#2e4785] bg-[#e1e9f8] border-[#a8bee7] dark:bg-indigo-600/20 dark:text-indigo-300',
         nextThreshold: 60000,
       };
     }
     if (words >= 5000) {
       return {
-        title: 'Journeyman Author',
-        badge: 'Atelier Artisan',
+        title: 'Bunker Chronicler',
+        badge: 'Vault Scribe',
         color: 'text-[#245b32] bg-[#dff0e4] border-[#a0cea9] dark:bg-emerald-600/20 dark:text-emerald-300',
         nextThreshold: 25000,
       };
     }
     return {
-      title: 'Apprentice Scribe',
-      badge: 'Novice Quill',
+      title: 'Wasteland Drifter',
+      badge: 'Scavenger Scribe',
       color: 'text-brand-800 bg-brand-50 border-brand-200 dark:bg-brand-600/20 dark:text-brand-300',
       nextThreshold: 5000,
     };
@@ -88,7 +88,7 @@ export const RankingView: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-6 sm:space-y-10">
         
         {/* Banner Header (matching Dashboard cinematic dark card aesthetic) */}
-        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-5 sm:p-7 shadow-xl border border-black/10 flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
+        <div className="relative rounded-xl overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-5 sm:p-7 shadow-xl border border-black/10 flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
           {/* Ambient warm glow */}
           <div className="absolute right-0 top-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -121,11 +121,11 @@ export const RankingView: React.FC = () => {
 
         {/* AUTHOR CURRENT TIER CARD (for Authenticated Users) OR GUEST WELCOME CARD (for Guests) */}
         {isAuthenticated ? (
-          <div className="p-4 sm:p-6 rounded-2xl bg-[#1e1c19] text-white border border-black/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
+          <div className="p-4 sm:p-6 rounded-xl bg-[#1e1c19] text-white border border-black/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
             <div className="absolute right-0 top-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 relative z-10">
-              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
+              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
                 <Trophy className="w-5 sm:w-6 h-5 sm:h-6" />
               </div>
 
@@ -192,11 +192,11 @@ export const RankingView: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="p-4 sm:p-6 rounded-2xl bg-[#1e1c19] text-white border border-black/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
+          <div className="p-4 sm:p-6 rounded-xl bg-[#1e1c19] text-white border border-black/20 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5 relative overflow-hidden">
             <div className="absolute right-0 top-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
             <div className="flex items-center gap-3.5 sm:gap-4 min-w-0 relative z-10">
-              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
+              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center flex-shrink-0 shadow-inner">
                 <Trophy className="w-5 sm:w-6 h-5 sm:h-6" />
               </div>
 
@@ -243,7 +243,7 @@ export const RankingView: React.FC = () => {
             </span>
           </div>
 
-          <div className="rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment overflow-hidden">
+          <div className="rounded-xl bg-canvas-card border border-canvas-border shadow-parchment overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs font-sans">
                 <thead className="bg-canvas-surface border-b border-canvas-border text-[10px] font-mono uppercase text-ink-muted tracking-wider">

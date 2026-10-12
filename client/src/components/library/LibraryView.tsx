@@ -36,8 +36,8 @@ export const LibraryView: React.FC = () => {
   if (!isAuthenticated) {
     return (
       <div className="flex-1 overflow-y-auto bg-canvas text-ink p-4 sm:p-8 flex items-center justify-center min-h-[70vh]">
-        <div className="max-w-md w-full text-center p-6 sm:p-8 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment-lg space-y-4">
-          <div className="w-14 h-14 rounded-2xl bg-brand-50 text-brand-700 dark:bg-brand-600/20 dark:text-brand-300 border border-brand-200 dark:border-brand-500/30 flex items-center justify-center mx-auto shadow-sm">
+        <div className="max-w-md w-full text-center p-6 sm:p-8 rounded-xl bg-canvas-card border border-canvas-border shadow-parchment-lg space-y-4">
+          <div className="w-14 h-14 rounded-xl bg-brand-50 text-brand-700 dark:bg-brand-600/20 dark:text-brand-300 border border-brand-200 dark:border-brand-500/30 flex items-center justify-center mx-auto shadow-sm">
             <BookOpen className="w-7 h-7" />
           </div>
           <div>
@@ -50,7 +50,7 @@ export const LibraryView: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsAuthModalOpen(true, 'signin')}
-            className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-sm shadow-md shadow-brand-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-sm shadow-md shadow-brand-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
           >
             <span>Sign In to Unlock Shelf</span>
           </button>
@@ -113,7 +113,7 @@ export const LibraryView: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-6 sm:space-y-10">
         
         {/* Library Desk Hero Banner (matching Dashboard cinematic dark card aesthetic) */}
-        <div className="relative rounded-2xl overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-5 sm:p-7 shadow-xl border border-black/10 flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
+        <div className="relative rounded-xl overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-5 sm:p-7 shadow-xl border border-black/10 flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
           {/* Ambient soft glow */}
           <div className="absolute right-0 top-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -210,8 +210,8 @@ export const LibraryView: React.FC = () => {
           </div>
 
           {novels.length === 0 ? (
-            <div className="min-h-[430px] sm:min-h-[460px] py-16 sm:py-20 px-4 sm:px-6 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment text-center flex flex-col items-center justify-center">
-              <div className="w-14 sm:w-16 h-14 sm:h-16 rounded-2xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-brand-700 mx-auto mb-4 shadow-xs">
+            <div className="min-h-[430px] sm:min-h-[460px] py-16 sm:py-20 px-4 sm:px-6 rounded-xl bg-canvas-card border border-canvas-border shadow-parchment text-center flex flex-col items-center justify-center">
+              <div className="w-14 sm:w-16 h-14 sm:h-16 rounded-xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-brand-700 mx-auto mb-4 shadow-xs">
                 <Book className="w-7 sm:w-8 h-7 sm:h-8" />
               </div>
               <h3 className="text-lg sm:text-xl font-serif font-bold text-ink mb-1">
@@ -223,14 +223,14 @@ export const LibraryView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsNewNovelModalOpen(true)}
-                className="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-xs shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                className="px-5 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-xs shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer"
               >
                 Create First Manuscript
               </button>
             </div>
           ) : filteredNovels.length === 0 ? (
-            <div className="min-h-[430px] sm:min-h-[460px] py-16 sm:py-20 px-4 sm:px-6 rounded-2xl bg-canvas-card border border-canvas-border shadow-parchment text-center flex flex-col items-center justify-center">
-              <div className="w-12 sm:w-14 h-12 sm:h-14 rounded-2xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-ink-muted mx-auto mb-3 shadow-xs">
+            <div className="min-h-[430px] sm:min-h-[460px] py-16 sm:py-20 px-4 sm:px-6 rounded-xl bg-canvas-card border border-canvas-border shadow-parchment text-center flex flex-col items-center justify-center">
+              <div className="w-12 sm:w-14 h-12 sm:h-14 rounded-xl bg-canvas-surface border border-canvas-border flex items-center justify-center text-ink-muted mx-auto mb-3 shadow-xs">
                 <Search className="w-5 sm:w-6 h-5 sm:h-6 text-brand-600" />
               </div>
               <h3 className="text-lg sm:text-xl font-serif font-bold text-ink mb-1">
@@ -242,7 +242,7 @@ export const LibraryView: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setLibrarySearchQuery('')}
-                className="px-4 py-2 rounded-xl bg-canvas-surface hover:bg-canvas-hover border border-canvas-border text-xs font-mono font-medium text-ink shadow-xs transition-colors cursor-pointer"
+                className="px-4 py-2 rounded-lg bg-canvas-surface hover:bg-canvas-hover border border-canvas-border text-xs font-mono font-medium text-ink shadow-xs transition-colors cursor-pointer"
               >
                 Clear Search
               </button>
@@ -258,7 +258,7 @@ export const LibraryView: React.FC = () => {
                   <div
                     key={novel._id}
                     onClick={() => handleOpenBook(novel._id)}
-                    className="rounded-2xl border border-canvas-border bg-canvas-card hover:border-brand-500/70 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-col justify-between overflow-hidden relative"
+                    className="rounded-xl border border-canvas-border bg-canvas-card hover:border-brand-500/70 transition-all duration-300 shadow-parchment hover:shadow-parchment-lg cursor-pointer group flex flex-col justify-between overflow-hidden relative"
                   >
                     {/* Top ribbon accent (unified for all manuscripts) */}
                     <div className="h-1.5 w-full bg-gradient-to-r from-brand-700 via-amber-600/70 to-brand-800" />

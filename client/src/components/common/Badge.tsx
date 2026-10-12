@@ -31,6 +31,12 @@ export const Badge: React.FC<BadgeProps> = ({ status, size = 'sm' }) => {
     case 'Timeline':
       colorStyles = 'bg-[#f8e2ec] text-[#86294d] border-[#dfa9c0] dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800/40';
       break;
+    case 'Hazards':
+      colorStyles = 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950/50 dark:text-rose-300 dark:border-rose-800/50';
+      break;
+    case 'Scavenge':
+      colorStyles = 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-800/50';
+      break;
   }
 
   const sizeStyles = size === 'sm' ? 'text-[11px] px-2 py-0.5' : 'text-xs px-2.5 py-1';

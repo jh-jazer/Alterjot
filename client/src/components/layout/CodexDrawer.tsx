@@ -75,7 +75,7 @@ export const CodexDrawer: React.FC = () => {
       <div className="p-4 border-b border-canvas-border flex items-center justify-between bg-canvas-subtle/50">
         <div className="flex items-center gap-2">
           <BookMarked className="w-4 h-4 text-brand-700" />
-          <h3 className="font-serif font-bold text-ink text-sm tracking-wide">World Codex & Lore</h3>
+          <h3 className="font-serif font-bold text-ink text-sm tracking-wide">Survival Codex & Lore</h3>
         </div>
         <div className="flex items-center gap-1">
           <button
@@ -104,13 +104,13 @@ export const CodexDrawer: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search characters, factions, places..."
+            placeholder="Search survivors, outposts, hazards, scavenge..."
             className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-canvas-card border border-canvas-border text-xs text-ink placeholder-ink-faint focus:outline-none focus:border-brand-600 shadow-xs"
           />
         </div>
 
         <div className="flex items-center gap-1 mt-2.5 overflow-x-auto pb-1 scrollbar-none text-[11px] font-mono">
-          {(['All', 'Characters', 'Locations', 'Factions', 'Timeline'] as const).map((tab) => (
+          {(['All', 'Characters', 'Locations', 'Factions', 'Hazards', 'Scavenge', 'Timeline'] as const).map((tab) => (
             <button
               key={tab}
               type="button"
@@ -121,7 +121,13 @@ export const CodexDrawer: React.FC = () => {
                   : 'bg-canvas-card border-canvas-border text-ink-muted hover:text-ink hover:bg-canvas-hover'
               }`}
             >
-              {tab}
+              {tab === 'Characters'
+                ? 'Survivors'
+                : tab === 'Locations'
+                ? 'Outposts / Ruins'
+                : tab === 'Timeline'
+                ? 'Incidents'
+                : tab}
             </button>
           ))}
         </div>

@@ -3,7 +3,7 @@
   "id": "/?source=pwa",
   "name": "Alterjot — Distraction-Free Manuscript Studio",
   "short_name": "Alterjot",
-  "description": "A distraction-free, professional novel writing studio with retro editorial palette, TipTap Prose canvas, and world codex.",
+  "description": "A distraction-free manuscript studio for novelists, worldbuilders, and storytellers.",
   "start_url": "/",
   "scope": "/",
   "lang": "en-US",
@@ -16,8 +16,8 @@
     "browser"
   ],
   "orientation": "any",
-  "background_color": "#fbf9f4",
-  "theme_color": "#fbf9f4",
+  "background_color": "#0b0c0e",
+  "theme_color": "#0b0c0e",
   "categories": [
     "productivity",
     "books",
