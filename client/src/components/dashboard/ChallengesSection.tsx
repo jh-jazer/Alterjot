@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import vampireSiegeBanner from '../../assets/vampire_siege_banner.jpg';
 import elevatorDeliveryBanner from '../../assets/elevator_delivery_banner.jpg';
@@ -29,6 +30,7 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
   showPlaygroundLink: _showPlaygroundLink = true,
   className = '',
 }) => {
+  const navigate = useNavigate();
   const openChallenge = useWorkspaceStore((s) => s.openChallenge);
   const preferredTheme = useWorkspaceStore((s) => s.preferredTheme);
 
@@ -233,7 +235,9 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
         onPointerCancel={handlePointerCancel}
         onClick={() => {
           if (hasDraggedRef.current || isDragging) return;
-          openChallenge(slides[currentSlideIndex].challengeId);
+          const cid = slides[currentSlideIndex].challengeId;
+          openChallenge(cid);
+          navigate(`/challenge/${cid}`);
         }}
         className={`w-full relative rounded-none overflow-hidden shadow-none border-b border-canvas-border hover:border-brand-500/40 transition-all duration-300 group select-none bg-stone-950 touch-pan-y ${
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
@@ -308,6 +312,7 @@ export const ChallengesSection: React.FC<ChallengesSectionProps> = ({
                           e.stopPropagation();
                           if (hasDraggedRef.current) return;
                           openChallenge(slide.challengeId);
+                          navigate(`/challenge/${slide.challengeId}`);
                         }}
                         className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2 sm:py-2.5 rounded-none bg-amber-500 hover:bg-amber-400 text-stone-950 font-serif font-extrabold text-xs sm:text-sm shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer uppercase tracking-wider"
                       >

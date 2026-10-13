@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import { LayoutDashboard, Dices, Trophy, BookOpen } from 'lucide-react';
 
 export const MobileBottomNav: React.FC = () => {
+  const navigate = useNavigate();
   const currentView = useWorkspaceStore((s) => s.currentView);
   const openDashboard = useWorkspaceStore((s) => s.openDashboard);
   const openPlay = useWorkspaceStore((s) => s.openPlay);
@@ -20,28 +22,40 @@ export const MobileBottomNav: React.FC = () => {
       label: 'Desk',
       icon: LayoutDashboard,
       active: currentView === 'dashboard' || currentView === 'landing',
-      onClick: openDashboard,
+      onClick: () => {
+        openDashboard();
+        navigate('/dashboard');
+      },
     },
     {
       id: 'play',
       label: 'Play',
       icon: Dices,
       active: currentView === 'play',
-      onClick: openPlay,
+      onClick: () => {
+        openPlay();
+        navigate('/play');
+      },
     },
     {
       id: 'ranking',
       label: 'Rank',
       icon: Trophy,
       active: currentView === 'ranking',
-      onClick: openRanking,
+      onClick: () => {
+        openRanking();
+        navigate('/ranking');
+      },
     },
     {
       id: 'library',
       label: 'Library',
       icon: BookOpen,
       active: currentView === 'library',
-      onClick: openLibrary,
+      onClick: () => {
+        openLibrary();
+        navigate('/library');
+      },
     },
   ];
 
