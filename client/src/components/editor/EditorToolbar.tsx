@@ -70,7 +70,7 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
       : 'Mono';
 
   return (
-    <div className="flex items-center justify-between gap-3 px-2.5 sm:px-4 py-1.5 sm:py-2 border-b border-canvas-border bg-canvas/80 backdrop-blur-md text-ink-muted transition-colors select-none overflow-x-auto scrollbar-none">
+    <div className="relative z-20 flex items-center justify-between gap-3 px-2.5 sm:px-4 py-1.5 sm:py-2 border-b border-canvas-border bg-canvas/95 backdrop-blur-md text-ink-muted transition-colors select-none">
       {/* Left Formatting Tools */}
       <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
         {/* Headings & Text Style Dropdown (p1, h1, h2, h3) */}
@@ -348,46 +348,6 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
               </button>
             </div>
           )}
-        </div>
-
-        {/* Line Height Selector */}
-        <div className="flex items-center rounded-lg bg-canvas-card border border-canvas-border p-0.5 shadow-xs">
-          <button
-            type="button"
-            onClick={() => setTypography({ lineHeight: 'compact' })}
-            className={`px-2 py-1 rounded transition-colors cursor-pointer ${
-              typography.lineHeight === 'compact'
-                ? 'bg-brand-600 text-white font-medium shadow-xs'
-                : 'text-ink-muted hover:text-ink'
-            }`}
-            title="Compact Line Spacing (1.5x)"
-          >
-            1.5x
-          </button>
-          <button
-            type="button"
-            onClick={() => setTypography({ lineHeight: 'normal' })}
-            className={`px-2 py-1 rounded transition-colors cursor-pointer ${
-              typography.lineHeight === 'normal'
-                ? 'bg-brand-600 text-white font-medium shadow-xs'
-                : 'text-ink-muted hover:text-ink'
-            }`}
-            title="Normal Line Spacing (1.8x)"
-          >
-            1.8x
-          </button>
-          <button
-            type="button"
-            onClick={() => setTypography({ lineHeight: 'relaxed' })}
-            className={`px-2 py-1 rounded transition-colors cursor-pointer ${
-              typography.lineHeight === 'relaxed'
-                ? 'bg-brand-600 text-white font-medium shadow-xs'
-                : 'text-ink-muted hover:text-ink'
-            }`}
-            title="Relaxed Line Spacing (2.0x)"
-          >
-            2.0x
-          </button>
         </div>
       </div>
     </div>
