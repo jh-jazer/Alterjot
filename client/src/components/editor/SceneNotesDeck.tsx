@@ -4,8 +4,6 @@ import {
   ChevronDown,
   Plus,
   Check,
-  ChevronLeft,
-  ChevronRight,
   Edit3,
 } from 'lucide-react';
 import type { Scene, SceneStatus, SceneMetadata } from '../../types';
@@ -68,17 +66,6 @@ export const SceneNotesDeck: React.FC<SceneNotesDeckProps> = ({ scene }) => {
     }
   };
 
-  const handlePrevChapter = () => {
-    if (activeChapterIndex > 0) {
-      selectChapter(chapters[activeChapterIndex - 1]._id);
-    }
-  };
-
-  const handleNextChapter = () => {
-    if (activeChapterIndex < chapters.length - 1) {
-      selectChapter(chapters[activeChapterIndex + 1]._id);
-    }
-  };
 
   return (
     <div className="border-b border-canvas-border bg-canvas-subtle/70 px-3 sm:px-6 py-2 transition-colors flex items-center justify-between gap-3 text-xs select-none">
@@ -171,36 +158,12 @@ export const SceneNotesDeck: React.FC<SceneNotesDeckProps> = ({ scene }) => {
         </div>
       </div>
 
-      {/* Steppers & New Chapter Quick Action */}
+      {/* New Chapter Quick Action */}
       <div className="flex items-center gap-1 flex-shrink-0">
         <button
           type="button"
-          onClick={handlePrevChapter}
-          disabled={activeChapterIndex <= 0}
-          className="p-1 rounded-md text-ink-muted hover:text-ink hover:bg-canvas-hover disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
-          title="Previous Chapter"
-        >
-          <ChevronLeft className="w-3.5 h-3.5" />
-        </button>
-
-        <span className="text-[11px] font-mono text-ink-muted px-1">
-          {activeChapterIndex >= 0 ? activeChapterIndex + 1 : 1} / {chapters.length}
-        </span>
-
-        <button
-          type="button"
-          onClick={handleNextChapter}
-          disabled={activeChapterIndex >= chapters.length - 1}
-          className="p-1 rounded-md text-ink-muted hover:text-ink hover:bg-canvas-hover disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
-          title="Next Chapter"
-        >
-          <ChevronRight className="w-3.5 h-3.5" />
-        </button>
-
-        <button
-          type="button"
           onClick={handleCreateNew}
-          className="ml-1 flex items-center gap-1 px-2 py-1 rounded-lg bg-canvas-card hover:bg-canvas-hover border border-canvas-border text-[11px] font-mono text-ink transition-colors cursor-pointer"
+          className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-canvas-card hover:bg-canvas-hover border border-canvas-border text-[11px] font-mono text-ink transition-colors cursor-pointer shadow-2xs"
           title="Create New Chapter"
         >
           <Plus className="w-3 h-3 text-brand-600 dark:text-amber-400" />
