@@ -128,10 +128,10 @@ export const WorkstationNavbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Section: Workstation Menu Button & Dedicated Workstation Tools */}
+        {/* Right Section: Mobile Menu & Desktop Workstation Tools */}
         <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-          {/* Workstation Menu Button & Dropdown */}
-          <div className="relative" ref={mobileMenuRef}>
+          {/* Mobile Only: Workstation Menu Button & Dropdown */}
+          <div className="relative sm:hidden" ref={mobileMenuRef}>
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -351,6 +351,22 @@ export const WorkstationNavbar: React.FC = () => {
               </>
             )}
           </div>
+
+          {/* Desktop Only: AI Narrative Copilot Button (replaces Menu Button on desktop) */}
+          <button
+            type="button"
+            onClick={toggleAiAssistant}
+            className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-mono font-medium transition-all cursor-pointer shadow-2xs ${
+              panelState.isAiAssistantOpen
+                ? 'bg-blue-500/15 border-blue-500/40 text-blue-700 dark:text-blue-300 ring-2 ring-blue-500/20 font-semibold'
+                : 'border-canvas-border bg-canvas-card hover:bg-canvas-hover text-ink-muted hover:text-ink'
+            }`}
+            title="AI Narrative Copilot (Line Critique & Rewrite)"
+            aria-label="AI Narrative Copilot"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <span>AI</span>
+          </button>
 
           {/* DESKTOP ONLY: Dedicated Workstation Tools Group */}
           <div className="hidden sm:flex items-center gap-1 sm:gap-2">
