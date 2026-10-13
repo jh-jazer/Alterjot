@@ -34,7 +34,6 @@ export const ProseEditor: React.FC = () => {
   const [wordCount, setWordCount] = useState(activeScene?.wordCount || 0);
   const [characterCount, setCharacterCount] = useState(activeScene?.characterCount || 0);
   const [chapterTitle, setChapterTitle] = useState(activeChapter?.title || activeScene?.title || '');
-  const [isEditingBottomTitle, setIsEditingBottomTitle] = useState(false);
 
   useEffect(() => {
     if (activeScene) {
@@ -268,35 +267,7 @@ export const ProseEditor: React.FC = () => {
       {!isZenMode && (
         <div className="px-3 sm:px-6 py-1.5 sm:py-2 border-t border-canvas-border bg-canvas/90 backdrop-blur-md flex items-center justify-between text-xs text-ink-muted font-mono gap-2">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            {isEditingBottomTitle ? (
-              <input
-                type="text"
-                autoFocus
-                value={chapterTitle}
-                onChange={(e) => handleTitleChange(e.target.value)}
-                onBlur={() => setIsEditingBottomTitle(false)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === 'Escape') setIsEditingBottomTitle(false);
-                }}
-                className="px-1.5 py-0.5 rounded bg-canvas-card border border-brand-500 font-serif text-ink text-xs focus:outline-none shadow-xs max-w-[120px] sm:max-w-none"
-              />
-            ) : (
-              <button
-                type="button"
-                onClick={() => setIsEditingBottomTitle(true)}
-                className="font-serif text-ink hover:text-brand-700 dark:hover:text-amber-400 transition-colors flex items-center gap-1 group/btntitle min-w-0"
-                title="Click to rename chapter"
-              >
-                <span className="truncate max-w-[110px] sm:max-w-[200px] md:max-w-none">
-                  {chapterTitle || 'Untitled Chapter'}
-                </span>
-                <Edit3 className="w-2.5 h-2.5 text-ink-faint opacity-40 group-hover/btntitle:opacity-100 transition-opacity flex-shrink-0" />
-              </button>
-            )}
-            <span className="hidden sm:inline text-ink-faint">•</span>
-            <span className="hidden sm:inline text-ink-muted capitalize">{typography.fontFamily}</span>
-            <span className="hidden sm:inline text-ink-faint">•</span>
-            <span className="hidden sm:inline text-ink-muted">{typography.lineHeight} spacing</span>
+            <span className="capitalize text-ink-muted">{typography.fontFamily}</span>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
