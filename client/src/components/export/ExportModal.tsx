@@ -130,7 +130,7 @@ export const ExportModal: React.FC = () => {
         {/* Footer Actions */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 sm:pt-4 mt-3 sm:mt-4 border-t border-canvas-border">
           <span className="text-[11px] sm:text-xs text-ink-muted leading-tight">
-            Preserves chapters, scene titles, POVs, and divider glyphs.
+            Preserves chapters, headings, POVs, and divider glyphs.
           </span>
 
           <div className="flex items-center gap-2 w-full sm:w-auto">

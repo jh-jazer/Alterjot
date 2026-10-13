@@ -21,22 +21,37 @@ export const ProseEditor: React.FC = () => {
   const toggleZenMode = useWorkspaceStore((s) => s.toggleZenMode);
   const updateActiveSceneLocally = useWorkspaceStore((s) => s.updateActiveSceneLocally);
   const updateSceneMetadataLocally = useWorkspaceStore((s) => s.updateSceneMetadataLocally);
+  const activeChapterId = useWorkspaceStore((s) => s.activeChapterId);
+  const chapters = useWorkspaceStore((s) => s.chapters);
+  const activeChapter = chapters.find((c) => c._id === activeChapterId);
+  const updateChapterTitle = useWorkspaceStore((s) => s.updateChapterTitle);
   const updateSceneTitle = useWorkspaceStore((s) => s.updateSceneTitle);
   const saveStatus = useWorkspaceStore((s) => s.saveStatus);
   const lastSavedAt = useWorkspaceStore((s) => s.lastSavedAt);
 
   const [wordCount, setWordCount] = useState(activeScene?.wordCount || 0);
   const [characterCount, setCharacterCount] = useState(activeScene?.characterCount || 0);
-  const [sceneTitle, setSceneTitle] = useState(activeScene?.title || '');
+  const [chapterTitle, setChapterTitle] = useState(activeChapter?.title || activeScene?.title || '');
   const [isEditingBottomTitle, setIsEditingBottomTitle] = useState(false);
 
   useEffect(() => {
     if (activeScene) {
       setWordCount(activeScene.wordCount || 0);
       setCharacterCount(activeScene.characterCount || 0);
-      setSceneTitle(activeScene.title);
     }
-  }, [activeScene?._id, activeScene?.title]);
+    const currentTitle = activeChapter?.title || activeScene?.title || '';
+    setChapterTitle(currentTitle);
+  }, [activeScene?._id, activeChapter?._id, activeChapter?.title, activeScene?.title]);
+
+  const handleTitleChange = (val: string) => {
+    setChapterTitle(val);
+    if (activeChapter) {
+      updateChapterTitle(activeChapter._id, val);
+    }
+    if (activeScene) {
+      updateSceneTitle(activeScene._id, val);
+    }
+  };
 
   const editor = useEditor({
     autofocus: 'end',
@@ -190,25 +205,21 @@ export const ProseEditor: React.FC = () => {
               : 'max-w-4xl bg-canvas-card rounded-md sm:rounded-lg border border-canvas-border shadow-parchment'
           }`}
         >
-          {/* Optional Scene Title Header (Freeform & Flexible) */}
+          {/* Chapter Title Header */}
           <div className="px-4 pt-5 pb-2.5 sm:px-8 sm:pt-8 md:px-16 md:pt-10 border-b border-canvas-border/30">
             <input
               type="text"
-              value={sceneTitle}
-              onChange={(e) => {
-                const val = e.target.value;
-                setSceneTitle(val);
-                updateSceneTitle(activeScene._id, val);
-              }}
+              value={chapterTitle}
+              onChange={(e) => handleTitleChange(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === 'ArrowDown') {
                   e.preventDefault();
                   editor?.commands.focus('start');
                 }
               }}
-              placeholder="Untitled Scene"
+              placeholder="Untitled Chapter"
               className="w-full text-xl sm:text-2xl md:text-3xl font-serif font-bold text-ink placeholder:text-ink-faint/30 bg-transparent border-none outline-none focus:outline-none transition-colors"
-              title="Scene title (optional — edit anytime)"
+              title="Chapter title (optional — edit anytime)"
             />
           </div>
 
@@ -224,12 +235,8 @@ export const ProseEditor: React.FC = () => {
               <input
                 type="text"
                 autoFocus
-                value={sceneTitle}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setSceneTitle(val);
-                  updateSceneTitle(activeScene._id, val);
-                }}
+                value={chapterTitle}
+                onChange={(e) => handleTitleChange(e.target.value)}
                 onBlur={() => setIsEditingBottomTitle(false)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === 'Escape') setIsEditingBottomTitle(false);
@@ -240,10 +247,12 @@ export const ProseEditor: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsEditingBottomTitle(true)}
-                className="font-serif text-ink hover:text-brand-700 transition-colors flex items-center gap-1 group/btntitle min-w-0"
-                title="Click to rename scene"
+                className="font-serif text-ink hover:text-brand-700 dark:hover:text-amber-400 transition-colors flex items-center gap-1 group/btntitle min-w-0"
+                title="Click to rename chapter"
               >
-                <span className="truncate max-w-[110px] sm:max-w-[200px] md:max-w-none">{activeScene.title}</span>
+                <span className="truncate max-w-[110px] sm:max-w-[200px] md:max-w-none">
+                  {chapterTitle || 'Untitled Chapter'}
+                </span>
                 <Edit3 className="w-2.5 h-2.5 text-ink-faint opacity-40 group-hover/btntitle:opacity-100 transition-opacity flex-shrink-0" />
               </button>
             )}

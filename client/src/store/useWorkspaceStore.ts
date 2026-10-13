@@ -924,9 +924,13 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
   updateChapterTitle: async (chapterId, title) => {
     const cleanTitle = title.trim() || 'Untitled Chapter';
-    set((state) => ({
-      chapters: state.chapters.map((c) => (c._id === chapterId ? { ...c, title: cleanTitle } : c)),
-    }));
+    const { chapters, activeScene, activeChapterId } = get();
+    set({
+      chapters: chapters.map((c) => (c._id === chapterId ? { ...c, title: cleanTitle } : c)),
+    });
+    if (activeChapterId === chapterId && activeScene) {
+      get().updateSceneTitle(activeScene._id, cleanTitle);
+    }
     try {
       await api.updateChapter(chapterId, { title: cleanTitle });
     } catch (err) {
@@ -978,7 +982,12 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         if (scenes.length > 0) {
           get().selectScene(scenes[0]._id);
         } else {
-          set({ activeSceneId: null, activeScene: null });
+          const newSc = await get().createNewScene(firstChapter._id, firstChapter.title);
+          if (newSc) {
+            get().selectScene(newSc._id);
+          } else {
+            set({ activeSceneId: null, activeScene: null });
+          }
         }
       } else {
         set({
@@ -997,12 +1006,18 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     set({ activeChapterId: chapterId });
     const { activeNovelId } = get();
     if (activeNovelId) {
-      api.getScenes(chapterId, activeNovelId).then((scenes) => {
+      api.getScenes(chapterId, activeNovelId).then(async (scenes) => {
         set({ scenes });
         if (scenes.length > 0) {
           get().selectScene(scenes[0]._id);
         } else {
-          set({ activeSceneId: null, activeScene: null });
+          const ch = get().chapters.find((c) => c._id === chapterId);
+          const newSc = await get().createNewScene(chapterId, ch?.title || 'Chapter Content');
+          if (newSc) {
+            get().selectScene(newSc._id);
+          } else {
+            set({ activeSceneId: null, activeScene: null });
+          }
         }
       });
     }
@@ -1112,16 +1127,17 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     const { activeNovelId, chapters } = get();
     if (!activeNovelId) return null;
     try {
+      const chapterTitle = title || `Chapter ${chapters.length + 1}`;
       const newCh = await api.createChapter({
         novelId: activeNovelId,
-        title: title || `Chapter ${chapters.length + 1}`,
+        title: chapterTitle,
         order: chapters.length + 1,
         status: 'Draft',
       });
       const updatedChapters = [...chapters, newCh];
       set({ chapters: updatedChapters, activeChapterId: newCh._id });
 
-      await get().createNewScene(newCh._id, 'Scene 1');
+      await get().createNewScene(newCh._id, chapterTitle);
       return newCh;
     } catch (err) {
       console.error('Failed to create chapter:', err);
@@ -1167,8 +1183,17 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       const { chapters, activeChapterId } = get();
       const filtered = chapters.filter((c) => c._id !== chapterId);
       set({ chapters: filtered });
-      if (activeChapterId === chapterId && filtered.length > 0) {
-        get().selectChapter(filtered[0]._id);
+      if (activeChapterId === chapterId) {
+        if (filtered.length > 0) {
+          get().selectChapter(filtered[0]._id);
+        } else {
+          set({
+            activeChapterId: null,
+            activeSceneId: null,
+            activeScene: null,
+            scenes: [],
+          });
+        }
       }
       get().refreshNovel();
     } catch (err) {

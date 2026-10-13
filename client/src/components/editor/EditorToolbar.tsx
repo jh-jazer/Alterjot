@@ -116,10 +116,10 @@ export const EditorToolbar: React.FC<EditorToolbarProps> = ({ editor }) => {
         <button
           type="button"
           onClick={insertSceneBreak}
-          className="px-2 py-1 text-xs font-mono rounded bg-canvas-card hover:bg-canvas-hover hover:text-brand-700 transition-colors flex items-center gap-1 border border-canvas-border shadow-xs"
-          title="Insert Scene Break (---)"
+          className="px-2 py-1 text-xs font-mono rounded bg-canvas-card hover:bg-canvas-hover hover:text-brand-700 dark:hover:text-amber-400 transition-colors flex items-center gap-1 border border-canvas-border shadow-xs"
+          title="Insert Section Break (---)"
         >
-          <Minus className="w-3.5 h-3.5 text-brand-700" />
+          <Minus className="w-3.5 h-3.5 text-brand-700 dark:text-amber-400" />
           <span className="hidden sm:inline">Break (⁂)</span>
         </button>
       </div>

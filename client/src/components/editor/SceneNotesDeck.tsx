@@ -2,8 +2,6 @@ import React from 'react';
 import { User, Calendar, Target, ChevronDown, ChevronUp } from 'lucide-react';
 import type { Scene, SceneStatus, SceneMetadata } from '../../types';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
-import { Badge } from '../common/Badge';
-
 interface SceneNotesDeckProps {
   scene: Scene;
   onChange: (metadata: Partial<SceneMetadata>, status?: SceneStatus) => void;
@@ -12,9 +10,20 @@ interface SceneNotesDeckProps {
 export const SceneNotesDeck: React.FC<SceneNotesDeckProps> = ({ scene, onChange }) => {
   const isNotesDeckOpen = useWorkspaceStore((s) => s.panelState.isNotesDeckOpen);
   const toggleNotesDeck = useWorkspaceStore((s) => s.toggleNotesDeck);
+  const activeChapterId = useWorkspaceStore((s) => s.activeChapterId);
+  const chapters = useWorkspaceStore((s) => s.chapters);
+  const activeChapter = chapters.find((c) => c._id === activeChapterId);
+  const updateChapterTitle = useWorkspaceStore((s) => s.updateChapterTitle);
   const updateSceneTitle = useWorkspaceStore((s) => s.updateSceneTitle);
 
-  const statuses: SceneStatus[] = ['Draft', 'In Review', 'Final'];
+  const handleTitleChange = (val: string) => {
+    if (activeChapter) {
+      updateChapterTitle(activeChapter._id, val);
+    }
+    updateSceneTitle(scene._id, val);
+  };
+
+  const currentTitle = activeChapter?.title || scene.title;
 
   return (
     <div className="border-b border-canvas-border bg-canvas-subtle/80 transition-colors">
@@ -23,21 +32,21 @@ export const SceneNotesDeck: React.FC<SceneNotesDeckProps> = ({ scene, onChange 
           <button
             type="button"
             onClick={toggleNotesDeck}
-            className="flex items-center gap-1.5 font-medium text-ink hover:text-brand-700 transition-colors"
+            className="flex items-center gap-1.5 font-medium text-ink hover:text-brand-700 dark:hover:text-amber-400 transition-colors"
           >
             {isNotesDeckOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            <span className="uppercase tracking-wider font-mono text-[11px] font-semibold">Scene Deck & Notes</span>
+            <span className="uppercase tracking-wider font-mono text-[11px] font-semibold">Chapter Deck & Notes</span>
           </button>
 
           <div className="hidden sm:flex items-center gap-1.5 pl-3 border-l border-canvas-border text-ink">
-            <span className="text-[10px] font-mono text-ink-faint uppercase font-semibold">Scene:</span>
+            <span className="text-[10px] font-mono text-ink-faint uppercase font-semibold">Chapter:</span>
             <input
               type="text"
-              value={scene.title}
-              onChange={(e) => updateSceneTitle(scene._id, e.target.value)}
-              placeholder="Untitled Scene"
+              value={currentTitle}
+              onChange={(e) => handleTitleChange(e.target.value)}
+              placeholder="Untitled Chapter"
               className="px-1.5 py-0.5 rounded bg-transparent hover:bg-canvas-card focus:bg-canvas-card border border-transparent focus:border-brand-500 font-serif text-xs text-ink focus:outline-none transition-colors max-w-[140px] md:max-w-[200px]"
-              title="Scene title (optional — edit anytime)"
+              title="Chapter title (optional — edit anytime)"
             />
           </div>
 
@@ -54,26 +63,6 @@ export const SceneNotesDeck: React.FC<SceneNotesDeckProps> = ({ scene, onChange 
               <span>{scene.metadata.inUniverseDate}</span>
             </span>
           )}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] font-mono text-ink-faint">Status:</span>
-          <div className="flex items-center gap-1">
-            {statuses.map((st) => (
-              <button
-                key={st}
-                type="button"
-                onClick={() => onChange(scene.metadata || {}, st)}
-                className={`transition-all rounded-full ${
-                  scene.status === st
-                    ? 'ring-2 ring-brand-600 ring-offset-1 ring-offset-canvas'
-                    : 'opacity-60 hover:opacity-100'
-                }`}
-              >
-                <Badge status={st} size="sm" />
-              </button>
-            ))}
-          </div>
         </div>
       </div>
 
@@ -110,13 +99,13 @@ export const SceneNotesDeck: React.FC<SceneNotesDeckProps> = ({ scene, onChange 
           <div className="space-y-1">
             <label className="flex items-center gap-1.5 text-ink-muted font-mono text-[11px] font-medium">
               <Target className="w-3 h-3 text-[#245b32] dark:text-emerald-400" />
-              <span>IMMEDIATE SCENE OBJECTIVE</span>
+              <span>CHAPTER OBJECTIVE / FOCUS</span>
             </label>
             <input
               type="text"
               value={scene.metadata?.objective || ''}
               onChange={(e) => onChange({ objective: e.target.value })}
-              placeholder="Scene objective or conflict"
+              placeholder="Chapter objective or conflict"
               className="w-full px-2.5 py-1.5 rounded-lg bg-canvas-card border border-canvas-border text-ink placeholder-ink-faint focus:outline-none focus:border-brand-600 text-xs font-sans shadow-xs"
             />
           </div>

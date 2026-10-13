@@ -163,7 +163,7 @@ export const WorkstationNavbar: React.FC = () => {
               onClick={toggleCodex}
               className={`flex items-center gap-1 p-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-mono transition-colors ${
                 panelState.isCodexOpen
-                  ? 'bg-brand-100 text-brand-900 border border-brand-300 dark:bg-brand-600/25 dark:text-brand-200 dark:border-brand-500/30'
+                  ? 'bg-brand-100 text-brand-900 border border-brand-300 dark:bg-amber-500/20 dark:text-amber-200 dark:border-amber-400/40'
                   : 'text-ink-muted hover:text-ink hover:bg-canvas-hover'
               }`}
               title="World Codex & Lore Reference (Ctrl+Shift+C)"
