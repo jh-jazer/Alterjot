@@ -159,6 +159,7 @@ export const SHARED_MANUSCRIPTS: SharedManuscript[] = [
     sceneCount: 72,
     rating: 4.95,
     spineGradient: 'from-[#b45309] via-[#c2593f] to-[#92400e]',
+    coverImage: '/images/weekly-world-cover.jpg',
     synopsis:
       'In a floating Victorian metropolis suspended over boiling mercury, a disgraced chronologist discovers the Great Celestial Pendulum has begun swaying backwards, unwinding lost centuries and releasing spectral memories that demand their stolen time back.',
     chapters: [
@@ -207,6 +208,7 @@ export const SHARED_MANUSCRIPTS: SharedManuscript[] = [
     sceneCount: 54,
     rating: 4.88,
     spineGradient: 'from-[#1e1b4b] via-[#312e81] to-[#1e3a8a]',
+    coverImage: '/images/apocalyptic-cover.jpg',
     synopsis:
       'Deep beneath the subglacial ice sheet of Ellsworth Land, an acoustic research station picks up harmonic frequencies pulsing from bedrock that predates terrestrial multicellular life. The recordings possess a linguistic cadence that begins altering the crew’s sleeping thoughts.',
     chapters: [
@@ -250,6 +252,7 @@ export const SHARED_MANUSCRIPTS: SharedManuscript[] = [
     sceneCount: 48,
     rating: 4.92,
     spineGradient: 'from-[#831843] via-[#9f1239] to-[#4c0519]',
+    coverImage: '/images/cover-waltz-charcoal.jpg',
     synopsis:
       'In a plague-quarantined baroque capital surrounded by obsidian seawalls, a portraitist discovers that figures drawn with ash harvested from the Grand Crematorium step out of canvas frames at sunset—bearing the stolen memories of the living.',
     chapters: [
@@ -293,6 +296,7 @@ export const SHARED_MANUSCRIPTS: SharedManuscript[] = [
     sceneCount: 39,
     rating: 4.85,
     spineGradient: 'from-[#065f46] via-[#047857] to-[#064e3b]',
+    coverImage: '/images/cover-solstice-gate.jpg',
     synopsis:
       'Every five hundred years, the twin suns of Kyros eclipse and the leyline boundary between mortal realms fractures. A mute cartographer must chart the shifting topography before the invading Empire of the Iron Dawn weaponizes the open rift.',
     chapters: [
@@ -335,6 +339,7 @@ export const SHARED_MANUSCRIPTS: SharedManuscript[] = [
     sceneCount: 35,
     rating: 4.82,
     spineGradient: 'from-[#0891b2] via-[#0284c7] to-[#1e40af]',
+    coverImage: '/images/cover-glass-alchemist.jpg',
     synopsis:
       'In the multi-tier megacity of Neo-Kowloon, a rogue synthetic chemist brews black-market sensory ampoules called Vitreous. When an elite corporate client dies clutching an ampoule containing memories of a non-existent nuclear disaster, the hunt begins.',
     chapters: [
@@ -377,6 +382,7 @@ export const SHARED_MANUSCRIPTS: SharedManuscript[] = [
     sceneCount: 28,
     rating: 4.79,
     spineGradient: 'from-[#334155] via-[#475569] to-[#1e293b]',
+    coverImage: '/images/cover-winter-blackwood.jpg',
     synopsis:
       'When an unnatural blizzard seals off the mountain village of Blackwood in the middle of harvest season, the hearth fires begin burning with cold blue flames. The elders realize the spirits walking the frozen forest are not ancestors—they are the things that hunted them.',
     chapters: [

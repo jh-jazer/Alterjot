@@ -10,12 +10,11 @@ import {
   X,
   Zap,
   BookOpen,
+  Globe,
   ChevronDown,
   LogIn,
-  Download,
 } from 'lucide-react';
 import { ProfileDropdown } from '../profile/ProfileDropdown';
-import { usePWA } from '../../hooks/usePWA';
 
 export const GlobalNavbar: React.FC = () => {
   const currentView = useWorkspaceStore((s) => s.currentView);
@@ -27,6 +26,7 @@ export const GlobalNavbar: React.FC = () => {
   const theme = useWorkspaceStore((s) => s.theme);
   const toggleTheme = useWorkspaceStore((s) => s.toggleTheme);
   const startWritingImmediately = useWorkspaceStore((s) => s.startWritingImmediately);
+  const openWriteForProjectModal = useWorkspaceStore((s) => s.openWriteForProjectModal);
 
   const penName = useWorkspaceStore((s) => s.penName);
 
@@ -41,8 +41,6 @@ export const GlobalNavbar: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileMenuRef = useRef<HTMLDivElement>(null);
   const writeMenuRef = useRef<HTMLDivElement>(null);
-
-  const { canInstall, isInstalled, installApp } = usePWA();
 
   // Handle escape key to dismiss menus
   useEffect(() => {
@@ -83,9 +81,9 @@ export const GlobalNavbar: React.FC = () => {
   };
 
   return (
-    <header className="border-b border-canvas-border bg-canvas/90 backdrop-blur-md sticky top-0 z-30 select-none">
-      {/* Side margin container: aligned with landing & library pages */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
+    <header className="w-full border-b border-canvas-border bg-canvas/90 backdrop-blur-md sticky top-0 z-30 select-none">
+      {/* Full-width container touching the edges of the screen */}
+      <div className="w-full px-4 sm:px-8 md:px-12 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Left Side: Website Name + Beside it: (desktop only) DASHBOARD, PLAY, RANKING, LIBRARY */}
         <div className="flex items-center gap-3 sm:gap-6 md:gap-8 flex-shrink-0">
           {/* Website Name (Very Left) */}
@@ -95,15 +93,12 @@ export const GlobalNavbar: React.FC = () => {
             className="flex items-center gap-2 sm:gap-2.5 hover:opacity-85 transition-opacity group cursor-pointer"
             title="Refresh Alterjot"
           >
-            <div className="w-7 h-7 sm:w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-600 via-orange-600 to-amber-700 flex items-center justify-center text-white shadow-sm shadow-amber-600/30 group-hover:scale-105 transition-transform">
+            <div className="w-7 h-7 sm:w-8 h-8 rounded-none bg-gradient-to-tr from-amber-600 via-orange-600 to-amber-700 flex items-center justify-center text-white shadow-sm shadow-amber-600/30 group-hover:scale-105 transition-transform">
               <Radio className="w-3.5 h-3.5 sm:w-4 h-4 animate-pulse" />
             </div>
             <div className="flex items-center gap-2">
               <span className="font-serif font-bold text-lg sm:text-xl text-ink tracking-tight">
                 Alterjot
-              </span>
-              <span className="hidden lg:inline-block px-1.5 py-0.5 rounded text-[10px] font-mono uppercase tracking-widest bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20 font-semibold">
-                ARCHIVE
               </span>
             </div>
           </button>
@@ -200,27 +195,14 @@ export const GlobalNavbar: React.FC = () => {
           <div className="flex-1" />
         )}
 
-        {/* Right Side: Install App (PWA) + Theme Toggle + Profile Icon Only + Write Button */}
+        {/* Right Side: Theme Toggle (Mobile Only) + Profile Icon + Write Button */}
         <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
-          {/* Install Alterjot App Button (PWA) */}
-          {canInstall && !isInstalled && (
-            <button
-              type="button"
-              onClick={installApp}
-              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-brand-500/40 bg-brand-50 hover:bg-brand-100 text-brand-800 dark:bg-brand-950/40 dark:border-brand-500/50 dark:text-brand-300 font-mono text-xs font-semibold shadow-xs transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-              title="Install Alterjot as a Desktop / Mobile Application"
-            >
-              <Download className="w-3.5 h-3.5 text-brand-600 dark:text-brand-400" />
-              <span>Install App</span>
-            </button>
-          )}
-
-          {/* Theme Toggle (Retro Light / Nocturne Dark with smooth spreading circle) */}
+          {/* Theme Toggle (Mobile Only - on Desktop it is moved to the Footer) */}
           <button
             type="button"
             id="theme-toggle-btn"
             onClick={(e) => toggleTheme(e)}
-            className="p-2 rounded-xl border border-canvas-border bg-canvas-card hover:bg-canvas-hover text-ink-muted hover:text-ink shadow-xs relative overflow-hidden group focus:outline-none focus:ring-2 focus:ring-brand-500/30 transition-transform active:scale-95"
+            className="sm:hidden p-2 rounded-xl border border-canvas-border bg-canvas-card hover:bg-canvas-hover text-ink-muted hover:text-ink shadow-xs relative overflow-hidden group focus:outline-none focus:ring-2 focus:ring-brand-500/30 transition-transform active:scale-95"
             title={theme === 'light' ? 'Switch to Nocturne Dark Mode' : 'Switch to Retro Light Mode'}
             aria-label={theme === 'light' ? 'Switch to Nocturne Dark Mode' : 'Switch to Retro Light Mode'}
           >
@@ -320,6 +302,28 @@ export const GlobalNavbar: React.FC = () => {
                       </div>
                       <div className="text-[11px] text-ink-muted leading-tight mt-0.5 font-sans">
                         Start typing on blank canvas immediately
+                      </div>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsWriteMenuOpen(false);
+                      openWriteForProjectModal();
+                    }}
+                    className="w-full flex items-center gap-3 p-2.5 rounded-lg text-left hover:bg-canvas-hover border border-transparent hover:border-canvas-border transition-all group cursor-pointer"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <Globe className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-serif font-bold text-xs text-ink group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors flex items-center gap-1.5">
+                        <span>Write for a Project</span>
+                        <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-indigo-500/15 text-indigo-600 dark:text-indigo-300 uppercase font-semibold">World</span>
+                      </div>
+                      <div className="text-[11px] text-ink-muted leading-tight mt-0.5 font-sans">
+                        Contribute to a shared collaborative universe
                       </div>
                     </div>
                   </button>

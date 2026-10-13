@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import type { Novel, Chapter, Scene, CodexEntry, SaveStatus, NarrativeTheme, OnboardingAnswers, AuthUser } from '../types';
+import type { CollaborativeProject, ContributorRequest, ApprovedCollaborator, CreativeDiscipline } from '../data/collaborativeProjectsData';
+import { COLLABORATIVE_PROJECTS } from '../data/collaborativeProjectsData';
 import { api } from '../services/api';
 
 interface PanelState {
@@ -47,6 +49,7 @@ interface WorkspaceState {
   isDashboardOpen: boolean;
   isExportOpen: boolean;
   isNewNovelModalOpen: boolean;
+  isWriteForProjectModalOpen: boolean;
 
   librarySearchQuery: string;
   setLibrarySearchQuery: (query: string) => void;
@@ -72,6 +75,19 @@ interface WorkspaceState {
   setIsDashboardOpen: (val: boolean) => void;
   setIsExportOpen: (val: boolean) => void;
   setIsNewNovelModalOpen: (val: boolean) => void;
+  setIsWriteForProjectModalOpen: (val: boolean) => void;
+  openWriteForProjectModal: () => void;
+  writeForProject: (project: CollaborativeProject, customTitle?: string) => Promise<boolean>;
+
+  collaborativeProjects: CollaborativeProject[];
+  submitContributionPitch: (
+    projectId: string,
+    pitch: { discipline: CreativeDiscipline; pitchTitle: string; pitchNotes: string }
+  ) => void;
+  approveContributorRequest: (projectId: string, requestId: string) => void;
+  declineContributorRequest: (projectId: string, requestId: string) => void;
+  removeCollaborator: (projectId: string, penName: string) => void;
+  claimProjectAsCreator: (projectId: string) => void;
 
   selectNovel: (novelId: string) => Promise<void>;
   selectChapter: (chapterId: string) => void;
@@ -488,6 +504,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   isDashboardOpen: false,
   isExportOpen: false,
   isNewNovelModalOpen: false,
+  isWriteForProjectModalOpen: false,
 
   librarySearchQuery: '',
   setLibrarySearchQuery: (query) => set({ librarySearchQuery: query }),
@@ -544,6 +561,126 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   setIsDashboardOpen: (val) => set({ isDashboardOpen: val }),
   setIsExportOpen: (val) => set({ isExportOpen: val }),
   setIsNewNovelModalOpen: (val) => set({ isNewNovelModalOpen: val }),
+  setIsWriteForProjectModalOpen: (val) => set({ isWriteForProjectModalOpen: val }),
+  openWriteForProjectModal: () => set({ isWriteForProjectModalOpen: true }),
+
+  collaborativeProjects: (() => {
+    try {
+      const saved = getStorageItem('collab_projects');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return COLLABORATIVE_PROJECTS;
+  })(),
+
+  submitContributionPitch: (projectId, pitch) => {
+    const penName = get().penName;
+    const newRequest: ContributorRequest = {
+      id: 'req-' + Date.now(),
+      applicantPenName: penName,
+      discipline: pitch.discipline,
+      pitchTitle: pitch.pitchTitle,
+      pitchNotes: pitch.pitchNotes,
+      submittedAt: 'Just now',
+      status: 'pending',
+    };
+
+    const updated = get().collaborativeProjects.map((p) => {
+      if (p.id !== projectId) return p;
+      return {
+        ...p,
+        pendingRequests: [newRequest, ...(p.pendingRequests || [])],
+      };
+    });
+
+    try {
+      setStorageItem('collab_projects', JSON.stringify(updated));
+    } catch {}
+    set({ collaborativeProjects: updated });
+  },
+
+  approveContributorRequest: (projectId, requestId) => {
+    const updated = get().collaborativeProjects.map((p) => {
+      if (p.id !== projectId) return p;
+      const targetReq = (p.pendingRequests || []).find((r) => r.id === requestId);
+      if (!targetReq) return p;
+
+      const roleMap: Record<string, ApprovedCollaborator['role']> = {
+        writing: 'Writer',
+        cover: 'Cover Designer',
+        art: 'Concept Artist',
+        webtoon: 'Webtoonist',
+        animation: 'Animator',
+      };
+
+      const newCollaborator: ApprovedCollaborator = {
+        penName: targetReq.applicantPenName,
+        role: roleMap[targetReq.discipline] || 'Writer',
+        approvedAt: 'Just now',
+      };
+
+      return {
+        ...p,
+        approvedCollaborators: [
+          newCollaborator,
+          ...(p.approvedCollaborators || []).filter(
+            (c) => !(c.penName.toLowerCase() === newCollaborator.penName.toLowerCase() && c.role === newCollaborator.role)
+          ),
+        ],
+        pendingRequests: (p.pendingRequests || []).filter((r) => r.id !== requestId),
+      };
+    });
+
+    try {
+      setStorageItem('collab_projects', JSON.stringify(updated));
+    } catch {}
+    set({ collaborativeProjects: updated });
+  },
+
+  declineContributorRequest: (projectId, requestId) => {
+    const updated = get().collaborativeProjects.map((p) => {
+      if (p.id !== projectId) return p;
+      return {
+        ...p,
+        pendingRequests: (p.pendingRequests || []).filter((r) => r.id !== requestId),
+      };
+    });
+
+    try {
+      setStorageItem('collab_projects', JSON.stringify(updated));
+    } catch {}
+    set({ collaborativeProjects: updated });
+  },
+
+  removeCollaborator: (projectId, penName) => {
+    const updated = get().collaborativeProjects.map((p) => {
+      if (p.id !== projectId) return p;
+      return {
+        ...p,
+        approvedCollaborators: (p.approvedCollaborators || []).filter((c) => c.penName !== penName),
+      };
+    });
+
+    try {
+      setStorageItem('collab_projects', JSON.stringify(updated));
+    } catch {}
+    set({ collaborativeProjects: updated });
+  },
+
+  claimProjectAsCreator: (projectId) => {
+    const penName = get().penName;
+    const updated = get().collaborativeProjects.map((p) => {
+      if (p.id !== projectId) return p;
+      return {
+        ...p,
+        creatorPenName: penName,
+      };
+    });
+
+    try {
+      setStorageItem('collab_projects', JSON.stringify(updated));
+    } catch {}
+    set({ collaborativeProjects: updated });
+  },
 
   updateActiveSceneLocally: (contentJson, plainText, wordCount, characterCount) => {
     const { activeScene, scenes } = get();
@@ -610,6 +747,74 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       status: 'In Progress',
       targetWordCount: 50000,
     });
+  },
+
+  writeForProject: async (project: CollaborativeProject, customTitle?: string) => {
+    if (!get().requireAuth()) return false;
+
+    // Creator Sovereignty: Only the Project Creator or an approved Writer can add a manuscript
+    const currentProject = get().collaborativeProjects.find((p) => p.id === project.id) || project;
+    const userPenName = get().penName.toLowerCase();
+    const isCreator = currentProject.creatorPenName.toLowerCase() === userPenName;
+    const isApprovedWriter = (currentProject.approvedCollaborators || []).some(
+      (c) => c.penName.toLowerCase() === userPenName && c.role === 'Writer'
+    );
+
+    if (!isCreator && !isApprovedWriter) {
+      return false;
+    }
+
+    set({ isWriteForProjectModalOpen: false });
+
+    const finalTitle = customTitle?.trim() || `${project.name}: Chronicles`;
+    const novel = await get().createNovel({
+      title: finalTitle,
+      subtitle: project.universe,
+      author: get().penName,
+      genre: project.genre,
+      status: 'In Progress',
+      synopsis: project.starterPrompt?.synopsis || project.tagline,
+      targetWordCount: 50000,
+    });
+
+    if (novel && project.starterPrompt?.openingParagraph) {
+      const activeScene = get().activeScene;
+      if (activeScene) {
+        const openingText = project.starterPrompt.openingParagraph;
+        const wordCount = openingText.split(/\s+/).filter(Boolean).length;
+        const starterJson = {
+          type: 'doc',
+          content: [
+            {
+              type: 'paragraph',
+              content: [{ type: 'text', text: openingText }],
+            },
+          ],
+        };
+        try {
+          await api.updateScene(activeScene._id, {
+            title: project.starterPrompt.hookTitle || 'Scene 1: Inciting Incident',
+            contentJson: starterJson,
+            plainText: openingText,
+            wordCount,
+          });
+          const updatedScene = {
+            ...activeScene,
+            title: project.starterPrompt.hookTitle || 'Scene 1: Inciting Incident',
+            contentJson: starterJson,
+            plainText: openingText,
+            wordCount,
+          };
+          set({
+            activeScene: updatedScene,
+            scenes: get().scenes.map((s) => (s._id === updatedScene._id ? updatedScene : s)),
+          });
+        } catch (e) {
+          console.warn('Failed to populate starter scene for project:', e);
+        }
+      }
+    }
+    return true;
   },
 
   createNovel: async (data) => {

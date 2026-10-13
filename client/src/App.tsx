@@ -12,6 +12,7 @@ import { RankingView } from './components/ranking/RankingView';
 import { ChallengeDetailView } from './components/challenge/ChallengeDetailView';
 import { ProjectDashboardModal } from './components/dashboard/ProjectDashboardModal';
 import { ExportModal } from './components/export/ExportModal';
+import { WriteForProjectModal } from './components/collaborative/WriteForProjectModal';
 import { AuthModal } from './components/auth/AuthModal';
 import { OnboardingModal } from './components/onboarding/OnboardingModal';
 import { MobileBottomNav } from './components/layout/MobileBottomNav';
@@ -60,6 +61,7 @@ export const App: React.FC = () => {
       {/* Modals & Dialogs */}
       <ProjectDashboardModal />
       <ExportModal />
+      <WriteForProjectModal />
       <AuthModal />
       <OnboardingModal />
 

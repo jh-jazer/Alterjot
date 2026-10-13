@@ -17,6 +17,7 @@ import {
   User,
   MapPin,
   Globe,
+  Clock,
 } from 'lucide-react';
 
 export const ChallengeDetailView: React.FC = () => {
@@ -108,8 +109,8 @@ export const ChallengeDetailView: React.FC = () => {
   return (
     <div className="flex-1 overflow-y-auto bg-canvas text-ink select-none pb-24 md:pb-12">
       {/* Top sticky navigation bar */}
-      <header className="sticky top-0 z-30 bg-canvas/90 backdrop-blur-md border-b border-canvas-border px-4 sm:px-8 py-3 transition-colors">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
+      <header className="sticky top-0 z-30 bg-canvas/90 backdrop-blur-md border-b border-canvas-border px-4 sm:px-8 md:px-12 py-3 transition-colors">
+        <div className="w-full flex items-center justify-between">
           <button
             type="button"
             onClick={openDashboard}
@@ -120,7 +121,7 @@ export const ChallengeDetailView: React.FC = () => {
           </button>
 
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 text-[11px] font-mono font-bold shadow-2xs">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-none bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30 text-[11px] font-mono font-bold shadow-2xs">
               <Flame className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
               <span>HOT CHALLENGE</span>
             </span>
@@ -128,7 +129,7 @@ export const ChallengeDetailView: React.FC = () => {
             <button
               type="button"
               onClick={handleShare}
-              className="p-1.5 rounded-lg border border-canvas-border hover:bg-canvas-surface text-ink-muted hover:text-ink transition-colors cursor-pointer"
+              className="p-1.5 rounded-none border border-canvas-border hover:bg-canvas-surface text-ink-muted hover:text-ink transition-colors cursor-pointer"
               title="Share challenge"
             >
               {copiedShare ? (
@@ -142,11 +143,11 @@ export const ChallengeDetailView: React.FC = () => {
       </header>
 
       {/* Main container */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8 sm:space-y-10">
+      <main className="w-full px-4 sm:px-8 md:px-12 py-6 sm:py-10 space-y-8 sm:space-y-10">
         {/* HERO SECTION */}
-        <div className="relative rounded-xl overflow-hidden bg-gradient-to-br from-[#2c221a] via-[#1e1712] to-[#120e0a] text-white p-6 sm:p-10 shadow-2xl border border-black/20">
+        <div className="relative rounded-none overflow-hidden bg-gradient-to-br from-[#2c221a] via-[#1e1712] to-[#120e0a] text-white p-6 sm:p-10 shadow-none border border-black/20">
           {/* Ambient warm glow */}
-          <div className="absolute right-0 top-0 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute right-0 top-0 w-96 h-96 bg-amber-500/15 rounded-none blur-3xl pointer-events-none" />
 
           <div className="relative z-10 flex flex-col md:flex-row gap-6 sm:gap-8 items-center md:items-start">
             {/* Visual Cover / Thumbnail */}
@@ -287,7 +288,7 @@ export const ChallengeDetailView: React.FC = () => {
                   </div>
                   <div>
                     <span className="inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider text-indigo-700 dark:text-indigo-400 font-bold">
-                      <MapPin className="w-3 h-3" /> Place
+                      <MapPin className="w-3 h-3" /> Location
                     </span>
                     <h3 className="text-base font-serif font-bold text-ink mt-0.5">
                       {challenge.threeElements.place.name}
@@ -304,7 +305,7 @@ export const ChallengeDetailView: React.FC = () => {
                 </div>
               </div>
 
-              {/* Element 3: World */}
+              {/* Element 3: Time / World */}
               <div className="p-4 sm:p-5 rounded-xl bg-canvas-card border border-canvas-border shadow-parchment flex flex-col justify-between space-y-4">
                 <div className="space-y-3">
                   <div className="w-full aspect-[4/3] rounded-lg overflow-hidden border border-canvas-border shadow-xs">
@@ -316,7 +317,15 @@ export const ChallengeDetailView: React.FC = () => {
                   </div>
                   <div>
                     <span className="inline-flex items-center gap-1 text-[10px] font-mono uppercase tracking-wider text-emerald-700 dark:text-emerald-400 font-bold">
-                      <Globe className="w-3 h-3" /> World Rule
+                      {challenge.threeElements.world.role?.includes('Time') ? (
+                        <>
+                          <Clock className="w-3 h-3" /> Time Setting
+                        </>
+                      ) : (
+                        <>
+                          <Globe className="w-3 h-3" /> World Rule
+                        </>
+                      )}
                     </span>
                     <h3 className="text-base font-serif font-bold text-ink mt-0.5">
                       {challenge.threeElements.world.name}
@@ -328,7 +337,9 @@ export const ChallengeDetailView: React.FC = () => {
                 </div>
 
                 <div className="p-2.5 rounded-md bg-canvas-surface border border-canvas-border text-[11px] font-mono text-ink-faint">
-                  <span className="font-bold text-emerald-700 dark:text-emerald-400">Cosmological Law: </span>
+                  <span className="font-bold text-emerald-700 dark:text-emerald-400">
+                    {challenge.threeElements.world.role?.includes('Time') ? 'Outbreak Clock: ' : 'Cosmological Law: '}
+                  </span>
                   {challenge.threeElements.world.rule}
                 </div>
               </div>

@@ -86,7 +86,7 @@ export const SharedManuscriptModal: React.FC<SharedManuscriptModalProps> = ({
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5 min-w-0 flex-1">
               {/* Dedicated Book Cover Container in Modal */}
               <div className="flex-shrink-0">
-                <div className="shadow-xl rounded-r-lg rounded-l-xs">
+                <div className="shadow-xl rounded-lg overflow-hidden">
                   <BookCover
                     title={manuscript.title}
                     author={manuscript.author}

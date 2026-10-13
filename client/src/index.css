@@ -112,6 +112,15 @@
   .dark ::-webkit-scrollbar-thumb:hover {
     background: #393952;
   }
+
+  /* Utility to hide scrollbars while allowing touch/wheel scrolling */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 /* TipTap Prose Canvas Styling */

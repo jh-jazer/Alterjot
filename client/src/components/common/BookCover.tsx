@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
+import { Image as ImageIcon, Sparkles } from 'lucide-react';
 
 interface BookCoverProps {
   title: string;
   author?: string;
   genre?: string;
   coverImage?: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
   className?: string;
+  badge?: 'wattpad' | 'alterjot' | 'featured' | string;
 }
-
-// Unified timeless clothbound book cover palette for all manuscripts
-const UNIFIED_COVER_PALETTE = {
-  bg: 'bg-gradient-to-br from-[#26211c] via-[#1c1815] to-[#120f0d]',
-  border: 'border-amber-400/35',
-  accent: 'text-amber-300/85',
-  text: 'text-[#fef3c7]',
-};
 
 export const BookCover: React.FC<BookCoverProps> = ({
   title,
@@ -24,92 +18,100 @@ export const BookCover: React.FC<BookCoverProps> = ({
   coverImage,
   size = 'md',
   className = '',
+  badge,
 }) => {
   const [imageError, setImageError] = useState(false);
-  const palette = UNIFIED_COVER_PALETTE;
 
-  // Sizing definitions
+  // Wattpad-standard 2:3 vertical poster proportions
   const sizeClasses = {
-    xs: 'w-16 aspect-[2/3] text-[9px]',
-    sm: 'w-20 sm:w-22 aspect-[2/3] text-[10px]',
-    md: 'w-24 sm:w-28 aspect-[2/3] text-xs',
-    lg: 'w-32 sm:w-40 aspect-[2/3] text-sm',
+    xs: 'w-14 sm:w-16 aspect-[2/3] text-[9px]',
+    sm: 'w-20 sm:w-24 aspect-[2/3] text-[10px]',
+    md: 'w-28 sm:w-32 aspect-[2/3] text-xs',
+    lg: 'w-36 sm:w-44 aspect-[2/3] text-sm',
+    xl: 'w-48 sm:w-56 aspect-[2/3] text-base',
+    full: 'w-full h-full aspect-[2/3] text-sm',
   };
 
   const hasValidImage = Boolean(coverImage && !imageError);
 
   return (
     <div
-      className={`relative aspect-[2/3] select-none rounded-r-lg rounded-l-xs overflow-hidden shadow-md group-hover:shadow-xl transition-all duration-300 flex-shrink-0 ${
+      className={`relative select-none rounded-none overflow-hidden border border-black/15 dark:border-white/10 shadow-sm group-hover:shadow-xl transition-all duration-300 flex-shrink-0 bg-neutral-900 ${
         sizeClasses[size]
       } ${className}`}
       title={`${title}${author ? ` by ${author}` : ''}`}
     >
-      {/* 3D Sewn Book Spine Crease on Left Edge */}
-      <div className="absolute left-0 top-0 bottom-0 w-2.5 sm:w-3 bg-gradient-to-r from-black/60 via-white/10 to-transparent z-20 pointer-events-none rounded-l-xs" />
-
-      {/* 3D Book Page Edge Shadow on Right Edge */}
-      <div className="absolute right-0 top-0 bottom-0 w-1 bg-gradient-to-l from-black/35 to-transparent z-20 pointer-events-none" />
-
-      {/* Top & Bottom hardback edge sheen */}
-      <div className="absolute inset-x-0 top-0 h-[1px] bg-white/20 z-20 pointer-events-none" />
-      <div className="absolute inset-x-0 bottom-0 h-[1px] bg-black/40 z-20 pointer-events-none" />
-
+      {/* Optional Wattpad / Alterjot Orange Accent Badge */}
+      {badge && (
+        <div className="absolute top-0 left-0 z-20 bg-gradient-to-br from-[#ff6100] to-[#e64a00] text-white font-extrabold text-[10px] sm:text-[11px] px-2 py-0.5 rounded-none shadow-md flex items-center justify-center tracking-tight leading-none pointer-events-none select-none">
+          {badge === 'wattpad' ? (
+            <span className="font-black italic">W</span>
+          ) : badge === 'alterjot' ? (
+            <span className="font-serif font-black">A</span>
+          ) : (
+            <span>{badge}</span>
+          )}
+        </div>
+      )}
       {hasValidImage ? (
-        <img
-          src={coverImage}
-          alt={`${title} Book Cover`}
-          onError={() => setImageError(true)}
-          className="w-full h-full object-cover rounded-r-lg rounded-l-xs group-hover:scale-105 transition-transform duration-300"
-        />
+        /* Wattpad Full-Bleed Cover Image Presentation */
+        <div className="w-full h-full relative overflow-hidden group">
+          <img
+            src={coverImage}
+            alt={`${title} Cover`}
+            onError={() => setImageError(true)}
+            className="w-full h-full object-cover rounded-none group-hover:scale-105 transition-transform duration-300"
+          />
+          {/* Subtle bottom vignette to frame image */}
+          <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+        </div>
       ) : (
-        /* Default Classic Clothbound Hardcover with Title Inside */
-        <div
-          className={`w-full h-full ${palette.bg} text-white p-2 sm:p-2.5 flex flex-col justify-between relative overflow-hidden`}
-        >
-          {/* Subtle tactile radial grain reflection */}
-          <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/5 rounded-full blur-xl pointer-events-none" />
+        /* Wattpad-Style Clean Image Holder Placeholder */
+        <div className="w-full h-full relative flex flex-col justify-between p-2 sm:p-2.5 bg-gradient-to-b from-[#2b2723] via-[#1c1916] to-[#12100e] text-white overflow-hidden">
+          {/* Subtle soft ambient light reflection */}
+          <div className="absolute -top-12 -right-12 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute -bottom-10 -left-10 w-28 h-28 bg-brand-500/10 rounded-full blur-2xl pointer-events-none" />
 
-          {/* Embossed gold/fillet frame */}
-          <div
-            className={`w-full h-full border ${palette.border} rounded-sm p-1.5 sm:p-2 flex flex-col justify-between items-center text-center relative z-10`}
-          >
-            {/* Top ornament / genre marker */}
-            <div className="w-full flex items-center justify-center gap-1 pt-0.5">
-              <span className={`text-[8px] sm:text-[9px] font-mono uppercase tracking-widest ${palette.accent} font-semibold truncate`}>
-                {genre ? genre.toUpperCase() : 'ALTERJOT'}
-              </span>
-            </div>
-
-            {/* Center: Title Inside Book Cover */}
-            <div className="my-auto px-0.5 w-full">
-              <h4
-                className={`font-serif font-bold ${palette.text} tracking-tight leading-snug line-clamp-3 drop-shadow-xs ${
-                  size === 'xs'
-                    ? 'text-[10px]'
-                    : size === 'sm'
-                    ? 'text-[11px]'
-                    : size === 'md'
-                    ? 'text-xs sm:text-[13px]'
-                    : 'text-sm sm:text-base'
-                }`}
-              >
-                {title}
-              </h4>
-
-              {/* Decorative flourish */}
-              <div className="w-6 h-[1px] bg-amber-300/40 mx-auto my-1.5" />
-            </div>
-
-            {/* Bottom: Author Name Inside Cover */}
-            <div className="w-full pb-0.5">
-              <p
-                className={`text-[8px] sm:text-[9px] font-mono uppercase tracking-wider ${palette.accent} opacity-85 truncate`}
-              >
-                {author || 'ANONYMOUS'}
-              </p>
-            </div>
+          {/* Top: Genre marker or Wattpad tag */}
+          <div className="relative z-10 flex items-center justify-between gap-1 w-full pt-0.5">
+            <span className="text-[8px] sm:text-[9px] font-mono uppercase tracking-widest text-amber-400/90 font-semibold truncate">
+              {genre ? genre.toUpperCase() : 'STORY'}
+            </span>
+            <Sparkles className="w-2.5 h-2.5 text-amber-400/60 flex-shrink-0" />
           </div>
+
+          {/* Center: Modern Image Holder Icon & Frame */}
+          <div className="relative z-10 my-auto flex flex-col items-center justify-center text-center py-1">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-none bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center text-white/60 mb-1.5 shadow-inner group-hover:border-amber-400/50 group-hover:text-amber-300 transition-colors">
+              <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+            </div>
+            <span className="text-[8px] sm:text-[9px] font-mono tracking-wider text-white/40 uppercase font-medium">
+              Cover Holder
+            </span>
+          </div>
+
+          {/* Bottom: Book Title & Author overlay */}
+          <div className="relative z-10 w-full pt-1 pb-0.5 space-y-0.5">
+            <h4
+              className={`font-serif font-bold text-white tracking-tight leading-tight line-clamp-2 drop-shadow-sm ${
+                size === 'xs'
+                  ? 'text-[9px]'
+                  : size === 'sm'
+                  ? 'text-[11px]'
+                  : size === 'md'
+                  ? 'text-xs sm:text-[13px]'
+                  : 'text-sm sm:text-base'
+              }`}
+            >
+              {title}
+            </h4>
+            <p className="text-[8px] sm:text-[9px] font-sans text-white/60 truncate font-medium">
+              {author || 'Anonymous'}
+            </p>
+          </div>
+
+          {/* Soft contrast ramp for bottom typography */}
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none z-0" />
         </div>
       )}
     </div>

@@ -15,6 +15,7 @@ export interface Novel {
   synopsis: string;
   targetWordCount: number;
   totalWordCount: number;
+  coverImage?: string;
   status: NovelStatus;
   chapterCount?: number;
   sceneCount?: number;

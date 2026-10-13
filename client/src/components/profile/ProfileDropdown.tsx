@@ -93,6 +93,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   const toggleTheme = useWorkspaceStore((s) => s.toggleTheme);
   const typography = useWorkspaceStore((s) => s.typography);
   const setTypography = useWorkspaceStore((s) => s.setTypography);
+  const setIsOnboardingModalOpen = useWorkspaceStore((s) => s.setIsOnboardingModalOpen);
   const { canInstall, isInstalled, installApp } = usePWA();
 
   // View state: 'menu' (root list of Profile, Notifications, Settings) or specific section
@@ -803,6 +804,24 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
               className="px-2.5 py-1 rounded-lg bg-canvas-card border border-canvas-border text-xs font-mono text-ink hover:border-brand-500 transition-all cursor-pointer shadow-xs"
             >
               Toggle
+            </button>
+          </div>
+
+          {/* Personalize Atelier Setup Button */}
+          <div className="pt-2 border-t border-canvas-border">
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                setIsOnboardingModalOpen(true);
+              }}
+              className="w-full py-2.5 px-3 rounded-xl bg-canvas-surface hover:bg-canvas-card border border-canvas-border hover:border-brand-500/50 text-xs font-serif font-semibold text-ink flex items-center justify-between transition-all group cursor-pointer shadow-xs"
+            >
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                <span>Personalize Atelier Setup</span>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-ink-muted group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>
         </div>

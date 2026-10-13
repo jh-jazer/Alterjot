@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
-import { NARRATIVE_THEMES } from '../../data/narrativeThemes';
 import type { NarrativeTheme } from '../../types';
 import {
-  Radio,
-  Sparkles,
+  X,
+  User,
+  Feather,
   Flame,
   Cog,
   Ghost,
   Cpu,
   Target,
-  Compass,
-  ArrowRight,
-  Check,
+  ChevronDown,
 } from 'lucide-react';
 
 export const OnboardingModal: React.FC = () => {
@@ -23,9 +21,17 @@ export const OnboardingModal: React.FC = () => {
   const [authorName, setAuthorName] = useState(penName || 'Ernest Quill');
   const [selectedTheme, setSelectedTheme] = useState<NarrativeTheme>('apocalyptic');
   const [writingGoal, setWritingGoal] = useState('Epic Survival Novel (50,000+ words)');
-  const [ambiance, setAmbiance] = useState('Dust & Whispering Wind');
 
   if (!isOnboardingModalOpen) return null;
+
+  const handleClose = () => {
+    completeOnboarding({
+      penName: authorName.trim() || penName || 'Ernest Quill',
+      preferredTheme: selectedTheme,
+      writingGoal,
+      ambiance: 'Dust & Whispering Wind',
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,207 +39,123 @@ export const OnboardingModal: React.FC = () => {
       penName: authorName.trim() || 'Ernest Quill',
       preferredTheme: selectedTheme,
       writingGoal,
-      ambiance,
+      ambiance: 'Dust & Whispering Wind',
     });
   };
 
-  const themeIcons: Record<NarrativeTheme, React.ReactNode> = {
-    apocalyptic: <Flame className="w-5 h-5 text-amber-500" />,
-    steampunk: <Cog className="w-5 h-5 text-[#c2593f]" />,
-    'dark-fantasy': <Ghost className="w-5 h-5 text-purple-400" />,
-    cyberpunk: <Cpu className="w-5 h-5 text-sky-400" />,
-  };
-
-  const goalOptions = [
-    { label: 'Epic Survival Novel (50k+ words)', desc: 'Multi-chapter collapse chronicle' },
-    { label: 'Black Box Novella (15k–30k words)', desc: 'Focused survival arcs & incident logs' },
-    { label: 'Daily Scavenger Sprints (500w/day)', desc: 'Consistent wasteland writing cadence' },
-    { label: 'Survival Codex & Worldbuilding', desc: 'Factions, hazards, outposts, and gear' },
+  const themes: Array<{ key: NarrativeTheme; name: string; icon: React.ReactNode }> = [
+    { key: 'apocalyptic', name: 'Post-Apocalypse', icon: <Flame className="w-4 h-4 text-amber-500" /> },
+    { key: 'steampunk', name: 'Steampunk', icon: <Cog className="w-4 h-4 text-[#c2593f]" /> },
+    { key: 'dark-fantasy', name: 'Dark Fantasy', icon: <Ghost className="w-4 h-4 text-purple-400" /> },
+    { key: 'cyberpunk', name: 'Cyberpunk', icon: <Cpu className="w-4 h-4 text-sky-400" /> },
   ];
-
-  const ambianceOptions = [
-    { label: 'Dust & Whispering Wind', desc: 'Desolate, evocative wasteland aura' },
-    { label: 'Bunker Terminal Silence', desc: 'Distraction-free high contrast focus' },
-    { label: 'Typewriter Ribbon & Static', desc: 'Mechanical retro-survivalist cadence' },
-  ];
-
-  const currentThemeData = NARRATIVE_THEMES[selectedTheme];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-md animate-fadeIn overflow-y-auto">
-      <div className="w-full max-w-3xl my-6 rounded-xl bg-canvas-card border border-canvas-border shadow-parchment-lg p-5 sm:p-8 text-ink max-h-[92vh] overflow-y-auto">
-        {/* Header Banner */}
-        <div className="flex items-center gap-3 pb-5 border-b border-canvas-border">
-          <div className="w-12 h-12 rounded-lg bg-gradient-to-tr from-amber-600 via-orange-600 to-amber-700 flex items-center justify-center text-white shadow-md shadow-amber-600/30 flex-shrink-0">
-            <Radio className="w-6 h-6 animate-pulse" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/25 dark:text-brand-300 font-bold">
-                Survivor Intake
-              </span>
-              <span className="text-xs font-mono text-ink-muted hidden sm:inline">• Calibration Protocol</span>
-            </div>
-            <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink mt-0.5">
-              Welcome to Alterjot
-            </h2>
-            <p className="text-xs text-ink-muted font-sans mt-0.5">
-              The distraction-free manuscript studio for novelists, worldbuilders, and storytellers.
-            </p>
-          </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-sm animate-fadeIn">
+      <div className="relative w-full max-w-[420px] rounded-xl bg-white dark:bg-[#181615] border border-neutral-100 dark:border-neutral-800 shadow-2xl p-7 sm:p-9 text-neutral-900 dark:text-neutral-100">
+        {/* Close Button */}
+        <button
+          type="button"
+          onClick={handleClose}
+          className="absolute right-5 top-5 p-2 rounded-full text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+          title="Skip"
+          aria-label="Close"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        {/* Top Centered Glyph Container */}
+        <div className="w-12 h-12 rounded-lg bg-[#f4f6fa] dark:bg-neutral-800 border border-neutral-200/60 dark:border-neutral-700/60 flex items-center justify-center mx-auto mb-4 text-neutral-800 dark:text-neutral-200 shadow-xs">
+          <Feather className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6 mt-6">
-          {/* Question 1: Pen Name */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-mono uppercase tracking-wider text-ink-faint font-semibold">
-              1. What pen name will appear on your title pages?
+        {/* Heading */}
+        <h2 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white text-center">
+          Welcome to Alterjot
+        </h2>
+
+        {/* Subtitle Description */}
+        <p className="text-xs text-neutral-500 dark:text-neutral-400 text-center mt-2 mb-6 max-w-[300px] mx-auto leading-relaxed">
+          Personalize your authorial workshop and select your favorite universe motif.
+        </p>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Pen Name Field */}
+          <div>
+            <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
+              Pen Name
             </label>
-            <input
-              type="text"
-              required
-              value={authorName}
-              onChange={(e) => setAuthorName(e.target.value)}
-              placeholder="e.g. Ernest Quill, Octavia Butler"
-              className="w-full px-3.5 py-2.5 text-sm rounded-lg bg-canvas-surface border border-canvas-border text-ink placeholder-ink-faint focus:outline-none focus:border-brand-600 focus:ring-2 focus:ring-brand-500/20 shadow-xs font-serif"
-            />
+            <div className="relative">
+              <User className="w-4 h-4 text-neutral-400 dark:text-neutral-500 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                required
+                value={authorName}
+                onChange={(e) => setAuthorName(e.target.value)}
+                placeholder="Pen Name"
+                className="w-full h-12 pl-11 pr-4 rounded-lg bg-[#f4f6fa] dark:bg-neutral-800/80 border border-neutral-200/60 dark:border-neutral-700/60 text-sm font-sans placeholder:text-neutral-400 text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 focus:ring-2 focus:ring-neutral-400/20 transition-all"
+              />
+            </div>
           </div>
 
-          {/* Question 2: THE THEME PREFERENCE (Crucial Part) */}
-          <div className="space-y-2.5">
-            <div className="flex items-center justify-between">
-              <label className="block text-xs font-mono uppercase tracking-wider text-ink-faint font-semibold">
-                2. Which narrative universe theme inspires your writing?
-              </label>
-              <span className="text-[11px] font-mono text-brand-600 dark:text-brand-400 font-bold flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5" />
-                Customizes World Challenge & Triad
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {(Object.keys(NARRATIVE_THEMES) as NarrativeTheme[]).map((themeKey) => {
-                const item = NARRATIVE_THEMES[themeKey];
-                const isSelected = selectedTheme === themeKey;
+          {/* Narrative Theme Selection (2x2 Compact Grid) */}
+          <div>
+            <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
+              Narrative Universe
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {themes.map((t) => {
+                const isSelected = selectedTheme === t.key;
                 return (
                   <button
-                    key={themeKey}
+                    key={t.key}
                     type="button"
-                    onClick={() => setSelectedTheme(themeKey)}
-                    className={`p-3.5 rounded-lg border text-left transition-all relative flex flex-col justify-between cursor-pointer ${
+                    onClick={() => setSelectedTheme(t.key)}
+                    className={`h-11 px-3 rounded-lg border text-xs font-medium flex items-center gap-2 transition-all cursor-pointer ${
                       isSelected
-                        ? 'border-brand-600 bg-brand-50/70 dark:bg-brand-600/15 ring-2 ring-brand-500/30 shadow-sm'
-                        : 'border-canvas-border bg-canvas-surface hover:border-brand-400/50 hover:bg-canvas-hover'
+                        ? 'border-neutral-900 dark:border-white bg-[#18181b] text-white dark:bg-white dark:text-neutral-950 shadow-xs'
+                        : 'border-neutral-200/80 dark:border-neutral-700/80 bg-[#f4f6fa] dark:bg-neutral-800/60 text-neutral-700 dark:text-neutral-300 hover:border-neutral-300 dark:hover:border-neutral-600'
                     }`}
                   >
-                    {isSelected && (
-                      <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-brand-600 text-white flex items-center justify-center shadow-xs">
-                        <Check className="w-3 h-3 stroke-[3]" />
-                      </div>
-                    )}
-
-                    <div>
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <div className="p-1.5 rounded-md bg-canvas-card border border-canvas-border">
-                          {themeIcons[themeKey]}
-                        </div>
-                        <div className="min-w-0 pr-5">
-                          <h4 className="font-serif font-bold text-sm text-ink truncate">
-                            {item.name}
-                          </h4>
-                          <span className="text-[10px] font-mono uppercase tracking-tight text-brand-700 dark:text-brand-400 block font-semibold truncate">
-                            {item.badge}
-                          </span>
-                        </div>
-                      </div>
-
-                      <p className="text-[11px] text-ink-muted leading-relaxed line-clamp-2 mt-1">
-                        {item.tagline}
-                      </p>
-                    </div>
-
-                    <div className="pt-2 mt-2 border-t border-canvas-border/50 text-[10px] font-mono text-ink-faint">
-                      World: <span className="text-ink font-semibold">{item.weeklyWorld.title}</span>
-                    </div>
+                    <span className="flex-shrink-0">
+                      {t.icon}
+                    </span>
+                    <span className="truncate">{t.name}</span>
                   </button>
                 );
               })}
             </div>
-
-            {/* Preview of chosen theme */}
-            <div className="p-3 rounded-lg bg-canvas-surface border border-canvas-border flex items-start gap-3">
-              <Compass className="w-4 h-4 text-brand-600 mt-0.5 flex-shrink-0" />
-              <div className="text-xs">
-                <span className="font-semibold text-ink font-serif">Selected Universe Motif: </span>
-                <span className="text-ink-muted">
-                  Your desk will feature <strong className="text-brand-700 dark:text-brand-300 font-bold">{currentThemeData.weeklyWorld.title}</strong> as your World Challenge, accompanied by character, place, and world cards matching the <strong className="text-ink">{currentThemeData.name}</strong> lore.
-                </span>
-              </div>
-            </div>
           </div>
 
-          {/* Question 3: Writing Goal */}
-          <div className="space-y-2">
-            <label className="block text-xs font-mono uppercase tracking-wider text-ink-faint font-semibold flex items-center gap-1.5">
-              <Target className="w-3.5 h-3.5 text-brand-600" />
-              <span>3. Primary Writing Ambition</span>
+          {/* Writing Ambition Dropdown */}
+          <div>
+            <label className="block text-xs font-medium text-neutral-700 dark:text-neutral-300 mb-1.5">
+              Writing Ambition
             </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {goalOptions.map((opt) => (
-                <button
-                  key={opt.label}
-                  type="button"
-                  onClick={() => setWritingGoal(opt.label)}
-                  className={`p-2.5 rounded-lg border text-left text-xs transition-all cursor-pointer ${
-                    writingGoal === opt.label
-                      ? 'border-brand-600 bg-brand-50/70 dark:bg-brand-600/15 font-semibold text-brand-900 dark:text-brand-200'
-                      : 'border-canvas-border bg-canvas-surface text-ink-muted hover:border-canvas-border hover:bg-canvas-hover'
-                  }`}
-                >
-                  <div className="font-serif font-bold text-ink">{opt.label}</div>
-                  <div className="text-[10px] text-ink-faint mt-0.5">{opt.desc}</div>
-                </button>
-              ))}
+            <div className="relative">
+              <Target className="w-4 h-4 text-neutral-400 dark:text-neutral-500 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <select
+                value={writingGoal}
+                onChange={(e) => setWritingGoal(e.target.value)}
+                className="w-full h-12 pl-11 pr-9 rounded-lg bg-[#f4f6fa] dark:bg-neutral-800/80 border border-neutral-200/60 dark:border-neutral-700/60 text-sm font-sans text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 focus:ring-2 focus:ring-neutral-400/20 transition-all appearance-none cursor-pointer"
+              >
+                <option value="Epic Survival Novel (50,000+ words)">Novel (50,000+ words)</option>
+                <option value="Black Box Novella (15k–30k words)">Novella (15,000–30,000 words)</option>
+                <option value="Daily Scavenger Sprints (500w/day)">Daily Cadence (500 words/day)</option>
+                <option value="Survival Codex & Worldbuilding">Worldbuilding & Lore</option>
+              </select>
+              <ChevronDown className="w-4 h-4 text-neutral-400 dark:text-neutral-500 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
           </div>
 
-          {/* Question 4: Atmospheric Soundscape & Pace */}
-          <div className="space-y-2">
-            <label className="block text-xs font-mono uppercase tracking-wider text-ink-faint font-semibold">
-              4. Preferred Drafting Ambiance
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {ambianceOptions.map((opt) => (
-                <button
-                  key={opt.label}
-                  type="button"
-                  onClick={() => setAmbiance(opt.label)}
-                  className={`p-2.5 rounded-lg border text-left text-xs transition-all cursor-pointer ${
-                    ambiance === opt.label
-                      ? 'border-brand-600 bg-brand-50/70 dark:bg-brand-600/15 font-semibold text-brand-900 dark:text-brand-200'
-                      : 'border-canvas-border bg-canvas-surface text-ink-muted hover:border-canvas-border hover:bg-canvas-hover'
-                  }`}
-                >
-                  <div className="font-serif font-bold text-ink">{opt.label}</div>
-                  <div className="text-[10px] text-ink-faint mt-0.5">{opt.desc}</div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="pt-4 border-t border-canvas-border flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-[11px] font-mono text-ink-muted">
-              You can switch your narrative theme anytime from your profile desk.
-            </p>
-            <button
-              type="submit"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-sm shadow-md shadow-brand-600/30 transition-all hover:scale-105 active:scale-95 cursor-pointer"
-            >
-              <span>Enter Atelier in {currentThemeData.name.split('&')[0].trim()}</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
+          {/* Primary Action Button: "Get Started" */}
+          <button
+            type="submit"
+            className="w-full h-12 rounded-lg bg-[#18181b] hover:bg-black text-white dark:bg-white dark:hover:bg-neutral-100 dark:text-neutral-950 font-semibold text-sm transition-all shadow-sm active:scale-[0.99] cursor-pointer flex items-center justify-center mt-3"
+          >
+            <span>Enter Atelier</span>
+          </button>
         </form>
       </div>
     </div>

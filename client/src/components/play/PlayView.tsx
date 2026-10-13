@@ -169,13 +169,13 @@ export const PlayView: React.FC = () => {
 
   return (
     <div className="flex-1 overflow-y-auto bg-canvas text-ink select-none pb-24 md:pb-10">
-      {/* Clean centered container with responsive padding on left and right */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-8 sm:space-y-12">
+      {/* Full width panel container */}
+      <div className="w-full px-4 sm:px-8 md:px-12 py-6 sm:py-10 space-y-8 sm:space-y-12">
         
-        {/* Play Banner Header (matching Dashboard cinematic dark card aesthetic) */}
-        <div className="relative rounded-xl overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-5 sm:p-7 shadow-xl border border-black/10 flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
+        {/* Play Banner Header (Sharp 90° edge aesthetic) */}
+        <div className="relative rounded-none overflow-hidden bg-gradient-to-r from-[#2c221a] via-[#211a14] to-[#16120e] text-white p-5 sm:p-7 shadow-none border border-black/20 flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6">
           {/* Ambient warm glow */}
-          <div className="absolute right-0 top-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute right-0 top-0 w-72 h-72 bg-amber-500/10 rounded-none blur-3xl pointer-events-none" />
 
           <div className="space-y-2 relative z-10 min-w-0">
             <div className="flex items-center gap-2">
