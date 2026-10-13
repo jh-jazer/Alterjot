@@ -36,9 +36,15 @@ export const BookCover: React.FC<BookCoverProps> = ({
 
   return (
     <div
+      draggable={false}
+      onDragStart={(e) => e.preventDefault()}
       className={`relative select-none rounded-none overflow-hidden border border-black/15 dark:border-white/10 shadow-sm group-hover:shadow-xl transition-all duration-300 flex-shrink-0 bg-neutral-900 ${
         sizeClasses[size]
       } ${className}`}
+      style={{
+        userSelect: 'none',
+        WebkitUserDrag: 'none',
+      } as React.CSSProperties}
       title={`${title}${author ? ` by ${author}` : ''}`}
     >
       {/* Optional Wattpad / Alterjot Orange Accent Badge */}
@@ -55,12 +61,19 @@ export const BookCover: React.FC<BookCoverProps> = ({
       )}
       {hasValidImage ? (
         /* Wattpad Full-Bleed Cover Image Presentation */
-        <div className="w-full h-full relative overflow-hidden group">
+        <div className="w-full h-full relative overflow-hidden group select-none pointer-events-none">
           <img
             src={coverImage}
             alt={`${title} Cover`}
+            draggable={false}
+            onDragStart={(e) => e.preventDefault()}
             onError={() => setImageError(true)}
-            className="w-full h-full object-cover rounded-none group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-full object-cover rounded-none group-hover:scale-105 transition-transform duration-300 pointer-events-none select-none"
+            style={{
+              WebkitUserDrag: 'none',
+              userSelect: 'none',
+              pointerEvents: 'none',
+            } as React.CSSProperties}
           />
           {/* Subtle bottom vignette to frame image */}
           <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />

@@ -28,7 +28,13 @@ const AuthorAvatar: React.FC<{
             : 'border-orange-500 bg-orange-950/80 shadow-[0_0_14px_rgba(234,88,12,0.3)]'
         } ${className}`}
       >
-        <img src={avatarUrl} alt={author} className="w-full h-full object-cover rounded-full" />
+        <img
+          src={avatarUrl}
+          alt={author}
+          draggable={false}
+          onDragStart={(e) => e.preventDefault()}
+          className="w-full h-full object-cover rounded-full pointer-events-none select-none"
+        />
       </div>
     );
   }

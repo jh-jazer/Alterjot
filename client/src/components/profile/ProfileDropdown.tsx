@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import {
+  X,
   User,
   Bell,
   Settings,
@@ -78,7 +79,7 @@ const DEFAULT_NOTIFICATIONS: NotificationItem[] = [
 export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   isOpen,
   onClose,
-  align = 'right',
+  align: _align = 'right',
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -250,35 +251,63 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
   return (
     <div
-      ref={containerRef}
-      className={`absolute ${
-        align === 'right' ? 'right-0' : 'left-0'
-      } mt-2 w-84 sm:w-[350px] max-w-[calc(100vw-24px)] rounded-xl bg-canvas-card border border-canvas-border shadow-parchment-lg z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150 text-ink select-none`}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/45 backdrop-blur-sm animate-fadeIn"
     >
-      {/* 1. ROOT MENU VIEW: User sees Profile, Notifications, Settings */}
-      {activeView === 'menu' && (
-        <div className="p-3.5 space-y-3">
-          {/* Author Header Card */}
-          <div className="flex items-center gap-3 p-2.5 rounded-xl bg-canvas-surface border border-canvas-border">
-            <div className="w-10 h-10 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center font-serif text-sm font-bold shadow-xs overflow-hidden flex-shrink-0">
-              {currentUser?.avatarUrl ? (
-                <img src={currentUser.avatarUrl} alt={penName} className="w-full h-full object-cover" />
-              ) : (
-                <User className="w-5 h-5" />
-              )}
+      <div
+        ref={containerRef}
+        className="relative w-full max-w-[420px] rounded-xl bg-white dark:bg-[#181615] border border-neutral-100 dark:border-neutral-800 shadow-2xl text-neutral-900 dark:text-neutral-100 overflow-hidden max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-150 select-none"
+      >
+        {/* Close Button matching Login Modal */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-5 top-5 p-2 rounded-full text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer z-30"
+          title="Close Profile"
+          aria-label="Close Profile"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        {/* 1. ROOT MENU VIEW: User sees Profile, Notifications, Settings */}
+        {activeView === 'menu' && (
+          <div className="p-7 sm:p-8 space-y-4 overflow-y-auto max-h-[85vh]">
+            {/* Top Centered Glyph Container matching AuthModal aesthetic */}
+            <div className="w-12 h-12 rounded-lg bg-[#f4f6fa] dark:bg-neutral-800 border border-neutral-200/60 dark:border-neutral-700/60 flex items-center justify-center mx-auto mb-3 text-neutral-800 dark:text-neutral-200 shadow-xs">
+              <User className="w-5 h-5 text-brand-600" />
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <span className="text-sm font-serif font-bold text-ink truncate">{penName}</span>
-                <span className="inline-flex items-center px-1.5 py-0.2 rounded-md bg-brand-500/10 text-brand-700 dark:text-brand-300 text-[9px] font-mono font-semibold">
-                  Scribe
-                </span>
+
+            <h2 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white text-center">
+              Author Profile
+            </h2>
+
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 text-center mt-1 mb-5 max-w-[300px] mx-auto leading-relaxed">
+              Manage your scribe identity, alerts & Atelier studio preferences
+            </p>
+
+            {/* Author Header Card */}
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-neutral-50 dark:bg-neutral-900/70 border border-neutral-200/70 dark:border-neutral-800">
+              <div className="w-11 h-11 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center font-serif text-sm font-bold shadow-xs overflow-hidden flex-shrink-0">
+                {currentUser?.avatarUrl ? (
+                  <img src={currentUser.avatarUrl} alt={penName} className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-5 h-5" />
+                )}
               </div>
-              <div className="text-[11px] font-mono text-ink-muted truncate">
-                {currentUser?.email || 'Author Account'}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-serif font-bold text-ink truncate">{penName}</span>
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-brand-500/10 text-brand-700 dark:text-brand-300 text-[9px] font-mono font-semibold">
+                    Scribe
+                  </span>
+                </div>
+                <div className="text-[11px] font-mono text-ink-muted truncate">
+                  {currentUser?.email || 'Author Account'}
+                </div>
               </div>
             </div>
-          </div>
 
           {/* Three Core Menu Items: Profile, Notifications, Settings */}
           <div className="space-y-1 pt-1">
@@ -406,11 +435,11 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
       {/* 2. SUB-VIEW HEADER WITH BACK BUTTON & SECTION TABS */}
       {activeView !== 'menu' && (
-        <div className="border-b border-canvas-border bg-canvas-surface/70 px-3 py-2.5 flex items-center justify-between gap-2">
+        <div className="border-b border-canvas-border bg-canvas-surface/70 px-4 py-3 flex items-center justify-between gap-2 pr-14">
           <button
             type="button"
             onClick={() => setActiveView('menu')}
-            className="flex items-center gap-1 text-xs font-mono text-ink-muted hover:text-ink py-1 px-1.5 rounded-lg hover:bg-canvas-hover transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 text-xs font-mono text-ink-muted hover:text-ink py-1 px-2 rounded-lg hover:bg-canvas-hover transition-colors cursor-pointer"
             title="Return to Menu"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
@@ -461,7 +490,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
       {/* 3. PROFILE SUB-VIEW (CHANGING PEN NAME IS UNDER PROFILE) */}
       {activeView === 'profile' && (
-        <div className="p-3.5 space-y-3.5 max-h-[75vh] overflow-y-auto">
+        <div className="p-6 sm:p-7 space-y-4 max-h-[75vh] overflow-y-auto">
           {/* Identity Header */}
           <div className="flex items-center gap-3 p-2.5 rounded-xl bg-canvas-surface border border-canvas-border">
             <div className="w-11 h-11 rounded-full bg-brand-100 text-brand-800 dark:bg-brand-600/30 dark:text-brand-300 flex items-center justify-center font-serif text-sm font-bold shadow-xs overflow-hidden flex-shrink-0">
@@ -581,7 +610,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
       {/* 4. NOTIFICATIONS SUB-VIEW */}
       {activeView === 'notifications' && (
-        <div className="p-3.5 space-y-3 max-h-[75vh] overflow-y-auto">
+        <div className="p-6 sm:p-7 space-y-4 max-h-[75vh] overflow-y-auto">
           {/* Header Action */}
           <div className="flex items-center justify-between pb-1 border-b border-canvas-border">
             <span className="text-[11px] font-mono font-bold text-ink flex items-center gap-1.5">
@@ -673,7 +702,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
       {/* 5. SETTINGS SUB-VIEW */}
       {activeView === 'settings' && (
-        <div className="p-3.5 space-y-3.5 max-h-[75vh] overflow-y-auto">
+        <div className="p-6 sm:p-7 space-y-4 max-h-[75vh] overflow-y-auto">
           {/* Writing Goals */}
           <div className="p-3 rounded-xl bg-canvas-surface border border-canvas-border space-y-2">
             <div className="flex items-center justify-between">
@@ -826,6 +855,10 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 };
+
+export const ProfileModal = ProfileDropdown;
+

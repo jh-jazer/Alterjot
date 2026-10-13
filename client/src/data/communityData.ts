@@ -144,7 +144,278 @@ export const TOP_10_AUTHORS: LeaderboardAuthor[] = [
   },
 ];
 
+export const ZOMBIE_APOCALYPSE_MANUSCRIPTS: SharedManuscript[] = [
+  {
+    id: 'zombie-1',
+    title: 'Dead Winter Protocol',
+    subtitle: 'Zero Hour in the Frozen Metro',
+    author: 'J. D. Larsen',
+    authorRank: 'Grand Master',
+    genre: 'Zombie Apocalypse',
+    status: 'Completed',
+    totalWordCount: 86400,
+    targetWordCount: 90000,
+    chapterCount: 22,
+    sceneCount: 68,
+    rating: 4.98,
+    spineGradient: 'from-[#1e293b] via-[#475569] to-[#991b1b]',
+    coverImage: '/images/zombie-dead-winter.jpg',
+    synopsis:
+      'In a blizzard-blanketed Chicago where temperatures drop to -40°F, survivors discovered too late that the infected do not freeze to death. They enter cryptobiosis beneath snowdrifts—waking in blind predatory frenzy at the slightest footstep vibration on the ice.',
+    chapters: [
+      {
+        title: 'Chapter 1: The Forty Below Silence',
+        wordCount: 4120,
+        synopsis: 'Sniper Isaac Kane patrols the iced expressway overpass as the thermograph registers heat signatures beneath the frozen drifts.',
+      },
+      {
+        title: 'Chapter 2: Shivering Steel',
+        wordCount: 3950,
+        synopsis: 'A heating boiler failure in the Loop bunker forces an expedition into the dark, frozen subway tunnels.',
+      },
+      {
+        title: 'Chapter 3: The Thawing Dead',
+        wordCount: 4210,
+        synopsis: 'Steam pipes ruptured by pressure bursts awaken thousands of slumbering runners encased in glacial ice.',
+      },
+      {
+        title: 'Chapter 4: Whiteout Extraction',
+        wordCount: 4300,
+        synopsis: 'With zero visibility and failing night vision batteries, the convoy fights backward through howling snowfall.',
+      },
+    ],
+    sampleExcerpt: {
+      chapterTitle: 'Chapter 1: The Forty Below Silence',
+      content: [
+        'At negative forty degrees, sound travels like shattered porcelain. A boot crunch on packed snow rings out for three city blocks, crisp and incriminating.',
+        'Isaac Kane pulled the thermal wool scarf tighter across his gas mask seal. His breath crystallized into instant rime across the polycarbonate visor. Below his perch on the elevated expressway, Michigan Avenue was a frozen cemetery of snow-mounded sedans and jackknifed city buses.',
+        'Then the thermographic sensor on his collar began clicking—a slow, erratic pulse like a dying grandfather clock.',
+        'Isaac peered down through the Leopold scope. Six feet beneath the unbroken drift in front of the art institute, a red bloom flared on the screen. Then another. And another. The snowdrift was not empty; it was breathing.',
+      ],
+    },
+  },
+  {
+    id: 'zombie-2',
+    title: 'Patient Zero: Red Zone',
+    subtitle: 'One Breach. Zero Survivors.',
+    author: 'Elias Thorne',
+    authorRank: 'Master Lorekeeper',
+    genre: 'Zombie Apocalypse',
+    status: 'Completed',
+    totalWordCount: 94100,
+    targetWordCount: 100000,
+    chapterCount: 24,
+    sceneCount: 76,
+    rating: 4.96,
+    spineGradient: 'from-[#450a0a] via-[#7f1d1d] to-[#18181b]',
+    coverImage: '/images/zombie-patient-zero.jpg',
+    synopsis:
+      'When Level 4 subterranean containment fractures 800 feet beneath the Nevada desert, chief toxicologist Dr. Mara Lin and tactical contractor Jax Vance have exactly forty-seven minutes to escape to surface elevators before automated thermobaric purge sterilizers detonate the compound.',
+    chapters: [
+      {
+        title: 'Chapter 1: Code Scarlet in Sub-Level 6',
+        wordCount: 4250,
+        synopsis: 'Airflow alarms scream as the reinforced borosilicate glass of Cryo-Vat 9 fissures under internal pressure.',
+      },
+      {
+        title: 'Chapter 2: The Red Emergency Strobes',
+        wordCount: 4100,
+        synopsis: 'Mara races through flickering decontamination airlocks while hyper-adrenalized infected shatter bulletproof partitions.',
+      },
+      {
+        title: 'Chapter 3: The Freight Shaft Gambit',
+        wordCount: 3980,
+        synopsis: 'With stairwells compromised, survivors attempt to climb the grease-slick counterweight cables of the central lift.',
+      },
+    ],
+    sampleExcerpt: {
+      chapterTitle: 'Chapter 1: Code Scarlet in Sub-Level 6',
+      content: [
+        'The siren did not wail; it pulsed in a subsonic, guttural thrum that vibrated the fillings in Mara’s teeth. Code Scarlet. Total biological compromise.',
+        'Across the reinforced observation deck, Cryo-Vat 9 looked like an amber lantern filled with boiling tar. The subject suspended inside was no longer human; its musculature had striated into corded black sinew, its jaw distended past anatomical limits.',
+        '“Mara, step away from the observation pane,” Vance’s voice crackled through the intercom, steady and cold as gunmetal.',
+        'Before she could take a step, the four-inch borosilicate glass cracked with the sound of a rifle report. A web of white fractures blossomed across the surface—and two bloodshot, pupilless eyes locked onto hers through the spiderwebbed frost.',
+      ],
+    },
+  },
+  {
+    id: 'zombie-3',
+    title: 'The Last Haven',
+    subtitle: 'A Post-Apocalyptic Zombie Thriller',
+    author: 'Sarah J. Reed',
+    authorRank: 'Grand Master',
+    genre: 'Zombie Apocalypse',
+    status: 'Completed',
+    totalWordCount: 78500,
+    targetWordCount: 85000,
+    chapterCount: 19,
+    sceneCount: 62,
+    rating: 4.94,
+    spineGradient: 'from-[#7c2d12] via-[#ea580c] to-[#1c1917]',
+    coverImage: '/images/zombie-last-haven.jpg',
+    synopsis:
+      'Suspended two hundred feet above a churning gorge, the Haven was forged from welded shipping containers and suspension bridge cables. It held against the dead for four long years—until a summer drought turns the rushing river below into dry silt, allowing millions of undead to march straight across the canyon floor.',
+    chapters: [
+      {
+        title: 'Chapter 1: Guard Tower Three',
+        wordCount: 4050,
+        synopsis: 'Captain Sarah Reed spots dust plumes rising thirty miles eastward along the dry riverbed.',
+      },
+      {
+        title: 'Chapter 2: The Shrinking Moat',
+        wordCount: 3900,
+        synopsis: 'The last rapids vanish into cracked clay, removing the natural barrier that protected the bridge piers.',
+      },
+      {
+        title: 'Chapter 3: The Bridge Siege',
+        wordCount: 4180,
+        synopsis: 'Infected climb the concrete pylon scaffolding in human ladders as the outer perimeter gates buckle.',
+      },
+    ],
+    sampleExcerpt: {
+      chapterTitle: 'Chapter 1: Guard Tower Three',
+      content: [
+        'For four years, the river was our salvation. It roared through the gorge like a brown freight train, grinding any infected that stumbled into the rapids into driftwood and foam.',
+        'Today, Sarah lowered her binoculars with trembling hands. The roar was gone.',
+        'Where eighty feet of mountain snowmelt had carved the canyon for centuries, there was only cracked gray silt and stagnant pools of green scum. And along the eastern horizon, kicking up an ochre dust cloud that stained the twilight sky, came the horde.',
+        'Not hundreds. Not thousands. A carpet of swaying, rotting flesh extending as far as the glass could reach, marching directly toward our bridge foundations.',
+      ],
+    },
+  },
+  {
+    id: 'zombie-4',
+    title: 'Ashes of the Fallen',
+    subtitle: 'The Overgrown Quarantine Chronicles',
+    author: 'E. S. Cross',
+    authorRank: 'Master Lorekeeper',
+    genre: 'Zombie Apocalypse',
+    status: 'Completed',
+    totalWordCount: 102300,
+    targetWordCount: 110000,
+    chapterCount: 26,
+    sceneCount: 82,
+    rating: 4.97,
+    spineGradient: 'from-[#14532d] via-[#166534] to-[#18181b]',
+    coverImage: '/images/zombie-ashes-fallen.jpg',
+    synopsis:
+      'A decade after the biohazard collapse, Manhattan is a vertical rain forest of vines, collapsed avenues, and rooftop farms. But deep in the moss-choked concrete canyons, a fungal spore mutation has created "The Whisperers"—undead that coordinate attacks in silent, predatory packs.',
+    chapters: [
+      {
+        title: 'Chapter 1: Canopy Runners',
+        wordCount: 4320,
+        synopsis: 'Ziplining between high-rise garden communities, scavenger Kael notices the lower streets have fallen unnervingly quiet.',
+      },
+      {
+        title: 'Chapter 2: The Spore Bloom',
+        wordCount: 4150,
+        synopsis: 'Exploration of a flooded subway station reveals iridescent fungal fruiting bodies rooted into nerve tissue.',
+      },
+      {
+        title: 'Chapter 3: The Fifth Avenue Ambush',
+        wordCount: 4280,
+        synopsis: 'Coordinated hunter packs cut the suspension guide ropes, trapping a foraging crew on ground level.',
+      },
+    ],
+    sampleExcerpt: {
+      chapterTitle: 'Chapter 1: Canopy Runners',
+      content: [
+        'You never touch the asphalt in New York. That is rule number one, carved into every steel beam of the Highline Colony.',
+        'Eighty feet above 42nd Street, ivy as thick as an athlete’s thigh braided the Empire State Building to the Chrysler Tower. Up here, sunlight was sweet, rainwater tasted of zinc, and rooftop tomatoes grew fat and red. Down there was perpetual twilight, green mold, and the smell of wet earth and ancient decay.',
+        'Kael clipped his harness carabiner onto the guide cable. He glanced down into the gloom of the canyon below.',
+        'Usually, you heard them: teeth clicking, feet dragging through dead leaves. Today, there was no sound except the rustle of ferns. Then, sixty feet beneath his boots, a dozen heads tilted back in unison. Yellow eyes flared in the dark. They weren’t wandering; they were looking directly at him.',
+      ],
+    },
+  },
+  {
+    id: 'zombie-5',
+    title: 'Horde Horizon',
+    subtitle: 'The Great Plains Migration',
+    author: 'Marcus Vance',
+    authorRank: 'Seasoned Novelist',
+    genre: 'Zombie Apocalypse',
+    status: 'In Progress',
+    totalWordCount: 67200,
+    targetWordCount: 80000,
+    chapterCount: 18,
+    sceneCount: 52,
+    rating: 4.89,
+    spineGradient: 'from-[#78350f] via-[#b45309] to-[#1c1917]',
+    coverImage: '/images/apocalyptic-cover.jpg',
+    synopsis:
+      'A mega-horde five miles wide sweeps across the Nebraska plains like an unstoppable locust swarm. An armored locomotive carrying three hundred refugees must outrun the migration across a crumbling rail line where every switch and trestle bridge is on the verge of collapse.',
+    chapters: [
+      {
+        title: 'Chapter 1: Smoke on the Prairie',
+        wordCount: 3950,
+        synopsis: 'Train engineer Cole watches the western horizon darken with dust and decomposing masses.',
+      },
+      {
+        title: 'Chapter 2: The Clogged Trestle',
+        wordCount: 3820,
+        synopsis: 'Derailment looms as thousands of bodies wedge into the wooden bridge timbers over the Platte River.',
+      },
+      {
+        title: 'Chapter 3: Full Steam Into the Swarm',
+        wordCount: 4100,
+        synopsis: 'With the cowcatcher groaning under impact, Cole dumps the last bags of bituminous coal into the furnace.',
+      },
+    ],
+    sampleExcerpt: {
+      chapterTitle: 'Chapter 1: Smoke on the Prairie',
+      content: [
+        'The horizon wasn’t smoke; it was motion. A rolling, churning sea of black and gray that stretched from north to south until the curvature of the earth swallowed it.',
+        '“How many?” Cole shouted over the rhythmic clatter of the Baldwin 4-8-4 steam locomotive.',
+        'His fireman didn’t lower the brass spyglass. “More than the state of Nebraska had living citizens before the war, Cole. Two million. Maybe three. And they’re moving at a steady six miles an hour, straight toward the junction.”',
+      ],
+    },
+  },
+  {
+    id: 'zombie-6',
+    title: 'Winter Over Blackwood: Resurgence',
+    subtitle: 'The Frostbite Horde',
+    author: 'S. K. Thorne',
+    authorRank: 'Journeyman Author',
+    genre: 'Zombie Apocalypse',
+    status: 'Completed',
+    totalWordCount: 64500,
+    targetWordCount: 75000,
+    chapterCount: 16,
+    sceneCount: 48,
+    rating: 4.90,
+    spineGradient: 'from-[#0369a1] via-[#0284c7] to-[#0f172a]',
+    coverImage: '/images/cover-winter-blackwood.jpg',
+    synopsis:
+      'The mountain village of Blackwood survived the initial wave by retreating into the sub-zero high alpine passes where flesh froze solid. But when an unprecedented spring thaw arrives early, the hundreds of thousands frozen in the glacial valley begin to thaw and open their dead eyes.',
+    chapters: [
+      {
+        title: 'Chapter 1: The Melt Begins',
+        wordCount: 4100,
+        synopsis: 'Icicles dripping from the ramparts signal the end of winter and the awakening of the valley.',
+      },
+      {
+        title: 'Chapter 2: Sounds in the Slush',
+        wordCount: 3900,
+        synopsis: 'Black ice fractures as limbs trapped inside the glacier start breaking free.',
+      },
+      {
+        title: 'Chapter 3: The Avalanche Defense',
+        wordCount: 4200,
+        synopsis: 'Defenders detonate dynamite on the upper ridge to bury the surging thaw horde in a mountain of snow.',
+      },
+    ],
+    sampleExcerpt: {
+      chapterTitle: 'Chapter 1: The Melt Begins',
+      content: [
+        'For seven months, the cold was our fortress wall. At negative twenty, an infected man is just an ice sculpture, brittle as sugar glass.',
+        'Then the wind turned south on the ides of March. It carried the warm, humid scent of blooming pine and damp earth.',
+        'Tomas stood on the palisade, watching water stream down the blue face of the Blackwood glacier. From deep inside the clear ice, twenty feet down, a gray hand twitched. Then a pair of pale lips parted, exhaling a plume of frozen mist into the morning thaw.',
+      ],
+    },
+  },
+];
+
 export const SHARED_MANUSCRIPTS: SharedManuscript[] = [
+  ...ZOMBIE_APOCALYPSE_MANUSCRIPTS,
   {
     id: 'shared-1',
     title: 'The Clockwork Citadel',
