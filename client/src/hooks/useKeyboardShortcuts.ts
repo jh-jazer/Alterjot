@@ -5,12 +5,20 @@ export function useKeyboardShortcuts() {
   const toggleZenMode = useWorkspaceStore((s) => s.toggleZenMode);
   const toggleSidebar = useWorkspaceStore((s) => s.toggleSidebar);
   const toggleCodex = useWorkspaceStore((s) => s.toggleCodex);
+  const toggleAiAssistant = useWorkspaceStore((s) => s.toggleAiAssistant);
   const isZenMode = useWorkspaceStore((s) => s.panelState.isZenMode);
   const setZenMode = useWorkspaceStore((s) => s.setZenMode);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+
+      // Cmd/Ctrl + J -> Toggle AI Assistant Drawer
+      if (isCmdOrCtrl && (e.key === 'j' || e.key === 'J')) {
+        e.preventDefault();
+        toggleAiAssistant();
+        return;
+      }
 
       // Cmd/Ctrl + \ -> Zen Focus Mode as specified
       if (isCmdOrCtrl && e.key === '\\') {

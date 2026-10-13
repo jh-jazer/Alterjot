@@ -145,3 +145,30 @@ export interface AuthUser {
   googleId?: string;
 }
 
+export interface ActivePassage {
+  text: string;
+  from: number;
+  to: number;
+  type: 'paragraph' | 'sentence' | 'selection';
+  paragraphText?: string;
+  paragraphFrom?: number;
+  paragraphTo?: number;
+}
+
+export interface AiPassageAnalysis {
+  tone: string;
+  thoughts: string;
+  conveys: string;
+  pacing: string;
+  strengths: string;
+  suggestions: string;
+}
+
+export interface AiInteractionMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  proposedRewrite?: string;
+  timestamp: string;
+}
+

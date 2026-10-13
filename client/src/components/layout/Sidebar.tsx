@@ -27,8 +27,6 @@ export const Sidebar: React.FC = () => {
   const updateNovel = useWorkspaceStore((s) => s.updateNovel);
   const updateChapterTitle = useWorkspaceStore((s) => s.updateChapterTitle);
 
-  const [newChapterTitle, setNewChapterTitle] = useState('');
-  const [isAddingChapter, setIsAddingChapter] = useState(false);
   const [treeSearch, setTreeSearch] = useState('');
 
   const [isEditingNovelTitle, setIsEditingNovelTitle] = useState(false);
@@ -39,11 +37,11 @@ export const Sidebar: React.FC = () => {
 
   if (!isSidebarOpen) return null;
 
-  const handleCreateChapter = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await createNewChapter(newChapterTitle.trim() || undefined);
-    setNewChapterTitle('');
-    setIsAddingChapter(false);
+  const handleCreateChapter = async () => {
+    const newCh = await createNewChapter();
+    if (newCh) {
+      selectChapter(newCh._id);
+    }
   };
 
   const handleSaveNovelTitle = () => {
@@ -284,42 +282,15 @@ export const Sidebar: React.FC = () => {
 
         {/* Add Chapter footer */}
         <div className="p-3 border-t border-canvas-border bg-canvas-subtle/50">
-          {isAddingChapter ? (
-            <form onSubmit={handleCreateChapter} className="space-y-2">
-              <input
-                type="text"
-                autoFocus
-                value={newChapterTitle}
-                onChange={(e) => setNewChapterTitle(e.target.value)}
-                placeholder="Chapter title (optional)"
-                className="w-full px-2.5 py-1.5 rounded-lg bg-canvas-card border border-canvas-border text-xs text-ink placeholder-ink-faint focus:outline-none focus:border-brand-600 shadow-xs"
-              />
-              <div className="flex items-center gap-2">
-                <button
-                  type="submit"
-                  className="flex-1 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-medium shadow-xs"
-                >
-                  {newChapterTitle.trim() ? 'Add Chapter' : 'Add Chapter (Untitled)'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsAddingChapter(false)}
-                  className="px-2.5 py-1.5 rounded-lg hover:bg-canvas-hover text-ink-muted text-xs"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          ) : (
-            <button
-              type="button"
-              onClick={() => setIsAddingChapter(true)}
-              className="w-full flex items-center justify-center gap-2 py-2 rounded-lg border border-dashed border-canvas-border hover:border-brand-600 text-ink-muted hover:text-brand-700 dark:hover:text-amber-400 text-xs font-mono transition-all bg-canvas-card/50 shadow-xs cursor-pointer"
-            >
-              <FolderPlus className="w-4 h-4" />
-              <span>+ New Chapter</span>
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={handleCreateChapter}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-dashed border-canvas-border hover:border-brand-600 text-ink-muted hover:text-brand-700 dark:hover:text-amber-400 text-xs font-mono transition-all bg-canvas-card/50 hover:bg-canvas-card shadow-xs cursor-pointer active:scale-[0.99]"
+            title="Create next chapter (Chapter 1, Chapter 2, etc.)"
+          >
+            <FolderPlus className="w-4 h-4" />
+            <span>+ New Chapter</span>
+          </button>
         </div>
       </aside>
     </>

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Novel, Chapter, Scene, CodexEntry, SaveStatus, NarrativeTheme, OnboardingAnswers, AuthUser } from '../types';
+import type { Novel, Chapter, Scene, CodexEntry, SaveStatus, NarrativeTheme, OnboardingAnswers, AuthUser, ActivePassage } from '../types';
 import type { CollaborativeProject, ContributorRequest, ApprovedCollaborator, CreativeDiscipline } from '../data/collaborativeProjectsData';
 import { COLLABORATIVE_PROJECTS } from '../data/collaborativeProjectsData';
 import { api } from '../services/api';
@@ -9,6 +9,7 @@ interface PanelState {
   isCodexOpen: boolean;
   isZenMode: boolean;
   isNotesDeckOpen: boolean;
+  isAiAssistantOpen: boolean;
 }
 
 interface TypographySettings {
@@ -68,6 +69,11 @@ interface WorkspaceState {
   toggleSidebar: () => void;
   toggleCodex: () => void;
   toggleNotesDeck: () => void;
+  toggleAiAssistant: () => void;
+  openAiAssistant: (passage?: ActivePassage) => void;
+  closeAiAssistant: () => void;
+  activePassage: ActivePassage | null;
+  setActivePassage: (passage: ActivePassage | null) => void;
   toggleZenMode: () => void;
   setZenMode: (val: boolean) => void;
   setSaveStatus: (status: SaveStatus) => void;
@@ -207,12 +213,14 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   scenes: [],
   codexEntries: [],
   activeScene: null,
+  activePassage: null,
 
   panelState: {
     isSidebarOpen: true,
     isCodexOpen: false,
     isZenMode: false,
     isNotesDeckOpen: true,
+    isAiAssistantOpen: false,
   },
 
   typography: {
@@ -536,6 +544,24 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     set((state) => ({
       panelState: { ...state.panelState, isNotesDeckOpen: !state.panelState.isNotesDeckOpen },
     })),
+
+  toggleAiAssistant: () =>
+    set((state) => ({
+      panelState: { ...state.panelState, isAiAssistantOpen: !state.panelState.isAiAssistantOpen },
+    })),
+
+  openAiAssistant: (passage) =>
+    set((state) => ({
+      panelState: { ...state.panelState, isAiAssistantOpen: true },
+      ...(passage ? { activePassage: passage } : {}),
+    })),
+
+  closeAiAssistant: () =>
+    set((state) => ({
+      panelState: { ...state.panelState, isAiAssistantOpen: false },
+    })),
+
+  setActivePassage: (passage) => set({ activePassage: passage }),
 
   toggleZenMode: () =>
     set((state) => {
@@ -1127,7 +1153,21 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     const { activeNovelId, chapters } = get();
     if (!activeNovelId) return null;
     try {
-      const chapterTitle = title || `Chapter ${chapters.length + 1}`;
+      const existingNumbers = chapters
+        .map((c) => {
+          const match = c.title.trim().match(/^Chapter\s+(\d+)$/i);
+          return match ? parseInt(match[1], 10) : null;
+        })
+        .filter((n): n is number => n !== null && !isNaN(n));
+
+      const nextNum =
+        existingNumbers.length > 0
+          ? Math.max(...existingNumbers) + 1
+          : chapters.some((c) => c.title.toLowerCase().includes('chapter 1'))
+          ? chapters.length + 1
+          : 1;
+
+      const chapterTitle = title?.trim() || `Chapter ${nextNum}`;
       const newCh = await api.createChapter({
         novelId: activeNovelId,
         title: chapterTitle,

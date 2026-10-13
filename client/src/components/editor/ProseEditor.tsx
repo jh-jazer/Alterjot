@@ -13,6 +13,7 @@ import { SceneNotesDeck } from './SceneNotesDeck';
 import { StatusDot } from '../common/StatusDot';
 import { Minimize2, Edit3 } from 'lucide-react';
 import type { SceneStatus, SceneMetadata } from '../../types';
+import { AiLedExtension } from './extensions/AiLedExtension';
 
 export const ProseEditor: React.FC = () => {
   const activeScene = useWorkspaceStore((s) => s.activeScene);
@@ -28,6 +29,7 @@ export const ProseEditor: React.FC = () => {
   const updateSceneTitle = useWorkspaceStore((s) => s.updateSceneTitle);
   const saveStatus = useWorkspaceStore((s) => s.saveStatus);
   const lastSavedAt = useWorkspaceStore((s) => s.lastSavedAt);
+  const activePassage = useWorkspaceStore((s) => s.activePassage);
 
   const [wordCount, setWordCount] = useState(activeScene?.wordCount || 0);
   const [characterCount, setCharacterCount] = useState(activeScene?.characterCount || 0);
@@ -72,6 +74,7 @@ export const ProseEditor: React.FC = () => {
         emptyNodeClass: 'is-editor-empty',
       }),
       Typography,
+      AiLedExtension,
     ],
     content: activeScene?.contentJson || {
       type: 'doc',
@@ -115,6 +118,40 @@ export const ProseEditor: React.FC = () => {
       }
     }
   }, [editor, activeScene?._id]);
+
+  // Keep active blue LED synchronized with active passage in workspace
+  useEffect(() => {
+    if (editor && !editor.isDestroyed) {
+      try {
+        editor.view.dispatch(editor.state.tr.setMeta('forceUpdateAiLeds', true));
+      } catch {}
+    }
+  }, [editor, activePassage]);
+
+  // Handle AI approved passage replacement in TipTap
+  useEffect(() => {
+    const handleReplacePassage = (e: Event) => {
+      const customEvent = e as CustomEvent<{ from: number; to: number; newText: string }>;
+      if (!editor || !customEvent.detail) return;
+      const { from, to, newText } = customEvent.detail;
+
+      const docSize = editor.state.doc.content.size;
+      const safeFrom = Math.max(0, Math.min(from, docSize));
+      const safeTo = Math.max(safeFrom, Math.min(to, docSize));
+
+      editor
+        .chain()
+        .focus()
+        .setTextSelection({ from: safeFrom, to: safeTo })
+        .insertContent(newText)
+        .run();
+    };
+
+    window.addEventListener('alterjot:replace-passage', handleReplacePassage);
+    return () => {
+      window.removeEventListener('alterjot:replace-passage', handleReplacePassage);
+    };
+  }, [editor]);
 
   // Two-Tier autosave hook
   useAutosave(
