@@ -120,6 +120,7 @@ interface WorkspaceState {
   currentUser: AuthUser | null;
   isAuthModalOpen: boolean;
   authModalMode: 'signin' | 'signup';
+  isProfileModalOpen: boolean;
   hasCompletedOnboarding: boolean;
   isOnboardingModalOpen: boolean;
   preferredTheme: NarrativeTheme;
@@ -128,6 +129,7 @@ interface WorkspaceState {
   loginWithGoogleCredential: (credential: string) => Promise<boolean>;
   logout: () => void;
   setIsAuthModalOpen: (open: boolean, mode?: 'signin' | 'signup') => void;
+  setIsProfileModalOpen: (open: boolean) => void;
   setIsOnboardingModalOpen: (open: boolean) => void;
   completeOnboarding: (answers: OnboardingAnswers) => void;
   setPreferredTheme: (theme: NarrativeTheme) => void;
@@ -195,6 +197,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       : null,
   isAuthModalOpen: false,
   authModalMode: 'signin',
+  isProfileModalOpen: false,
   hasCompletedOnboarding: (typeof window !== 'undefined' && getStorageItem('onboarded') === 'true') || false,
   isOnboardingModalOpen: false,
   preferredTheme: ((typeof window !== 'undefined' && getStorageItem('preferred_theme')) as NarrativeTheme) || 'apocalyptic',
@@ -448,6 +451,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       isAuthenticated: false,
       currentUser: null,
       currentView: 'dashboard',
+      isProfileModalOpen: false,
     });
     // Reload guest manuscripts
     get().loadInitialWorkspace();
@@ -455,6 +459,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
   setIsAuthModalOpen: (open, mode = 'signin') => {
     set({ isAuthModalOpen: open, authModalMode: mode });
+  },
+
+  setIsProfileModalOpen: (open) => {
+    set({ isProfileModalOpen: open });
   },
 
   setIsOnboardingModalOpen: (open) => {

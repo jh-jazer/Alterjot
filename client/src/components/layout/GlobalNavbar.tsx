@@ -14,7 +14,6 @@ import {
   ChevronDown,
   LogIn,
 } from 'lucide-react';
-import { ProfileDropdown } from '../profile/ProfileDropdown';
 
 export const GlobalNavbar: React.FC = () => {
   const currentView = useWorkspaceStore((s) => s.currentView);
@@ -33,13 +32,13 @@ export const GlobalNavbar: React.FC = () => {
   const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
   const currentUser = useWorkspaceStore((s) => s.currentUser);
   const setIsAuthModalOpen = useWorkspaceStore((s) => s.setIsAuthModalOpen);
+  const isProfileModalOpen = useWorkspaceStore((s) => s.isProfileModalOpen);
+  const setIsProfileModalOpen = useWorkspaceStore((s) => s.setIsProfileModalOpen);
 
   const librarySearchQuery = useWorkspaceStore((s) => s.librarySearchQuery);
   const setLibrarySearchQuery = useWorkspaceStore((s) => s.setLibrarySearchQuery);
 
   const [isWriteMenuOpen, setIsWriteMenuOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const profileMenuRef = useRef<HTMLDivElement>(null);
   const writeMenuRef = useRef<HTMLDivElement>(null);
 
   // Handle escape key to dismiss menus
@@ -47,7 +46,7 @@ export const GlobalNavbar: React.FC = () => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setIsWriteMenuOpen(false);
-        setIsProfileOpen(false);
+        setIsProfileModalOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -59,9 +58,6 @@ export const GlobalNavbar: React.FC = () => {
   // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target as Node)) {
-        setIsProfileOpen(false);
-      }
       if (writeMenuRef.current && !writeMenuRef.current.contains(e.target as Node)) {
         setIsWriteMenuOpen(false);
       }
@@ -216,19 +212,18 @@ export const GlobalNavbar: React.FC = () => {
           </button>
 
           {/* Profile Icon Only */}
-          {/* Profile Icon Only */}
-          <div className="relative" ref={profileMenuRef}>
+          <div className="relative">
             <button
               type="button"
               onClick={() => {
                 if (!isAuthenticated) {
                   setIsAuthModalOpen(true, 'signin');
                 } else {
-                  setIsProfileOpen((prev) => !prev);
+                  setIsProfileModalOpen(!isProfileModalOpen);
                 }
               }}
-              className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all shadow-xs group focus:outline-none focus:ring-2 focus:ring-brand-500/30 active:scale-95 ${
-                isProfileOpen
+              className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all shadow-xs group focus:outline-none focus:ring-2 focus:ring-brand-500/30 active:scale-95 cursor-pointer ${
+                isProfileModalOpen
                   ? 'bg-canvas-card border-brand-500 ring-2 ring-brand-500/20'
                   : 'bg-canvas-card border-canvas-border hover:border-brand-500/60 hover:bg-canvas-hover'
               }`}
@@ -243,15 +238,6 @@ export const GlobalNavbar: React.FC = () => {
                 )}
               </div>
             </button>
-
-            {/* Profile Dropdown Popover */}
-            {isProfileOpen && isAuthenticated && (
-              <ProfileDropdown
-                isOpen={isProfileOpen}
-                onClose={() => setIsProfileOpen(false)}
-                align="right"
-              />
-            )}
           </div>
 
           {/* If NOT signed in: Sign In Button; If signed in: Write Button with dropdown */}

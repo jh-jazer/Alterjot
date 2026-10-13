@@ -14,7 +14,6 @@ import {
   Moon,
   User,
 } from 'lucide-react';
-import { ProfileDropdown } from '../profile/ProfileDropdown';
 
 export const WorkstationNavbar: React.FC = () => {
   const openLibrary = useWorkspaceStore((s) => s.openLibrary);
@@ -32,10 +31,11 @@ export const WorkstationNavbar: React.FC = () => {
   const toggleTheme = useWorkspaceStore((s) => s.toggleTheme);
   const penName = useWorkspaceStore((s) => s.penName);
   const currentUser = useWorkspaceStore((s) => s.currentUser);
+  const isProfileModalOpen = useWorkspaceStore((s) => s.isProfileModalOpen);
+  const setIsProfileModalOpen = useWorkspaceStore((s) => s.setIsProfileModalOpen);
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [tempTitle, setTempTitle] = useState('');
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const handleStartEditTitle = () => {
     if (!activeNovel) return;
@@ -208,8 +208,12 @@ export const WorkstationNavbar: React.FC = () => {
           <div className="relative">
             <button
               type="button"
-              onClick={() => setIsProfileOpen((prev) => !prev)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-canvas-card border border-canvas-border hover:border-brand-500/60 hover:bg-canvas-hover text-ink text-xs font-serif shadow-xs transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500/30 active:scale-95"
+              onClick={() => setIsProfileModalOpen(!isProfileModalOpen)}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-canvas-card border text-ink text-xs font-serif shadow-xs transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500/30 active:scale-95 ${
+                isProfileModalOpen
+                  ? 'border-brand-500 ring-2 ring-brand-500/20'
+                  : 'border-canvas-border hover:border-brand-500/60 hover:bg-canvas-hover'
+              }`}
               title={`Pen Name: ${penName} (Click to manage Profile, Notifications, Settings)`}
               aria-label="Author Profile"
             >
@@ -224,15 +228,6 @@ export const WorkstationNavbar: React.FC = () => {
                 {penName}
               </span>
             </button>
-
-            {/* Profile Dropdown Popover in Studio Workstation */}
-            {isProfileOpen && (
-              <ProfileDropdown
-                isOpen={isProfileOpen}
-                onClose={() => setIsProfileOpen(false)}
-                align="right"
-              />
-            )}
           </div>
         </div>
       </div>

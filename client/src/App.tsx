@@ -14,6 +14,7 @@ import { ProjectDashboardModal } from './components/dashboard/ProjectDashboardMo
 import { ExportModal } from './components/export/ExportModal';
 import { WriteForProjectModal } from './components/collaborative/WriteForProjectModal';
 import { AuthModal } from './components/auth/AuthModal';
+import { ProfileModal } from './components/profile/ProfileDropdown';
 import { OnboardingModal } from './components/onboarding/OnboardingModal';
 import { MobileBottomNav } from './components/layout/MobileBottomNav';
 import { PWAStatusBanner } from './components/pwa/PWAStatusBanner';
@@ -63,6 +64,7 @@ export const App: React.FC = () => {
       <ExportModal />
       <WriteForProjectModal />
       <AuthModal />
+      <ProfileModal />
       <OnboardingModal />
 
       {/* Mobile Bottom Navigation */}

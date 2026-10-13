@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import {
   X,
@@ -27,8 +28,8 @@ import {
 import { usePWA } from '../../hooks/usePWA';
 
 interface ProfileDropdownProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
   align?: 'right' | 'left';
 }
 
@@ -77,13 +78,18 @@ const DEFAULT_NOTIFICATIONS: NotificationItem[] = [
 ];
 
 export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
-  isOpen,
-  onClose,
+  isOpen: propIsOpen,
+  onClose: propOnClose,
   align: _align = 'right',
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Store bindings
+  const storeIsOpen = useWorkspaceStore((s) => s.isProfileModalOpen);
+  const setStoreIsOpen = useWorkspaceStore((s) => s.setIsProfileModalOpen);
+
+  const isOpen = propIsOpen !== undefined ? propIsOpen : storeIsOpen;
+  const onClose = propOnClose !== undefined ? propOnClose : () => setStoreIsOpen(false);
   const penName = useWorkspaceStore((s) => s.penName);
   const setPenName = useWorkspaceStore((s) => s.setPenName);
   const currentUser = useWorkspaceStore((s) => s.currentUser);
@@ -157,15 +163,9 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
     }
   }, [isOpen]);
 
-  // Click outside and escape handling
+  // Escape key handling
   useEffect(() => {
     if (!isOpen) return;
-
-    const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        onClose();
-      }
-    };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -173,10 +173,8 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
     window.addEventListener('keydown', handleKeyDown);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose]);
@@ -249,7 +247,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -258,7 +256,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
     >
       <div
         ref={containerRef}
-        className="relative w-full max-w-[420px] rounded-xl bg-white dark:bg-[#181615] border border-neutral-100 dark:border-neutral-800 shadow-2xl text-neutral-900 dark:text-neutral-100 overflow-hidden max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-150 select-none"
+        className="relative w-full max-w-[420px] rounded-xl bg-white dark:bg-[#181615] border border-neutral-100 dark:border-neutral-800 shadow-2xl text-neutral-900 dark:text-neutral-100 overflow-hidden max-h-[90vh] flex flex-col select-none"
       >
         {/* Close Button matching Login Modal */}
         <button
@@ -858,7 +856,12 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined'
+    ? createPortal(modalContent, document.body)
+    : modalContent;
 };
 
 export const ProfileModal = ProfileDropdown;
+
 
