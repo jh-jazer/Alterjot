@@ -38,7 +38,7 @@ export const MobileBottomNav: React.FC = () => {
     },
     {
       id: 'library',
-      label: 'Shelf',
+      label: 'Library',
       icon: BookOpen,
       active: currentView === 'library',
       onClick: openLibrary,
