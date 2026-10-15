@@ -34,6 +34,16 @@ export const CreateStoryView: React.FC<CreateStoryViewProps> = ({ isEditing = fa
   const penName = useWorkspaceStore((s) => s.penName);
 
   const existingNovel = routeNovelId ? novels.find((n) => n._id === routeNovelId) || null : null;
+  const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
+  const setIsAuthModalOpen = useWorkspaceStore((s) => s.setIsAuthModalOpen);
+
+  // Guest accounts disallowed: redirect unauthenticated users to library with auth prompt
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setIsAuthModalOpen(true, 'signin');
+      navigate('/library');
+    }
+  }, [isAuthenticated, navigate, setIsAuthModalOpen]);
 
   // Form Fields
   const [title, setTitle] = useState('');

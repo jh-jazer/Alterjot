@@ -66,12 +66,36 @@ export async function getNovelById(req, res) {
 export async function createNovel(req, res) {
   try {
     const userId = req.headers['x-user-id'] || req.body.userId || '';
-    const payload = {
-      ...req.body,
-      ...(userId ? { userId } : {}),
-    };
+
+    if (!userId || userId.startsWith('user_') || userId.startsWith('author_')) {
+      return res.status(401).json({
+        success: false,
+        error: 'Authentication required. Guest accounts are not allowed.',
+      });
+    }
 
     if (isConnectedToAtlas()) {
+      const user = await User.findOne({
+        $or: [
+          ...(userId.length === 24 ? [{ _id: userId }] : []),
+          { googleId: userId },
+          { email: (userId || '').toLowerCase() },
+        ],
+      });
+
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          error: 'Authenticated author account not found. Please sign in.',
+        });
+      }
+
+      const payload = {
+        ...req.body,
+        userId: user._id.toString(),
+        author: user.penName || req.body.author || 'Author',
+      };
+
       const novel = await Novel.create(payload);
       // create initial chapter & scene
       const chapter = await Chapter.create({

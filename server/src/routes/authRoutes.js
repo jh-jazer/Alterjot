@@ -1,7 +1,14 @@
 import express from 'express';
-import { googleSignIn, getAuthConfig, getVault, saveVault } from '../controllers/authController.js';
+import { googleSignIn, getAuthConfig, getVault, saveVault, getCurrentUser, updateProfile } from '../controllers/authController.js';
 
 const router = express.Router();
+
+// GET /api/auth/me - Retrieve verified author profile
+router.get('/me', getCurrentUser);
+
+// PATCH & PUT /api/auth/profile - Update author profile (e.g. penName)
+router.patch('/profile', updateProfile);
+router.put('/profile', updateProfile);
 
 // POST /api/auth/google - Authenticate with Google ID Token
 router.post('/google', googleSignIn);

@@ -47,8 +47,8 @@ export function useAutosave(
         setSaveStatus('saved');
         useWorkspaceStore.setState({ lastSavedAt: new Date() });
       } catch (err) {
-        console.warn('Tier 2 cloud sync failed, stored in Tier 1 localStorage:', err);
-        setSaveStatus('cached-offline');
+        console.warn('Cloud autosave to database failed:', err);
+        setSaveStatus('error');
       }
     }, 1000);
 

@@ -210,10 +210,17 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const handleSavePenName = (e?: React.FormEvent) => {
+  useEffect(() => {
+    if (penName) {
+      setTempPenName(penName);
+    }
+  }, [penName]);
+
+  const handleSavePenName = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    const finalPenName = tempPenName.trim() || 'Ernest Quill';
-    setPenName(finalPenName);
+    const finalPenName = tempPenName.trim();
+    if (!finalPenName) return;
+    await setPenName(finalPenName);
     setPenNameSavedToast(true);
     setTimeout(() => {
       setPenNameSavedToast(false);

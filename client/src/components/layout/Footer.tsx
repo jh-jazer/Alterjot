@@ -242,7 +242,7 @@ export const Footer: React.FC = () => {
                 <div className="pt-1 flex items-center gap-1.5 text-[11px] font-mono text-stone-400">
                   <span>Active Author:</span>
                   <span className="font-bold text-amber-300 truncate">
-                    {isAuthenticated ? penName : 'Anonymous Guest'}
+                    {isAuthenticated ? penName || 'Author' : 'Not Signed In'}
                   </span>
                 </div>
               </div>

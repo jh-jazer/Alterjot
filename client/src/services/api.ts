@@ -275,6 +275,18 @@ export const api = {
     });
     return handleResponse<{ success: boolean; user: import('../types').AuthUser; message?: string }>(res);
   },
+  getCurrentUser: async (): Promise<{ success: boolean; user: import('../types').AuthUser }> => {
+    const res = await authFetch(`${API_BASE}/auth/me`);
+    return handleResponse<{ success: boolean; user: import('../types').AuthUser }>(res);
+  },
+  updateProfile: async (data: { penName: string }): Promise<{ success: boolean; user: import('../types').AuthUser; message?: string }> => {
+    const res = await authFetch(`${API_BASE}/auth/profile`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    return handleResponse<{ success: boolean; user: import('../types').AuthUser; message?: string }>(res);
+  },
   getAuthConfig: async (): Promise<{ success: boolean; googleAuthEnabled: boolean; clientIdConfigured: boolean }> => {
     const res = await authFetch(`${API_BASE}/auth/config`);
     return handleResponse<{ success: boolean; googleAuthEnabled: boolean; clientIdConfigured: boolean }>(res);

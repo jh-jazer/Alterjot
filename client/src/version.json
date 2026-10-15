@@ -1,11 +1,11 @@
 {
-  "version": "v1.0.50",
-  "commitHash": "bf0760a",
-  "commitCount": 50,
+  "version": "v1.0.51",
+  "commitHash": "cb27383",
+  "commitCount": 51,
   "branch": "main",
-  "commitMessage": "feat: add authentication controller, novel controller, and user migration script",
+  "commitMessage": "fix(vault): restore and sync encrypted api keys across devices and prevent empty overwrites",
   "buildDate": "2026-10-15",
-  "buildTimestamp": "2026-10-15T14:22:50.929Z",
+  "buildTimestamp": "2026-10-15T14:46:14.445Z",
   "repoUrl": "https://github.com/jh-jazer/Alterjot",
-  "commitUrl": "https://github.com/jh-jazer/Alterjot/commit/bf0760a"
+  "commitUrl": "https://github.com/jh-jazer/Alterjot/commit/cb27383"
 }

@@ -24,6 +24,28 @@ import { RouteSync } from './components/common/RouteSync';
 
 const StudioWorkspace: React.FC = () => {
   const isZenMode = useWorkspaceStore((s) => s.panelState.isZenMode);
+  const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
+  const setIsAuthModalOpen = useWorkspaceStore((s) => s.setIsAuthModalOpen);
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex-1 flex items-center justify-center p-6 bg-canvas text-ink select-none">
+        <div className="max-w-md w-full p-8 rounded-2xl bg-canvas-card border border-canvas-border shadow-xl text-center space-y-4">
+          <h2 className="text-xl font-serif font-bold">Author Sign In Required</h2>
+          <p className="text-xs text-ink-muted leading-relaxed font-sans">
+            Guest mode is disabled. Please sign in with your Google account to access your studio canvas, synchronized manuscripts, and AI writing tools.
+          </p>
+          <button
+            type="button"
+            onClick={() => setIsAuthModalOpen(true, 'signin')}
+            className="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-xs shadow-md transition-all hover:scale-[1.02] active:scale-98 cursor-pointer"
+          >
+            Sign In with Google
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main

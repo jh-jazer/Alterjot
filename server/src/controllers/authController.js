@@ -267,3 +267,124 @@ export async function saveVault(req, res) {
     return res.status(500).json({ success: false, error: err.message });
   }
 }
+
+/**
+ * Retrieve authenticated author profile
+ * GET /api/auth/me
+ */
+export async function getCurrentUser(req, res) {
+  try {
+    const userId = req.headers['x-user-id'] || req.query.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Authentication required' });
+    }
+
+    if (isConnectedToAtlas()) {
+      const user =
+        (await User.findById(userId).catch(() => null)) ||
+        (await User.findOne({ $or: [{ googleId: userId }, { email: userId }] }));
+
+      if (!user) {
+        return res.status(404).json({ success: false, error: 'User not found' });
+      }
+
+      return res.json({
+        success: true,
+        user: {
+          id: user._id.toString(),
+          googleId: user.googleId,
+          email: user.email,
+          penName: user.penName,
+          avatarUrl: user.avatarUrl,
+        },
+      });
+    }
+
+    const memUser = memoryStore.findUserById(userId) || memoryStore.users.find((u) => u.googleId === userId);
+    if (!memUser) {
+      return res.status(404).json({ success: false, error: 'User not found in memory store' });
+    }
+
+    return res.json({
+      success: true,
+      user: {
+        id: memUser._id || userId,
+        googleId: memUser.googleId,
+        email: memUser.email,
+        penName: memUser.penName,
+        avatarUrl: memUser.avatarUrl,
+      },
+    });
+  } catch (err) {
+    console.error('[Auth] getCurrentUser error:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+}
+
+/**
+ * Update author profile (e.g. pen name) directly in MongoDB Atlas
+ * PATCH /api/auth/profile
+ * Body: { penName: string }
+ */
+export async function updateProfile(req, res) {
+  try {
+    const userId = req.headers['x-user-id'] || req.body.userId;
+    const { penName } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Authentication required' });
+    }
+
+    if (!penName || typeof penName !== 'string' || !penName.trim()) {
+      return res.status(400).json({ success: false, error: 'A valid penName is required' });
+    }
+
+    const cleanPenName = penName.trim();
+
+    if (isConnectedToAtlas()) {
+      const user =
+        (await User.findById(userId).catch(() => null)) ||
+        (await User.findOne({ $or: [{ googleId: userId }, { email: userId }] }));
+
+      if (!user) {
+        return res.status(404).json({ success: false, error: 'User not found' });
+      }
+
+      user.penName = cleanPenName;
+      await user.save();
+
+      // Cascade update author name on all of this author's manuscripts
+      await Novel.updateMany(
+        { userId: user._id.toString() },
+        { $set: { author: cleanPenName } }
+      ).catch(() => {});
+
+      console.log(`[Auth] Updated penName to "${cleanPenName}" for user ${user.email} (${user._id})`);
+
+      return res.json({
+        success: true,
+        message: 'Pen name updated successfully in cloud database',
+        user: {
+          id: user._id.toString(),
+          googleId: user.googleId,
+          email: user.email,
+          penName: user.penName,
+          avatarUrl: user.avatarUrl,
+        },
+      });
+    }
+
+    const memUser = memoryStore.updateUserPenName(userId, cleanPenName);
+    return res.json({
+      success: true,
+      message: 'Pen name updated in memory store',
+      user: {
+        id: userId,
+        penName: cleanPenName,
+      },
+    });
+  } catch (err) {
+    console.error('[Auth] updateProfile error:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+}

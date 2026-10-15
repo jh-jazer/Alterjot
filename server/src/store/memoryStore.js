@@ -52,6 +52,16 @@ class MemoryStore {
     return user;
   }
 
+  updateUserPenName(userId, penName) {
+    const user = this.findUserById(userId) || this.users.find((u) => u.googleId === userId || u.email === userId);
+    if (user) {
+      user.penName = penName;
+      user.updatedAt = new Date().toISOString();
+      return user;
+    }
+    return null;
+  }
+
   updateUserVault(userId, encryptedVault) {
     const user = this.findUserById(userId) || this.users.find((u) => u.googleId === userId || u.email === userId);
     if (user) {

@@ -239,18 +239,32 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     if (stored === 'Ernest Quill') return '';
     return stored || '';
   })(),
-  setPenName: (name) => {
-    setStorageItem('pen_name', name);
-    set({ penName: name });
+  setPenName: async (name: string) => {
+    const cleanName = name.trim();
+    if (!cleanName) return;
+    setStorageItem('pen_name', cleanName);
+    set((state) => ({
+      penName: cleanName,
+      currentUser: state.currentUser ? { ...state.currentUser, penName: cleanName } : null,
+      novels: state.novels.map((n) => ({ ...n, author: cleanName })),
+    }));
+    try {
+      const res = await api.updateProfile({ penName: cleanName });
+      if (res.success && res.user) {
+        set({ currentUser: res.user, penName: res.user.penName });
+      }
+    } catch (err) {
+      console.warn('[Workspace] Failed to update pen name on server:', err);
+    }
   },
 
-  // Auth & Onboarding State
+  // Auth & Onboarding State - Guest accounts strictly disallowed
   isAuthenticated: (() => {
     if (typeof window === 'undefined') return false;
     if (getStorageItem('auth') !== 'true') return false;
+    const userId = getStorageItem('user_id');
     const email = getStorageItem('user_email');
-    const pen = getStorageItem('pen_name');
-    if (email === 'scribe@alterjot.com' && pen === 'Ernest Quill' && !getStorageItem('user_id')?.startsWith('google_')) {
+    if (!userId || userId.startsWith('user_') || userId.startsWith('author_') || !email) {
       return false;
     }
     return true;
@@ -258,9 +272,9 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   currentUser: (() => {
     if (typeof window === 'undefined') return null;
     if (getStorageItem('auth') !== 'true') return null;
-    const pen = getStorageItem('pen_name');
+    const userId = getStorageItem('user_id');
     const email = getStorageItem('user_email');
-    if (email === 'scribe@alterjot.com' && pen === 'Ernest Quill' && !getStorageItem('user_id')?.startsWith('google_')) {
+    if (!userId || userId.startsWith('user_') || userId.startsWith('author_') || !email) {
       try {
         removeStorageItem('auth');
         removeStorageItem('pen_name');
@@ -269,10 +283,11 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       } catch {}
       return null;
     }
+    const pen = getStorageItem('pen_name');
     return {
-      id: getStorageItem('user_id') || 'author_default',
-      penName: pen || 'Author',
-      email: email || '',
+      id: userId,
+      penName: pen || email.split('@')[0] || 'Author',
+      email,
       avatarUrl: getStorageItem('user_avatar') || undefined,
     };
   })(),
@@ -460,33 +475,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     }
   },
 
-  // Auth & Onboarding Actions
-  login: (penName: string, email?: string) => {
-    const finalPenName = penName.trim() || 'Author';
-    const finalEmail = email?.trim() || '';
-    const user: AuthUser = {
-      id: 'author_' + Date.now(),
-      penName: finalPenName,
-      email: finalEmail,
-    };
-    try {
-      setStorageItem('auth', 'true');
-      setStorageItem('pen_name', finalPenName);
-      setStorageItem('user_id', user.id);
-      setStorageItem('user_email', finalEmail);
-    } catch {}
-
-    const hasOnboarded = typeof window !== 'undefined' && getStorageItem('onboarded') === 'true';
-    set({
-      isAuthenticated: true,
-      currentUser: user,
-      penName: finalPenName,
-      isAuthModalOpen: false,
-      isOnboardingModalOpen: !hasOnboarded,
-    });
-    // Sync encrypted API Vault across devices
-    aiService.loadVaultFromCloud({ id: user.id, email: user.email }).catch(() => {});
-    get().loadInitialWorkspace();
+  // Auth & Onboarding Actions - Strictly Google Account Authentication
+  login: (_penName?: string, _email?: string) => {
+    // Guest accounts disallowed; trigger Google auth modal
+    set({ isAuthModalOpen: true });
   },
 
   loginWithGoogleCredential: async (credential: string) => {
@@ -1042,13 +1034,6 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       updatedAt: new Date().toISOString(),
     };
 
-    try {
-      setStorageItem(`scene_${activeScene._id}`, JSON.stringify(updatedScene));
-      setStorageItem('last_scene_id', activeScene._id);
-    } catch (e) {
-      console.warn('localStorage write failed:', e);
-    }
-
     set({
       activeScene: updatedScene,
       scenes: scenes.map((s) => (s._id === updatedScene._id ? updatedScene : s)),
@@ -1070,11 +1055,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       updatedAt: new Date().toISOString(),
     };
 
-    try {
-      setStorageItem(`scene_${activeScene._id}`, JSON.stringify(updatedScene));
-    } catch (e) {
-      console.warn('localStorage write failed:', e);
-    }
+    set({
+      activeScene: updatedScene,
+      scenes: scenes.map((s) => (s._id === updatedScene._id ? updatedScene : s)),
+    });
 
     set({
       activeScene: updatedScene,
@@ -1162,10 +1146,6 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         characterCount: chars,
         updatedAt: new Date().toISOString(),
       };
-
-      try {
-        setStorageItem(`scene_${scene._id}`, JSON.stringify(updated));
-      } catch {}
 
       return updated;
     });
@@ -1570,18 +1550,6 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     }
 
     try {
-      const localTier = getStorageItem(`scene_${sceneId}`);
-      if (localTier) {
-        const parsed = JSON.parse(localTier);
-        if (parsed && (!cached || new Date(parsed.updatedAt) > new Date(cached.updatedAt))) {
-          set({ activeSceneId: sceneId, activeScene: parsed });
-        }
-      }
-    } catch (e) {
-      // ignore
-    }
-
-    try {
       const remoteScene = await api.getScene(sceneId);
       set((state) => ({
         activeSceneId: sceneId,
@@ -1595,6 +1563,21 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
   loadInitialWorkspace: async () => {
     try {
+      // Synchronize authoritative author profile & penName from MongoDB Atlas
+      if (get().isAuthenticated) {
+        api.getCurrentUser().then((res) => {
+          if (res.success && res.user) {
+            set({
+              currentUser: res.user,
+              penName: res.user.penName,
+            });
+            setStorageItem('pen_name', res.user.penName);
+          }
+        }).catch(() => {});
+
+        aiService.loadVaultFromCloud().catch(() => {});
+      }
+
       const [health, novels] = await Promise.all([
         api.getHealth().catch(() => ({ isAtlas: false })),
         api.getNovels().catch(() => []),
@@ -1611,11 +1594,6 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         isAtlas: !!health.isAtlas,
         novels: enrichedNovels,
       });
-
-      // Synchronize encrypted cloud API vault if user is logged in
-      if (get().isAuthenticated) {
-        aiService.loadVaultFromCloud().catch(() => {});
-      }
 
       if (novels.length === 0) {
         set({ activeNovelId: null });
