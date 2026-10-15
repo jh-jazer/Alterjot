@@ -68,6 +68,45 @@ export const cryptoVault = {
   },
 
   /**
+   * Generates ordered candidate decryption passphrases for maximum device-to-device resilience.
+   * Ensures vaults created under guest mode, Google ID, or different device sessions decrypt seamlessly.
+   */
+  getUserPassphraseCandidates(userId: string, email?: string, googleId?: string): string[] {
+    const cleanId = (userId || '').trim();
+    const cleanEmail = (email || '').toLowerCase().trim();
+    const cleanGoogleId = (googleId || '').trim();
+
+    const candidates: string[] = [];
+
+    // 1. Primary standard passphrase (current session userId:email)
+    if (cleanId) {
+      candidates.push(`alterjot:vault:v1:${cleanId}:${cleanEmail}`);
+    }
+
+    // 2. Google ID based passphrase (if different from userId)
+    if (cleanGoogleId && cleanGoogleId !== cleanId) {
+      candidates.push(`alterjot:vault:v1:${cleanGoogleId}:${cleanEmail}`);
+      candidates.push(`alterjot:vault:v1:${cleanGoogleId}:`);
+    }
+
+    // 3. Email-only based passphrases (universal across all user's devices)
+    if (cleanEmail) {
+      candidates.push(`alterjot:vault:v1:${cleanEmail}:${cleanEmail}`);
+      candidates.push(`alterjot:vault:v1:author_default:${cleanEmail}`);
+      candidates.push(`alterjot:vault:v2:${cleanEmail}`);
+    }
+
+    // 4. Fallback default/guest passphrases
+    candidates.push(`alterjot:vault:v1:author_default:`);
+    candidates.push(`alterjot:vault:v1:alterjot_author_vault:`);
+    if (cleanId) {
+      candidates.push(`alterjot:vault:v1:${cleanId}:`);
+    }
+
+    return Array.from(new Set(candidates.filter(Boolean)));
+  },
+
+  /**
    * Encrypts arbitrary data (e.g. API Vault array) using AES-256-GCM
    */
   async encrypt(data: any, passphrase: string): Promise<string> {
@@ -99,13 +138,18 @@ export const cryptoVault = {
   },
 
   /**
-   * Decrypts an AES-256-GCM encrypted payload back into original data
+   * Decrypts an AES-256-GCM encrypted payload back into original data.
+   * Supports passing a single passphrase or an array of candidate passphrases.
    */
-  async decrypt<T = any>(encryptedString: string, passphrase: string): Promise<T | null> {
+  async decrypt<T = any>(encryptedString: string, passphraseOrCandidates: string | string[]): Promise<T | null> {
     if (!encryptedString || typeof encryptedString !== 'string') return null;
     if (typeof window === 'undefined' || !window.crypto?.subtle) {
       throw new Error('Web Cryptography API is not available in this environment');
     }
+
+    const passphrases = Array.isArray(passphraseOrCandidates)
+      ? passphraseOrCandidates
+      : [passphraseOrCandidates];
 
     try {
       const payload: EncryptedPayload = JSON.parse(encryptedString);
@@ -117,17 +161,25 @@ export const cryptoVault = {
       const iv = base64ToBuffer(payload.iv);
       const ciphertext = base64ToBuffer(payload.d);
 
-      const key = await deriveKey(passphrase, salt);
+      for (const pass of passphrases) {
+        try {
+          const key = await deriveKey(pass, salt);
+          const decryptedBuffer = await window.crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv: iv as any },
+            key,
+            ciphertext as any
+          );
 
-      const decryptedBuffer = await window.crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv: iv as any },
-        key,
-        ciphertext as any
-      );
+          const dec = new TextDecoder();
+          const jsonString = dec.decode(decryptedBuffer);
+          return JSON.parse(jsonString) as T;
+        } catch {
+          // Continue to next candidate passphrase
+        }
+      }
 
-      const dec = new TextDecoder();
-      const jsonString = dec.decode(decryptedBuffer);
-      return JSON.parse(jsonString) as T;
+      console.warn('[CryptoVault] Decryption failed for all candidate passphrases');
+      return null;
     } catch (err) {
       console.warn('[CryptoVault] Decryption failed (invalid passphrase or corrupted payload):', err);
       return null;

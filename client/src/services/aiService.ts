@@ -225,13 +225,27 @@ export const aiService = {
     return null;
   },
 
-  syncVaultToCloud: async (userOverride?: { id: string; email?: string }): Promise<{ success: boolean; error?: string }> => {
+  syncVaultToCloud: async (
+    userOverride?: { id: string; email?: string },
+    options: { allowEmptyOverwrite?: boolean } = {}
+  ): Promise<{ success: boolean; error?: string }> => {
     if (!aiService.isCloudSyncEnabled()) return { success: false, error: 'Sync disabled' };
     const user = aiService.getEffectiveUser(userOverride);
     if (!user) return { success: false, error: 'User not signed in' };
 
     try {
       const vault = aiService.getVaultKeys();
+
+      // Safeguard: If local vault is empty and empty overwrite is not explicitly approved,
+      // try to pull existing cloud keys first instead of overwriting the user's cloud keys!
+      if (vault.length === 0 && !options.allowEmptyOverwrite) {
+        const loadRes = await aiService.loadVaultFromCloud(user);
+        if (loadRes.success && loadRes.count > 0) {
+          return { success: true };
+        }
+        return { success: true };
+      }
+
       const passphrase = cryptoVault.getUserPassphrase(user.id, user.email);
       const encrypted = await cryptoVault.encrypt(vault, passphrase);
 
@@ -257,15 +271,15 @@ export const aiService = {
         return { success: true, count: 0 };
       }
 
-      const passphrase = cryptoVault.getUserPassphrase(user.id, user.email);
-      const cloudVault = await cryptoVault.decrypt<StoredApiKey[]>(res.encryptedVault, passphrase);
+      const candidates = cryptoVault.getUserPassphraseCandidates(user.id, user.email);
+      const cloudVault = await cryptoVault.decrypt<StoredApiKey[]>(res.encryptedVault, candidates);
 
       if (Array.isArray(cloudVault)) {
         const localVault = aiService.getVaultKeys();
 
         if (localVault.length === 0) {
-          localStorage.setItem('alterjot_api_vault', JSON.stringify(cloudVault));
           if (cloudVault.length > 0) {
+            localStorage.setItem('alterjot_api_vault', JSON.stringify(cloudVault));
             aiService.setActiveKeyId(cloudVault[0].id);
           }
         } else {
@@ -280,6 +294,11 @@ export const aiService = {
           }
           if (added > 0) {
             localStorage.setItem('alterjot_api_vault', JSON.stringify(localVault));
+          }
+
+          // If local device had more keys than cloud, re-encrypt merged vault to cloud
+          if (localVault.length > cloudVault.length) {
+            aiService.syncVaultToCloud(user).catch(() => {});
           }
         }
 

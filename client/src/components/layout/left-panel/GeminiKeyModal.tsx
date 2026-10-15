@@ -67,6 +67,8 @@ export const GeminiKeyModal: React.FC<GeminiKeyModalProps> = ({
     setLastSyncTime(aiService.getLastSyncTime());
     if (keys.length === 0) {
       setActiveTab('add');
+    } else {
+      setActiveTab('vault');
     }
   };
 
@@ -74,6 +76,18 @@ export const GeminiKeyModal: React.FC<GeminiKeyModalProps> = ({
     setIsSyncing(true);
     setErrorMsg(null);
     try {
+      const currentKeys = aiService.getVaultKeys();
+      // If empty locally, pull cloud keys first
+      if (currentKeys.length === 0) {
+        const loadRes = await aiService.loadVaultFromCloud();
+        if (loadRes.success && loadRes.count > 0) {
+          reloadVaultState();
+          setSuccessMsg(`Restored ${loadRes.count} keys from cloud vault!`);
+          setTimeout(() => setSuccessMsg(null), 3000);
+          return;
+        }
+      }
+
       const res = await aiService.syncVaultToCloud();
       if (res.success) {
         setSuccessMsg('Encrypted vault synced across devices!');
@@ -110,6 +124,14 @@ export const GeminiKeyModal: React.FC<GeminiKeyModalProps> = ({
       reloadVaultState();
       setErrorMsg(null);
       setSuccessMsg(null);
+      // Auto-load latest cloud keys if sync enabled
+      if (aiService.isCloudSyncEnabled()) {
+        aiService.loadVaultFromCloud().then((loadRes) => {
+          if (loadRes.success && loadRes.count > 0) {
+            reloadVaultState();
+          }
+        }).catch(() => {});
+      }
     }
   }, [isOpen]);
 

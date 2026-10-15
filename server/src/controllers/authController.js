@@ -86,6 +86,22 @@ export async function googleSignIn(req, res) {
         { $or: [{ author: user.penName }, { userId: { $regex: '^user_' } }] },
         { $set: { userId: user._id.toString(), author: user.penName } }
       ).catch(() => {});
+
+      // Auto-adopt any previous guest API vault if user's vault is currently empty
+      if (!user.encryptedVault || user.encryptedVault.length < 120) {
+        const guestWithVault = await User.findOne({
+          googleId: { $regex: '^user_' },
+          encryptedVault: { $exists: true, $ne: '' },
+          $expr: { $gt: [{ $strLenCP: '$encryptedVault' }, 120] },
+        }).sort({ vaultUpdatedAt: -1, createdAt: -1 });
+
+        if (guestWithVault && guestWithVault.encryptedVault) {
+          console.log(`[Auth] Auto-adopting guest vault from ${guestWithVault.googleId} to ${user.email}`);
+          user.encryptedVault = guestWithVault.encryptedVault;
+          user.vaultUpdatedAt = guestWithVault.vaultUpdatedAt || new Date();
+          await user.save().catch(() => {});
+        }
+      }
     } else {
       // Hybrid Local Memory Store fallback
       user = memoryStore.createOrUpdateGoogleUser({
@@ -141,12 +157,29 @@ export async function getVault(req, res) {
     }
 
     if (isConnectedToAtlas()) {
-      const user =
+      let user =
         (await User.findById(userId).catch(() => null)) ||
         (await User.findOne({ $or: [{ googleId: userId }, { email: userId }] }));
       if (!user) {
         return res.json({ success: true, encryptedVault: '', vaultUpdatedAt: null });
       }
+
+      // If user's vault is empty, check if an unlinked guest vault exists to adopt
+      if (!user.encryptedVault || user.encryptedVault.length < 120) {
+        const guestWithVault = await User.findOne({
+          googleId: { $regex: '^user_' },
+          encryptedVault: { $exists: true, $ne: '' },
+          $expr: { $gt: [{ $strLenCP: '$encryptedVault' }, 120] },
+        }).sort({ vaultUpdatedAt: -1, createdAt: -1 });
+
+        if (guestWithVault && guestWithVault.encryptedVault) {
+          console.log(`[Auth] getVault: linking legacy guest vault to ${user.email}`);
+          user.encryptedVault = guestWithVault.encryptedVault;
+          user.vaultUpdatedAt = guestWithVault.vaultUpdatedAt || new Date();
+          await user.save().catch(() => {});
+        }
+      }
+
       return res.json({
         success: true,
         encryptedVault: user.encryptedVault || '',
@@ -169,12 +202,12 @@ export async function getVault(req, res) {
 /**
  * Save encrypted API vault for the authenticated user
  * POST /api/auth/vault
- * Body: { encryptedVault: string }
+ * Body: { encryptedVault: string, forceEmpty?: boolean }
  */
 export async function saveVault(req, res) {
   try {
     const userId = req.headers['x-user-id'] || req.body.userId;
-    const { encryptedVault } = req.body;
+    const { encryptedVault, forceEmpty } = req.body;
 
     if (!userId) {
       return res.status(401).json({ success: false, error: 'User ID is required' });
@@ -191,6 +224,18 @@ export async function saveVault(req, res) {
         (await User.findById(userId).catch(() => null)) ||
         (await User.findOne({ $or: [{ googleId: userId }, { email: userId }] }));
       if (user) {
+        // Guard: Prevent empty vault payload from overwriting an already populated cloud vault
+        const isExistingPopulated = user.encryptedVault && user.encryptedVault.length > 150;
+        const isNewEmpty = encryptedVault.length < 120;
+        if (isExistingPopulated && isNewEmpty && !forceEmpty) {
+          console.log(`[Auth] Shielding populated vault for ${user.email || user._id} from empty overwrite`);
+          return res.json({
+            success: true,
+            message: 'Preserved existing cloud vault against empty payload',
+            vaultUpdatedAt: user.vaultUpdatedAt,
+          });
+        }
+
         user.encryptedVault = encryptedVault;
         user.vaultUpdatedAt = now;
         await user.save();

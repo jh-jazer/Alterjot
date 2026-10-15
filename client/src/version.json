@@ -1,11 +1,11 @@
 {
-  "version": "v1.0.49",
-  "commitHash": "3c688c5",
-  "commitCount": 49,
+  "version": "v1.0.50",
+  "commitHash": "bf0760a",
+  "commitCount": 50,
   "branch": "main",
-  "commitMessage": "feat: add dashboard view, codex modal, and version configuration components",
+  "commitMessage": "feat: add authentication controller, novel controller, and user migration script",
   "buildDate": "2026-10-15",
-  "buildTimestamp": "2026-10-15T14:05:23.662Z",
+  "buildTimestamp": "2026-10-15T14:22:50.929Z",
   "repoUrl": "https://github.com/jh-jazer/Alterjot",
-  "commitUrl": "https://github.com/jh-jazer/Alterjot/commit/3c688c5"
+  "commitUrl": "https://github.com/jh-jazer/Alterjot/commit/bf0760a"
 }
