@@ -1,11 +1,11 @@
 {
-  "version": "v1.0.51",
-  "commitHash": "cb27383",
-  "commitCount": 51,
+  "version": "v1.0.52",
+  "commitHash": "f21769d",
+  "commitCount": 52,
   "branch": "main",
-  "commitMessage": "fix(vault): restore and sync encrypted api keys across devices and prevent empty overwrites",
+  "commitMessage": "feat: eliminate local saving, enforce cloud database persistence for pen name, and disable guest accounts",
   "buildDate": "2026-10-15",
-  "buildTimestamp": "2026-10-15T14:46:14.445Z",
+  "buildTimestamp": "2026-10-15T14:56:26.321Z",
   "repoUrl": "https://github.com/jh-jazer/Alterjot",
-  "commitUrl": "https://github.com/jh-jazer/Alterjot/commit/cb27383"
+  "commitUrl": "https://github.com/jh-jazer/Alterjot/commit/f21769d"
 }

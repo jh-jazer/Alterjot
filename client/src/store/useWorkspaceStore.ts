@@ -547,8 +547,26 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       currentUser: null,
       currentView: 'dashboard',
       isProfileModalOpen: false,
+      activeNovelId: null,
+      activeChapterId: null,
+      activeSceneId: null,
+      activeScene: null,
+      chapters: [],
+      scenes: [],
+      codexEntries: [],
+      novels: [],
     });
-    // Reload guest manuscripts
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('alterjot:logout'));
+      if (
+        window.location.pathname !== '/' &&
+        window.location.pathname !== '/home' &&
+        window.location.pathname !== '/dashboard'
+      ) {
+        window.history.pushState(null, '', '/');
+        window.dispatchEvent(new PopStateEvent('popstate'));
+      }
+    }
     get().loadInitialWorkspace();
   },
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import {
   X,
@@ -83,6 +84,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   align: _align = 'right',
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // Store bindings
   const storeIsOpen = useWorkspaceStore((s) => s.isProfileModalOpen);
@@ -428,6 +430,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
               onClick={() => {
                 onClose();
                 logout();
+                navigate('/');
               }}
               className="flex items-center gap-1.5 text-xs font-mono text-rose-600 dark:text-rose-400 hover:text-rose-700 py-1 px-2.5 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
             >

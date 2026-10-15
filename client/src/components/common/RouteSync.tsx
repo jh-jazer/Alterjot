@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-import { useLocation, matchPath } from 'react-router-dom';
+import { useLocation, useNavigate, matchPath } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 
 export const RouteSync: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentView = useWorkspaceStore((s) => s.currentView);
   const setCurrentView = useWorkspaceStore((s) => s.setCurrentView);
   const activeNovelId = useWorkspaceStore((s) => s.activeNovelId);
@@ -13,6 +14,14 @@ export const RouteSync: React.FC = () => {
   const novels = useWorkspaceStore((s) => s.novels);
 
   const prevPathRef = useRef<string>('');
+
+  useEffect(() => {
+    const handleLogout = () => {
+      navigate('/', { replace: true });
+    };
+    window.addEventListener('alterjot:logout', handleLogout);
+    return () => window.removeEventListener('alterjot:logout', handleLogout);
+  }, [navigate]);
 
   useEffect(() => {
     const pathname = location.pathname;
