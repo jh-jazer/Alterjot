@@ -10,8 +10,18 @@ export const Header: React.FC = () => {
 
   const isStudioRoute =
     currentView === 'studio' ||
-    location.pathname.startsWith('/works/') ||
-    location.pathname.startsWith('/studio');
+    (location.pathname.startsWith('/works/') && !location.pathname.endsWith('/edit')) ||
+    (location.pathname.startsWith('/studio') && !location.pathname.endsWith('/edit'));
+
+  const isCreateStoryRoute =
+    currentView === 'create-story' ||
+    location.pathname === '/stories/new' ||
+    location.pathname === '/new' ||
+    location.pathname.endsWith('/edit');
+
+  if (isCreateStoryRoute) {
+    return null;
+  }
 
   if (isStudioRoute) {
     return <WorkstationNavbar />;

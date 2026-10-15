@@ -52,8 +52,8 @@ export const ProjectDashboardModal: React.FC = () => {
             </div>
             <div className="min-w-0">
               <h3 className="text-lg sm:text-xl font-serif font-bold text-ink truncate">{activeNovel.title}</h3>
-              <p className="text-xs text-ink-muted font-mono truncate">
-                Dossier Intelligence & Survival Velocity Overview
+              <p className="text-xs text-ink-muted font-sans truncate">
+                Story Analytics & Writing Progress Overview
               </p>
             </div>
           </div>
@@ -70,9 +70,9 @@ export const ProjectDashboardModal: React.FC = () => {
         <div className="mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl bg-gradient-to-br from-[#fcf7ee] via-canvas-card to-[#f4ecd8] dark:from-brand-950/40 dark:via-canvas-surface dark:to-canvas-card border border-brand-200 dark:border-brand-500/20 relative overflow-hidden shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             <div>
-              <span className="text-xs font-mono uppercase tracking-widest text-brand-800 dark:text-brand-300 font-semibold flex items-center gap-1.5">
+              <span className="text-xs font-sans uppercase tracking-wider text-brand-800 dark:text-brand-300 font-semibold flex items-center gap-1.5">
                 <Target className="w-4 h-4 text-brand-700" />
-                Chronicle Survival Word Target
+                Story Word Count Target
               </span>
               <div className="flex items-baseline gap-2 sm:gap-3 mt-1 flex-wrap">
                 <span className="text-2xl sm:text-4xl font-extrabold text-ink tracking-tight font-serif">

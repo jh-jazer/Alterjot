@@ -4,8 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "node scripts/generate-version.cjs && vite",
+    "prebuild": "node scripts/generate-version.cjs",
+    "build": "node scripts/generate-version.cjs && tsc -b && vite build",
+    "generate:version": "node scripts/generate-version.cjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "generate:icons": "node scripts/generate-icons.cjs"

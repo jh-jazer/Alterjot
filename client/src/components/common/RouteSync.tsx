@@ -68,7 +68,9 @@ export const RouteSync: React.FC = () => {
     }
 
     // Match static views
-    if (pathname === '/play') {
+    if (pathname === '/stories/new' || pathname === '/new' || pathname.endsWith('/edit')) {
+      if (currentView !== 'create-story') setCurrentView('create-story');
+    } else if (pathname === '/play') {
       if (currentView !== 'play') setCurrentView('play');
     } else if (pathname === '/explore') {
       if (currentView !== 'explore') setCurrentView('explore');

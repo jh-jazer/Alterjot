@@ -11,6 +11,7 @@ import { PlayView } from './components/play/PlayView';
 import { ExploreView } from './components/explore/ExploreView';
 import { ChallengeDetailView } from './components/challenge/ChallengeDetailView';
 import { BookDetailView } from './components/library/BookDetailView';
+import { CreateStoryView } from './components/story/CreateStoryView';
 import { ProjectDashboardModal } from './components/dashboard/ProjectDashboardModal';
 import { ExportModal } from './components/export/ExportModal';
 import { WriteForProjectModal } from './components/collaborative/WriteForProjectModal';
@@ -67,6 +68,10 @@ export const App: React.FC = () => {
         <Route path="/ranking" element={<Navigate to="/play" replace />} />
         <Route path="/library" element={<LibraryView />} />
         <Route path="/works" element={<LibraryView />} />
+        <Route path="/stories/new" element={<CreateStoryView />} />
+        <Route path="/new" element={<CreateStoryView />} />
+        <Route path="/works/:id/edit" element={<CreateStoryView isEditing />} />
+        <Route path="/book/:id/edit" element={<CreateStoryView isEditing />} />
         <Route path="/book/:id" element={<BookDetailView />} />
         <Route path="/novel/:id" element={<BookDetailView />} />
         <Route path="/book" element={<Navigate to="/library" replace />} />

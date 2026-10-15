@@ -16,6 +16,12 @@ export interface Novel {
   targetWordCount: number;
   totalWordCount: number;
   coverImage?: string;
+  tags?: string[];
+  language?: string;
+  contentRating?: 'All Audiences' | 'Mature';
+  copyright?: string;
+  targetAudience?: string;
+  mainCharacters?: string[];
   status: NovelStatus;
   chapterCount?: number;
   sceneCount?: number;

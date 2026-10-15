@@ -15,6 +15,11 @@ export interface BookShelfProps {
     onClick: () => void;
     icon?: React.ComponentType<{ className?: string }>;
   };
+  headerAction?: {
+    label: string;
+    onClick: () => void;
+    icon?: React.ComponentType<{ className?: string }>;
+  };
   onOpenBook: (novelId: string) => void;
   badgeType?: 'rating' | 'views' | 'new' | 'invited' | 'none';
   className?: string;
@@ -28,6 +33,7 @@ export const BookShelf: React.FC<BookShelfProps> = ({
   books,
   emptyMessage = 'No books in this shelf yet.',
   emptyAction,
+  headerAction,
   onOpenBook,
   badgeType = 'none',
   className = '',
@@ -112,6 +118,17 @@ export const BookShelf: React.FC<BookShelfProps> = ({
             </span>
           )}
         </div>
+
+        {headerAction && (
+          <button
+            type="button"
+            onClick={headerAction.onClick}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-600 hover:bg-brand-700 text-white font-sans text-xs font-semibold shadow-xs transition-all cursor-pointer hover:scale-105 active:scale-95"
+          >
+            {headerAction.icon && <headerAction.icon className="w-3.5 h-3.5" />}
+            <span>{headerAction.label}</span>
+          </button>
+        )}
       </div>
 
       {/* Shelf Content */}

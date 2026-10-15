@@ -462,7 +462,7 @@ export const ChallengeDetailView: React.FC = () => {
               <Flame className="w-4 h-4 text-amber-600" />
               Explore More Hot Challenges
             </h3>
-            <span className="text-xs font-mono text-ink-muted">Select to view dossier</span>
+            <span className="text-xs font-sans text-ink-muted">Select to view details</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">

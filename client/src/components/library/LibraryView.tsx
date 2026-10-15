@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import type { Novel } from '../../types';
 import type { CollaborativeProject } from '../../data/collaborativeProjectsData';
-import { NewNovelModal } from './NewNovelModal';
 import { BookShelf } from '../common/BookShelf';
 import {
   BookOpen,
   Search,
   ChevronLeft,
   ChevronRight,
+  Plus,
 } from 'lucide-react';
 import { BookCover } from '../common/BookCover';
 
@@ -21,6 +21,14 @@ export const LibraryView: React.FC = () => {
   const selectNovel = useWorkspaceStore((s) => s.selectNovel);
   const isNewNovelModalOpen = useWorkspaceStore((s) => s.isNewNovelModalOpen);
   const setIsNewNovelModalOpen = useWorkspaceStore((s) => s.setIsNewNovelModalOpen);
+
+  // Automatically redirect modal triggers to the full-page creation route
+  useEffect(() => {
+    if (isNewNovelModalOpen) {
+      setIsNewNovelModalOpen(false);
+      navigate('/stories/new');
+    }
+  }, [isNewNovelModalOpen, navigate, setIsNewNovelModalOpen]);
   const collaborativeProjects = useWorkspaceStore((s) => s.collaborativeProjects);
   const openWriteForProjectModal = useWorkspaceStore((s) => s.openWriteForProjectModal);
 
@@ -28,9 +36,6 @@ export const LibraryView: React.FC = () => {
   const setLibrarySearchQuery = useWorkspaceStore((s) => s.setLibrarySearchQuery);
   const invitedReadersByNovel = useWorkspaceStore((s) => s.invitedReadersByNovel);
   const setIsReaderMode = useWorkspaceStore((s) => s.setIsReaderMode);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingNovel, setEditingNovel] = useState<Novel | null>(null);
 
   // Shelf track ref for projects
   const projectsShelfRef = useRef<HTMLDivElement>(null);
@@ -234,6 +239,11 @@ export const LibraryView: React.FC = () => {
           count={filteredMyWorks.length}
           subtitle="Your private books"
           books={filteredMyWorks}
+          headerAction={{
+            label: 'New Story',
+            icon: Plus,
+            onClick: () => navigate('/stories/new'),
+          }}
           emptyMessage={
             librarySearchQuery
               ? `No books found matching "${librarySearchQuery}".`
@@ -241,7 +251,7 @@ export const LibraryView: React.FC = () => {
           }
           emptyAction={{
             label: 'Create First Book',
-            onClick: () => setIsNewNovelModalOpen(true),
+            onClick: () => navigate('/stories/new'),
           }}
           onOpenBook={handleOpenMyWork}
         />
@@ -374,17 +384,6 @@ export const LibraryView: React.FC = () => {
             )}
           </section>
       </div>
-
-      {/* Creation / Edit Modal */}
-      <NewNovelModal
-        isOpen={isModalOpen || isNewNovelModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setIsNewNovelModalOpen(false);
-          setEditingNovel(null);
-        }}
-        editingNovel={editingNovel}
-      />
     </div>
   );
 };

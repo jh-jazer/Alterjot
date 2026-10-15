@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import { BookCover } from '../common/BookCover';
-import { NewNovelModal } from './NewNovelModal';
 import { InviteReaderModal } from './InviteReaderModal';
 import { PublishSuccessModal } from './PublishSuccessModal';
 import {
@@ -58,7 +57,6 @@ export const BookDetailView: React.FC = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isPublishSuccessModalOpen, setIsPublishSuccessModalOpen] = useState(false);
   const [isOpeningStudio, setIsOpeningStudio] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
@@ -581,7 +579,7 @@ export const BookDetailView: React.FC = () => {
                     <div className="flex items-center gap-2 pt-1 flex-wrap">
                       <button
                         type="button"
-                        onClick={() => setIsEditModalOpen(true)}
+                        onClick={() => navigate(`/stories/${novel._id}/edit`)}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-canvas-surface hover:bg-canvas-hover border border-canvas-border text-ink text-xs font-mono transition-colors shadow-2xs cursor-pointer"
                         title="Edit Title, Genre, Cover, and Target Word Goal"
                       >
@@ -708,8 +706,8 @@ export const BookDetailView: React.FC = () => {
                 Characters, Places & Lore
               </div>
             </div>
-            <div className="text-[11px] text-ink-faint font-mono mt-2">
-              Active world-building dossier
+            <div className="text-[11px] text-ink-faint font-sans mt-2">
+              Active story codex & lore
             </div>
           </div>
         </div>
@@ -727,11 +725,11 @@ export const BookDetailView: React.FC = () => {
             </div>
             <button
               type="button"
-              onClick={() => setIsEditModalOpen(true)}
-              className="text-[11px] font-mono text-ink-muted hover:text-brand-600 flex items-center gap-1 transition-colors cursor-pointer"
+              onClick={() => navigate(`/stories/${novel._id}/edit`)}
+              className="text-xs font-sans font-medium text-ink-muted hover:text-brand-600 flex items-center gap-1 transition-colors cursor-pointer"
             >
-              <Edit className="w-3 h-3" />
-              <span>Edit Premise</span>
+              <Edit className="w-3.5 h-3.5" />
+              <span>Edit Details</span>
             </button>
           </div>
 
@@ -746,11 +744,11 @@ export const BookDetailView: React.FC = () => {
               </p>
               <button
                 type="button"
-                onClick={() => setIsEditModalOpen(true)}
-                className="mt-2 text-xs font-mono text-brand-600 hover:underline inline-flex items-center gap-1 cursor-pointer"
+                onClick={() => navigate(`/stories/${novel._id}/edit`)}
+                className="mt-2 text-xs font-sans font-semibold text-brand-600 hover:underline inline-flex items-center gap-1 cursor-pointer"
               >
                 <Plus className="w-3 h-3" />
-                Add a Story Synopsis
+                Add Story Details & Synopsis
               </button>
             </div>
           )}
@@ -930,13 +928,6 @@ export const BookDetailView: React.FC = () => {
           )}
         </div>
       </div>
-
-      {/* Edit Novel Modal */}
-      <NewNovelModal
-        isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        editingNovel={novel}
-      />
 
       {/* Invite Reader Modal */}
       <InviteReaderModal

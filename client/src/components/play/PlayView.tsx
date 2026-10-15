@@ -261,7 +261,7 @@ export const PlayView: React.FC = () => {
           <div className="flex items-center gap-2.5">
             <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]" />
             <span className="font-serif font-bold text-xs sm:text-sm text-ink">
-              Creative Atelier Arena
+              Creative Writing Arena
             </span>
             <span className="text-ink-muted text-xs font-mono hidden md:inline">
               • Four immersive arenas for generative prompts, timed sprints, and worldbuilding
@@ -695,7 +695,7 @@ export const PlayView: React.FC = () => {
         </div>
 
         {/* ========================================================
-            5. ATELIER SCRIBES RANKINGS (AT BOTTOM OF PLAY)
+            5. AUTHOR RANKINGS (AT BOTTOM OF PLAY)
         ======================================================== */}
         <div className="border-t border-canvas-border/80 pt-8 sm:pt-10">
           <RankingSection />

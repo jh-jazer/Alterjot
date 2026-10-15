@@ -71,9 +71,9 @@ export function calculateRecommendedTheme(
   if (!isAuthenticated) {
     return {
       theme: MOST_POPULAR_THEME,
-      badgeLabel: 'Featured Dossier',
+      badgeLabel: 'Featured Story',
       isPopular: true,
-      reason: 'Trending #1 chronicle across the Alterjot Archive',
+      reason: 'Trending #1 story across Alterjot',
     };
   }
 

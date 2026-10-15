@@ -71,12 +71,12 @@ export const OnboardingModal: React.FC = () => {
 
         {/* Heading */}
         <h2 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white text-center">
-          Welcome to Your Atelier
+          Welcome to Alterjot Studio
         </h2>
 
         {/* Subtitle Description */}
         <p className="text-xs text-neutral-500 dark:text-neutral-400 text-center mt-2 mb-6 max-w-[300px] mx-auto leading-relaxed">
-          Personalize your authorial workshop and select your favorite universe motif.
+          Personalize your author workshop and choose your primary genre.
         </p>
 
         {/* Form */}
@@ -154,7 +154,7 @@ export const OnboardingModal: React.FC = () => {
             type="submit"
             className="w-full h-12 rounded-lg bg-[#18181b] hover:bg-black text-white dark:bg-white dark:hover:bg-neutral-100 dark:text-neutral-950 font-semibold text-sm transition-all shadow-sm active:scale-[0.99] cursor-pointer flex items-center justify-center mt-3"
           >
-            <span>Enter Atelier</span>
+            <span>Enter Studio</span>
           </button>
         </form>
       </div>

@@ -29,6 +29,35 @@ const NovelSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    coverImage: {
+      type: String,
+      default: '',
+    },
+    tags: {
+      type: [String],
+      default: [],
+    },
+    language: {
+      type: String,
+      default: 'English',
+    },
+    contentRating: {
+      type: String,
+      enum: ['All Audiences', 'Mature'],
+      default: 'All Audiences',
+    },
+    copyright: {
+      type: String,
+      default: 'All Rights Reserved',
+    },
+    targetAudience: {
+      type: String,
+      default: 'Young Adult',
+    },
+    mainCharacters: {
+      type: [String],
+      default: [],
+    },
     targetWordCount: {
       type: Number,
       default: 80000,

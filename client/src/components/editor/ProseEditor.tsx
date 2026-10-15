@@ -122,7 +122,7 @@ export const ProseEditor: React.FC = () => {
     editorProps: {
       attributes: {
         class:
-          'prose prose-stone dark:prose-invert max-w-none focus:outline-none min-h-[calc(100vh-320px)] px-4 py-4 sm:px-8 sm:py-6 md:px-16 md:py-8 select-text',
+          'prose prose-stone dark:prose-invert max-w-none focus:outline-none flex-1 min-h-[520px] px-4 py-4 sm:px-8 sm:py-6 md:px-16 md:py-8 select-text',
       },
     },
     onUpdate: ({ editor }) => {
@@ -529,17 +529,22 @@ export const ProseEditor: React.FC = () => {
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto px-2 sm:px-4 py-4 sm:py-6 md:py-10 flex justify-center bg-canvas"
+        className="flex-1 overflow-y-auto px-2 sm:px-4 py-4 sm:py-6 md:py-8 flex flex-col items-center bg-canvas"
       >
         <div
-          className={`w-full transition-all duration-300 ${
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              editor?.commands.focus('end');
+            }
+          }}
+          className={`w-full min-h-full flex flex-col transition-all duration-300 ${
             isZenMode
-              ? 'max-w-3xl my-3 sm:my-6 bg-canvas-card/90 rounded-md sm:rounded-lg border border-canvas-border/80 shadow-parchment-lg p-2 sm:p-4 md:p-6'
+              ? 'max-w-3xl my-2 sm:my-4 bg-canvas-card/90 rounded-md sm:rounded-lg border border-canvas-border/80 shadow-parchment-lg p-2 sm:p-4 md:p-6'
               : 'max-w-4xl bg-canvas-card rounded-md sm:rounded-lg border border-canvas-border shadow-parchment'
           }`}
         >
           {/* Chapter Title Header */}
-          <div className="px-4 pt-5 pb-2.5 sm:px-8 sm:pt-8 md:px-16 md:pt-10 border-b border-canvas-border/30">
+          <div className="px-4 pt-5 pb-2.5 sm:px-8 sm:pt-8 md:px-16 md:pt-10 border-b border-canvas-border/30 flex-shrink-0">
             <input
               type="text"
               value={chapterTitle}
@@ -560,11 +565,11 @@ export const ProseEditor: React.FC = () => {
           </div>
 
           {/* ProseMirror Canvas Container */}
-          <EditorContent editor={editor} />
+          <EditorContent editor={editor} className="flex-1 flex flex-col" />
 
           {/* Turn the Page Chapter Navigation */}
           {chapters.length > 1 && (
-            <div className="px-4 py-6 sm:px-8 md:px-16 border-t border-canvas-border/40 mt-8 flex items-center justify-between gap-4">
+            <div className="px-4 py-6 sm:px-8 md:px-16 border-t border-canvas-border/40 mt-auto flex-shrink-0 flex items-center justify-between gap-4">
               {prevChapter ? (
                 <button
                   type="button"

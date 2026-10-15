@@ -45,7 +45,7 @@ export const ExportModal: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${activeNovel.title.replace(/\s+/g, '_')}_Dossier.${ext}`;
+    a.download = `${activeNovel.title.replace(/\s+/g, '_')}_Manuscript.${ext}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -62,9 +62,9 @@ export const ExportModal: React.FC = () => {
               <FileDown className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg sm:text-xl font-serif font-bold text-ink">Book Dossier Export</h3>
-              <p className="text-[11px] sm:text-xs text-ink-muted font-mono">
-                Compile complete survival chronicle with structured logs & dividers
+              <h3 className="text-lg sm:text-xl font-serif font-bold text-ink">Export Manuscript</h3>
+              <p className="text-[11px] sm:text-xs text-ink-muted font-sans">
+                Compile complete manuscript with formatted chapters and scenes
               </p>
             </div>
           </div>

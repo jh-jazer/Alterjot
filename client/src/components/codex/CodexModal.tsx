@@ -179,8 +179,8 @@ export const CodexModal: React.FC<CodexModalProps> = ({
 
           {category === 'Characters' && (
             <div className="p-3.5 rounded-xl bg-canvas-surface/60 border border-canvas-border space-y-3">
-              <span className="text-xs font-mono font-semibold text-brand-800 dark:text-brand-300 block uppercase tracking-wider">
-                Character Dossier Profile
+              <span className="text-xs font-sans font-semibold text-brand-800 dark:text-brand-300 block uppercase tracking-wider">
+                Character Profile Details
               </span>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

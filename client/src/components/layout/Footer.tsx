@@ -11,7 +11,9 @@ import {
   Download,
   Sun,
   Moon,
+  GitCommit,
 } from 'lucide-react';
+import { APP_VERSION_INFO } from '../../version';
 
 export const Footer: React.FC = () => {
   const openDashboard = useWorkspaceStore((s) => s.openDashboard);
@@ -46,7 +48,7 @@ export const Footer: React.FC = () => {
           <div className="flex items-center gap-2">
             <AlterjotLogo size="sm" textMode="light" />
             <span className="px-1.5 py-0.2 rounded-none text-[9px] font-mono uppercase tracking-widest bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold">
-              ATELIER
+              STUDIO
             </span>
           </div>
 
@@ -95,7 +97,7 @@ export const Footer: React.FC = () => {
 
         {/* Minimal Mobile Copyright */}
         <div className="pt-2 border-t border-stone-800/60 text-[10px] font-mono text-stone-500 flex items-center justify-between">
-          <span>&copy; {new Date().getFullYear()} Alterjot Atelier</span>
+          <span>&copy; {new Date().getFullYear()} Alterjot</span>
           <span className="truncate max-w-[140px] text-stone-400 font-semibold">
             {isAuthenticated ? penName : 'Offline PWA'}
           </span>
@@ -113,12 +115,12 @@ export const Footer: React.FC = () => {
               <div className="flex items-center gap-3">
                 <AlterjotLogo size="md" textMode="light" />
                 <span className="px-1.5 py-0.5 rounded-none text-[10px] font-mono uppercase tracking-widest bg-amber-500/15 text-amber-300 border border-amber-500/30 font-semibold">
-                  ATELIER
+                  STUDIO
                 </span>
               </div>
 
               <p className="text-xs sm:text-sm text-stone-400 font-serif leading-relaxed max-w-md">
-                A distraction-free book workshop and digital atelier crafted for fiction writers, novelists, and scribes dedicated to persistent drafting momentum.
+                A distraction-free book workshop and writing studio crafted for fiction writers, novelists, and authors dedicated to persistent drafting momentum.
               </p>
 
               <div className="flex items-center gap-3 pt-1 flex-wrap text-[11px] font-mono text-stone-400">
@@ -228,17 +230,17 @@ export const Footer: React.FC = () => {
               </ul>
             </div>
 
-            {/* Atelier Traditions Column */}
+            {/* Studio Info Column */}
             <div className="col-span-12 md:col-span-3 space-y-3">
               <h4 className="text-xs font-mono uppercase font-bold tracking-wider text-white">
-                Atelier
+                Studio
               </h4>
               <div className="space-y-2 text-xs font-sans text-stone-400">
                 <p className="leading-relaxed">
-                  Speculative fiction, dark fantasy, clockwork steampunk, and survival horror drafting workspace.
+                  Fiction, fantasy, sci-fi, mystery, and thriller drafting workspace.
                 </p>
                 <div className="pt-1 flex items-center gap-1.5 text-[11px] font-mono text-stone-400">
-                  <span>Active Scribe:</span>
+                  <span>Active Author:</span>
                   <span className="font-bold text-amber-300 truncate">
                     {isAuthenticated ? penName : 'Anonymous Guest'}
                   </span>
@@ -251,12 +253,29 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Sub-bar */}
         <div className="w-full px-6 md:px-12 py-5 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono text-stone-400">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span>&copy; {new Date().getFullYear()} Alterjot Atelier.</span>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <span>&copy; {new Date().getFullYear()} Alterjot.</span>
             <span>&bull;</span>
-            <span className="font-serif italic text-stone-300">
+            <span className="font-serif italic text-stone-300 hidden sm:inline">
               &ldquo;Every masterpiece begins with an unpolished draft.&rdquo;
             </span>
+            <span className="hidden sm:inline">&bull;</span>
+            {/* Live Automated Version Badge */}
+            <a
+              href={APP_VERSION_INFO.commitUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-stone-800 bg-stone-900/90 hover:bg-stone-800 hover:border-amber-500/50 text-stone-300 hover:text-amber-300 transition-all font-mono text-xs group cursor-pointer shadow-2xs"
+              title={`Branch: ${APP_VERSION_INFO.branch} • Commit: ${APP_VERSION_INFO.commitHash} • Built: ${APP_VERSION_INFO.buildDate}\nMessage: "${APP_VERSION_INFO.commitMessage}"`}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0" />
+              <span className="font-semibold text-stone-200 group-hover:text-amber-300">{APP_VERSION_INFO.version}</span>
+              <span className="text-stone-600">/</span>
+              <span className="flex items-center gap-0.5 text-stone-400 group-hover:text-stone-200">
+                <GitCommit className="w-3 h-3 text-stone-500 group-hover:text-amber-400 flex-shrink-0" />
+                <span>{APP_VERSION_INFO.commitHash}</span>
+              </span>
+            </a>
           </div>
 
           {/* Desktop Footer Actions: Install App + Lightmode Toggle + Scroll to Top */}

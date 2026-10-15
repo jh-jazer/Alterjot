@@ -272,7 +272,7 @@ export const ExploreView: React.FC = () => {
         <BookShelf
           title="All Published Books"
           count={filteredAll.length}
-          subtitle="Complete catalog of published Atelier books"
+          subtitle="Complete catalog of published community books"
           badgeIcon={Globe}
           books={filteredAll}
           onOpenBook={handleOpenBook}

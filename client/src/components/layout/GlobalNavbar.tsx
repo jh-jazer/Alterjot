@@ -11,6 +11,7 @@ import {
   X,
   Zap,
   BookOpen,
+  BookPlus,
   Globe,
   ChevronDown,
   LogIn,
@@ -274,6 +275,27 @@ export const GlobalNavbar: React.FC = () => {
                   <div className="px-2.5 py-1 text-[10px] font-mono uppercase tracking-wider text-ink-faint font-semibold border-b border-canvas-border/70 mb-1">
                     Drafting Options
                   </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsWriteMenuOpen(false);
+                      navigate('/stories/new');
+                    }}
+                    className="w-full flex items-center gap-3 p-2.5 rounded-lg text-left hover:bg-canvas-hover border border-transparent hover:border-canvas-border transition-all group cursor-pointer"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                      <BookPlus className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-serif font-bold text-xs text-ink group-hover:text-brand-700 dark:group-hover:text-brand-300 transition-colors">
+                        New Story
+                      </div>
+                      <div className="text-[11px] text-ink-muted leading-tight mt-0.5 font-sans">
+                        Add story details, cover & start novel
+                      </div>
+                    </div>
+                  </button>
 
                   <button
                     type="button"

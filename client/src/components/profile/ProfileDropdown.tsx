@@ -282,7 +282,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
             </h2>
 
             <p className="text-xs text-neutral-500 dark:text-neutral-400 text-center mt-1 mb-5 max-w-[300px] mx-auto leading-relaxed">
-              Manage your scribe identity, alerts & Atelier studio preferences
+              Manage your author identity, alerts & studio preferences
             </p>
 
             {/* Author Header Card */}
@@ -298,7 +298,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 <div className="flex items-center gap-1.5">
                   <span className="text-sm font-serif font-bold text-ink truncate">{penName}</span>
                   <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-brand-500/10 text-brand-700 dark:text-brand-300 text-[9px] font-mono font-semibold">
-                    Scribe
+                    Author
                   </span>
                 </div>
                 <div className="text-[11px] font-mono text-ink-muted truncate">
@@ -324,7 +324,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                     Profile
                   </div>
                   <div className="text-[10px] text-ink-muted truncate">
-                    Pen name, author ID & Atelier vault
+                    Pen name, author ID & key vault
                   </div>
                 </div>
               </div>
@@ -546,10 +546,10 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
             </p>
           </div>
 
-          {/* Atelier Vault Currencies */}
+          {/* Author Vault Currencies */}
           <div className="p-3 rounded-xl bg-canvas-surface border border-canvas-border space-y-2">
             <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-ink-faint font-semibold">
-              <span>Atelier Vault</span>
+              <span>Author Vault</span>
               <span className="text-brand-600 font-bold">Currencies</span>
             </div>
 
@@ -834,7 +834,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
             </button>
           </div>
 
-          {/* Personalize Atelier Setup Button */}
+          {/* Personalize Studio Setup Button */}
           <div className="pt-2 border-t border-canvas-border">
             <button
               type="button"
@@ -846,7 +846,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
             >
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-amber-500" />
-                <span>Personalize Atelier Setup</span>
+                <span>Personalize Studio Setup</span>
               </div>
               <ChevronRight className="w-3.5 h-3.5 text-ink-muted group-hover:translate-x-0.5 transition-transform" />
             </button>

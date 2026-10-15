@@ -94,14 +94,14 @@ export const RankingSection: React.FC<{ className?: string }> = ({ className = '
             <div className="w-0.5 h-3 bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
             <h2 className="text-xs sm:text-sm font-serif font-bold tracking-widest uppercase text-stone-100 drop-shadow-sm flex items-center gap-2">
               <Trophy className="w-4 h-4 text-amber-400" />
-              Scribe Leaderboard & Rankings
+              Author Leaderboard & Rankings
             </h2>
           </div>
           <h3 className="text-2xl sm:text-3xl font-serif font-bold text-ink tracking-tight">
-            Atelier Writing Champions
+            Author Writing Champions
           </h3>
           <p className="text-xs sm:text-sm text-ink-muted font-sans mt-1">
-            Complete daily challenges, survive timed sprints, and pen books to climb the scribe podium.
+            Complete daily challenges, join writing sprints, and write books to climb the author leaderboard.
           </p>
         </div>
 

@@ -24,7 +24,7 @@ interface TypographySettings {
 }
 
 interface WorkspaceState {
-  currentView: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge' | 'book' | 'explore';
+  currentView: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge' | 'book' | 'explore' | 'create-story';
   activeChallengeId: string | null;
   activeNovelId: string | null;
   activeChapterId: string | null;
@@ -60,7 +60,7 @@ interface WorkspaceState {
   librarySearchQuery: string;
   setLibrarySearchQuery: (query: string) => void;
 
-  setCurrentView: (view: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge' | 'book' | 'explore') => void;
+  setCurrentView: (view: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge' | 'book' | 'explore' | 'create-story') => void;
   openDashboard: () => void;
   openLanding: () => void;
   openLibrary: () => void;

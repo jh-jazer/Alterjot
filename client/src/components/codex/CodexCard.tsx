@@ -29,7 +29,7 @@ export const CodexCard: React.FC<CodexCardProps> = ({ entry, onEdit, onDelete })
     }
   };
 
-  const hasDossierTraits =
+  const hasProfileTraits =
     entry.traits &&
     (entry.traits.appearance ||
       entry.traits.voice ||
@@ -102,16 +102,16 @@ export const CodexCard: React.FC<CodexCardProps> = ({ entry, onEdit, onDelete })
         </div>
       )}
 
-      {/* Character Dossier accordion */}
-      {hasDossierTraits && (
+      {/* Character Profile traits accordion */}
+      {hasProfileTraits && (
         <div className="mt-3 pt-2.5 border-t border-canvas-border">
           <button
             type="button"
             onClick={() => setIsExpanded(!isExpanded)}
-            className="w-full flex items-center justify-between text-[11px] font-mono text-ink-muted hover:text-brand-700 transition-colors"
+            className="w-full flex items-center justify-between text-[11px] font-sans text-ink-muted hover:text-brand-700 transition-colors"
           >
             <span className="uppercase tracking-wider font-semibold">
-              {entry.category === 'Characters' ? 'Dossier Traits & Quirks' : 'Lore Details'}
+              {entry.category === 'Characters' ? 'Character Traits & Quirks' : 'Lore Details'}
             </span>
             {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </button>
