@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useWorkspaceStore } from './store/useWorkspaceStore';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { Header } from './components/layout/Header';
@@ -17,10 +18,20 @@ import { ProfileModal } from './components/profile/ProfileDropdown';
 import { OnboardingModal } from './components/onboarding/OnboardingModal';
 import { MobileBottomNav } from './components/layout/MobileBottomNav';
 import { PWAStatusBanner } from './components/pwa/PWAStatusBanner';
+import { RouteSync } from './components/common/RouteSync';
+
+const StudioWorkspace: React.FC = () => (
+  <main className="flex-1 flex overflow-hidden relative">
+    {/* Left: VS Code Style Activity Bar Tabs (Chapters, Contexts, AI) */}
+    <LeftPanel />
+
+    {/* Center: TipTap Prose Canvas */}
+    <ProseEditor />
+  </main>
+);
 
 export const App: React.FC = () => {
   const loadInitialWorkspace = useWorkspaceStore((s) => s.loadInitialWorkspace);
-  const currentView = useWorkspaceStore((s) => s.currentView);
 
   // Register global shortcuts (Cmd/Ctrl + \, Escape, etc.)
   useKeyboardShortcuts();
@@ -31,29 +42,28 @@ export const App: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen h-[100dvh] w-full overflow-hidden bg-canvas text-ink">
-      {/* Top Application Bar with Side Margins */}
+      {/* Synchronize URL routes and route parameters with Zustand store */}
+      <RouteSync />
+
+      {/* Top Application Bar */}
       <Header />
 
-      {/* Main Viewport: Dashboard (Root), Play, Ranking, Library, Challenge, or Studio */}
-      {currentView === 'dashboard' || currentView === 'landing' ? (
-        <DashboardView />
-      ) : currentView === 'play' ? (
-        <PlayView />
-      ) : currentView === 'ranking' ? (
-        <RankingView />
-      ) : currentView === 'library' ? (
-        <LibraryView />
-      ) : currentView === 'challenge' ? (
-        <ChallengeDetailView />
-      ) : (
-        <main className="flex-1 flex overflow-hidden relative">
-          {/* Left: VS Code Style Activity Bar Tabs (Chapters, Contexts, AI) */}
-          <LeftPanel />
-
-          {/* Center: TipTap Prose Canvas */}
-          <ProseEditor />
-        </main>
-      )}
+      {/* Main Viewport Routing */}
+      <Routes>
+        <Route path="/" element={<DashboardView />} />
+        <Route path="/dashboard" element={<DashboardView />} />
+        <Route path="/play" element={<PlayView />} />
+        <Route path="/ranking" element={<RankingView />} />
+        <Route path="/library" element={<LibraryView />} />
+        <Route path="/works" element={<LibraryView />} />
+        <Route path="/works/:id" element={<StudioWorkspace />} />
+        <Route path="/studio/:id" element={<StudioWorkspace />} />
+        <Route path="/studio" element={<StudioWorkspace />} />
+        <Route path="/challenge/:id" element={<ChallengeDetailView />} />
+        <Route path="/challenge" element={<ChallengeDetailView />} />
+        <Route path="/shared/:id" element={<DashboardView />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
 
       {/* Modals & Dialogs */}
       <ProjectDashboardModal />

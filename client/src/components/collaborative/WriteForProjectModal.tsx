@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import type { CreativeDiscipline } from '../../data/collaborativeProjectsData';
 import {
@@ -24,6 +25,7 @@ import {
 } from 'lucide-react';
 
 export const WriteForProjectModal: React.FC = () => {
+  const navigate = useNavigate();
   const isOpen = useWorkspaceStore((s) => s.isWriteForProjectModalOpen);
   const setIsOpen = useWorkspaceStore((s) => s.setIsWriteForProjectModalOpen);
   const penName = useWorkspaceStore((s) => s.penName);
@@ -73,7 +75,13 @@ export const WriteForProjectModal: React.FC = () => {
   const handleStartWriting = async () => {
     if (!canWrite) return;
     setIsStarting(true);
-    await writeForProject(selectedProject, customTitle.trim() || undefined);
+    const success = await writeForProject(selectedProject, customTitle.trim() || undefined);
+    if (success) {
+      const nid = useWorkspaceStore.getState().activeNovelId;
+      if (nid) {
+        navigate(`/works/${nid}`);
+      }
+    }
     setIsStarting(false);
   };
 

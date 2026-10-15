@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import { ALL_CHALLENGES, getChallengeById } from '../../data/challengesData';
 import {
@@ -21,6 +22,7 @@ import {
 } from 'lucide-react';
 
 export const ChallengeDetailView: React.FC = () => {
+  const navigate = useNavigate();
   const activeChallengeId = useWorkspaceStore((s) => s.activeChallengeId);
   const openDashboard = useWorkspaceStore((s) => s.openDashboard);
   const openPlay = useWorkspaceStore((s) => s.openPlay);
@@ -76,11 +78,16 @@ export const ChallengeDetailView: React.FC = () => {
           }
         }
         await openStudio(novel._id);
+        navigate(`/works/${novel._id}`);
       } else {
         await startWritingImmediately();
+        const nid = useWorkspaceStore.getState().activeNovelId;
+        if (nid) navigate(`/works/${nid}`);
       }
     } catch {
       await startWritingImmediately();
+      const nid = useWorkspaceStore.getState().activeNovelId;
+      if (nid) navigate(`/works/${nid}`);
     } finally {
       setIsAccepting(false);
     }
@@ -113,7 +120,10 @@ export const ChallengeDetailView: React.FC = () => {
         <div className="w-full flex items-center justify-between">
           <button
             type="button"
-            onClick={openDashboard}
+            onClick={() => {
+              openDashboard();
+              navigate('/dashboard');
+            }}
             className="inline-flex items-center gap-2 text-xs font-mono font-medium text-ink-muted hover:text-ink transition-colors cursor-pointer group"
           >
             <ArrowLeft className="w-4 h-4 text-brand-600 group-hover:-translate-x-1 transition-transform" />
@@ -224,7 +234,10 @@ export const ChallengeDetailView: React.FC = () => {
 
                 <button
                   type="button"
-                  onClick={openPlay}
+                  onClick={() => {
+                    openPlay();
+                    navigate('/play');
+                  }}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono text-xs uppercase tracking-wider transition-all cursor-pointer border border-white/15"
                 >
                   <Timer className="w-3.5 h-3.5 text-amber-400" />
@@ -456,7 +469,10 @@ export const ChallengeDetailView: React.FC = () => {
             {otherChallenges.slice(0, 4).map((other) => (
               <div
                 key={other.id}
-                onClick={() => openChallenge(other.id)}
+                onClick={() => {
+                  openChallenge(other.id);
+                  navigate(`/challenge/${other.id}`);
+                }}
                 className="p-3 rounded-lg bg-canvas-card border border-canvas-border hover:border-brand-500/50 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
               >
                 <div className="space-y-2">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import type { Novel, NovelStatus } from '../../types';
 import { X, BookPlus, Target, Feather } from 'lucide-react';
@@ -10,6 +11,7 @@ interface NewNovelModalProps {
 }
 
 export const NewNovelModal: React.FC<NewNovelModalProps> = ({ isOpen, onClose, editingNovel }) => {
+  const navigate = useNavigate();
   const createNovel = useWorkspaceStore((s) => s.createNovel);
   const updateNovel = useWorkspaceStore((s) => s.updateNovel);
 
@@ -60,7 +62,7 @@ export const NewNovelModal: React.FC<NewNovelModalProps> = ({ isOpen, onClose, e
         status,
       });
     } else {
-      await createNovel({
+      const created = await createNovel({
         title: finalTitle,
         subtitle: subtitle.trim(),
         author: author.trim() || '',
@@ -69,6 +71,9 @@ export const NewNovelModal: React.FC<NewNovelModalProps> = ({ isOpen, onClose, e
         synopsis: synopsis.trim(),
         status,
       });
+      if (created?._id) {
+        navigate(`/works/${created._id}`);
+      }
     }
 
     setIsSubmitting(false);

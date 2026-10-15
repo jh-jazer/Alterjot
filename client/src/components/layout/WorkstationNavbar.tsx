@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import {
   ChevronLeft,
@@ -19,6 +20,7 @@ import {
 } from 'lucide-react';
 
 export const WorkstationNavbar: React.FC = () => {
+  const navigate = useNavigate();
   const openLibrary = useWorkspaceStore((s) => s.openLibrary);
   const panelState = useWorkspaceStore((s) => s.panelState);
   const toggleSidebar = useWorkspaceStore((s) => s.toggleSidebar);
@@ -81,7 +83,10 @@ export const WorkstationNavbar: React.FC = () => {
           {/* Exit / Return to Library */}
           <button
             type="button"
-            onClick={openLibrary}
+            onClick={() => {
+              openLibrary();
+              navigate('/library');
+            }}
             className="flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg text-ink-muted hover:text-ink hover:bg-canvas-hover text-xs font-mono font-medium transition-all group border border-transparent hover:border-canvas-border flex-shrink-0"
             title="Return to Manuscript Library"
             aria-label="Return to Manuscript Library"

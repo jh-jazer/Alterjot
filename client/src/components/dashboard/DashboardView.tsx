@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import {
   ArrowRight,
@@ -19,6 +20,7 @@ import { ChallengesSection } from './ChallengesSection';
 import { Footer } from '../layout/Footer';
 
 export const DashboardView: React.FC = () => {
+  const navigate = useNavigate();
   const openLibrary = useWorkspaceStore((s) => s.openLibrary);
   const openRanking = useWorkspaceStore((s) => s.openRanking);
 
@@ -88,6 +90,7 @@ export const DashboardView: React.FC = () => {
     if (hasMovedRef.current || isMouseDragging) return;
     setSelectedSharedManuscript(novel);
     setIsSharedModalOpen(true);
+    navigate(`/shared/${novel.id}`);
   };
 
 
@@ -110,8 +113,10 @@ export const DashboardView: React.FC = () => {
               if (found) {
                 setSelectedSharedManuscript(found);
                 setIsSharedModalOpen(true);
+                navigate(`/shared/${found.id}`);
               } else {
                 openRanking();
+                navigate('/ranking');
               }
             }}
           />
@@ -161,7 +166,10 @@ export const DashboardView: React.FC = () => {
 
               <button
                 type="button"
-                onClick={openLibrary}
+                onClick={() => {
+                  openLibrary();
+                  navigate('/library');
+                }}
                 className="text-xs font-mono text-brand-700 hover:text-brand-800 dark:text-brand-400 font-semibold flex items-center gap-1 group cursor-pointer"
                 title="Open full library shelf"
               >
@@ -319,7 +327,12 @@ export const DashboardView: React.FC = () => {
       <SharedManuscriptModal
         manuscript={selectedSharedManuscript}
         isOpen={isSharedModalOpen}
-        onClose={() => setIsSharedModalOpen(false)}
+        onClose={() => {
+          setIsSharedModalOpen(false);
+          if (window.location.pathname.startsWith('/shared/')) {
+            navigate('/dashboard');
+          }
+        }}
       />
     </div>
   );

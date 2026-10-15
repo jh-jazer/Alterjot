@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import {
   Radio,
@@ -16,6 +17,7 @@ import {
 } from 'lucide-react';
 
 export const GlobalNavbar: React.FC = () => {
+  const navigate = useNavigate();
   const currentView = useWorkspaceStore((s) => s.currentView);
   const openDashboard = useWorkspaceStore((s) => s.openDashboard);
   const openLibrary = useWorkspaceStore((s) => s.openLibrary);
@@ -69,11 +71,8 @@ export const GlobalNavbar: React.FC = () => {
   }, []);
 
   const handleBrandClick = () => {
-    if (window.location.pathname !== '/' || window.location.search || window.location.hash) {
-      window.location.href = '/';
-    } else {
-      window.location.reload();
-    }
+    openDashboard();
+    navigate('/');
   };
 
   return (
@@ -83,11 +82,11 @@ export const GlobalNavbar: React.FC = () => {
         {/* Left Side: Website Name + Beside it: (desktop only) DASHBOARD, PLAY, RANKING, LIBRARY */}
         <div className="flex items-center gap-3 sm:gap-6 md:gap-8 flex-shrink-0">
           {/* Website Name (Very Left) */}
-          <button
-            type="button"
+          <Link
+            to="/"
             onClick={handleBrandClick}
             className="flex items-center gap-2 sm:gap-2.5 hover:opacity-85 transition-opacity group cursor-pointer"
-            title="Refresh Alterjot"
+            title="Alterjot Studio"
           >
             <div className="w-7 h-7 sm:w-8 h-8 rounded-none bg-gradient-to-tr from-amber-600 via-orange-600 to-amber-700 flex items-center justify-center text-white shadow-sm shadow-amber-600/30 group-hover:scale-105 transition-transform">
               <Radio className="w-3.5 h-3.5 sm:w-4 h-4 animate-pulse" />
@@ -97,13 +96,16 @@ export const GlobalNavbar: React.FC = () => {
                 Alterjot
               </span>
             </div>
-          </button>
+          </Link>
 
           {/* Beside Website Name: DASHBOARD, PLAY, RANKING, LIBRARY (Desktop and Tablet) */}
           <nav className="hidden md:flex items-center gap-2 sm:gap-4 pl-3 sm:pl-5 border-l border-canvas-border text-xs font-mono font-medium">
             <button
               type="button"
-              onClick={openDashboard}
+              onClick={() => {
+                openDashboard();
+                navigate('/dashboard');
+              }}
               className={`py-1.5 px-2 uppercase tracking-wider relative transition-colors ${
                 currentView === 'dashboard' || currentView === 'landing'
                   ? 'text-ink font-bold'
@@ -118,7 +120,10 @@ export const GlobalNavbar: React.FC = () => {
 
             <button
               type="button"
-              onClick={openPlay}
+              onClick={() => {
+                openPlay();
+                navigate('/play');
+              }}
               className={`py-1.5 px-2 uppercase tracking-wider relative transition-colors ${
                 currentView === 'play'
                   ? 'text-ink font-bold'
@@ -133,7 +138,10 @@ export const GlobalNavbar: React.FC = () => {
 
             <button
               type="button"
-              onClick={openRanking}
+              onClick={() => {
+                openRanking();
+                navigate('/ranking');
+              }}
               className={`py-1.5 px-2 uppercase tracking-wider relative transition-colors ${
                 currentView === 'ranking'
                   ? 'text-ink font-bold'
@@ -148,7 +156,10 @@ export const GlobalNavbar: React.FC = () => {
 
             <button
               type="button"
-              onClick={openLibrary}
+              onClick={() => {
+                openLibrary();
+                navigate('/library');
+              }}
               className={`py-1.5 px-2 uppercase tracking-wider relative transition-colors ${
                 currentView === 'library'
                   ? 'text-ink font-bold'
@@ -276,6 +287,10 @@ export const GlobalNavbar: React.FC = () => {
                     onClick={async () => {
                       setIsWriteMenuOpen(false);
                       await startWritingImmediately();
+                      const latestNovelId = useWorkspaceStore.getState().activeNovelId;
+                      if (latestNovelId) {
+                        navigate(`/works/${latestNovelId}`);
+                      }
                     }}
                     className="w-full flex items-center gap-3 p-2.5 rounded-lg text-left hover:bg-canvas-hover border border-transparent hover:border-canvas-border transition-all group cursor-pointer"
                   >
@@ -319,6 +334,7 @@ export const GlobalNavbar: React.FC = () => {
                     onClick={() => {
                       setIsWriteMenuOpen(false);
                       openLibrary();
+                      navigate('/library');
                     }}
                     className="w-full flex items-center gap-3 p-2.5 rounded-lg text-left hover:bg-canvas-hover border border-transparent hover:border-canvas-border transition-all group cursor-pointer"
                   >
