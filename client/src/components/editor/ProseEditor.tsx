@@ -10,19 +10,21 @@ import { useAutosave } from '../../hooks/useAutosave';
 import { EditorToolbar } from './EditorToolbar';
 import { WordCounter } from './WordCounter';
 import { StatusDot } from '../common/StatusDot';
-import { Minimize2, Edit3, BookOpen } from 'lucide-react';
+import { Minimize2, Edit3, BookOpen, ChevronLeft, ChevronRight } from 'lucide-react';
 import { AiLedExtension } from './extensions/AiLedExtension';
 import { LineCommentsDrawer } from './LineCommentsDrawer';
 
 export const ProseEditor: React.FC = () => {
   const activeScene = useWorkspaceStore((s) => s.activeScene);
   const typography = useWorkspaceStore((s) => s.typography);
+  const setTypography = useWorkspaceStore((s) => s.setTypography);
   const isZenMode = useWorkspaceStore((s) => s.panelState.isZenMode);
   const toggleZenMode = useWorkspaceStore((s) => s.toggleZenMode);
   const updateActiveSceneLocally = useWorkspaceStore((s) => s.updateActiveSceneLocally);
   const activeChapterId = useWorkspaceStore((s) => s.activeChapterId);
   const chapters = useWorkspaceStore((s) => s.chapters);
   const activeChapter = chapters.find((c) => c._id === activeChapterId);
+  const selectChapter = useWorkspaceStore((s) => s.selectChapter);
   const updateChapterTitle = useWorkspaceStore((s) => s.updateChapterTitle);
   const updateSceneTitle = useWorkspaceStore((s) => s.updateSceneTitle);
   const saveStatus = useWorkspaceStore((s) => s.saveStatus);
@@ -36,6 +38,36 @@ export const ProseEditor: React.FC = () => {
   const [wordCount, setWordCount] = useState(activeScene?.wordCount || 0);
   const [characterCount, setCharacterCount] = useState(activeScene?.characterCount || 0);
   const [chapterTitle, setChapterTitle] = useState(activeChapter?.title || activeScene?.title || '');
+  const [readingProgress, setReadingProgress] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Chapter navigation indexing
+  const currentChapterIndex = chapters.findIndex((c) => c._id === activeChapterId);
+  const prevChapter = currentChapterIndex > 0 ? chapters[currentChapterIndex - 1] : null;
+  const nextChapter =
+    currentChapterIndex >= 0 && currentChapterIndex < chapters.length - 1
+      ? chapters[currentChapterIndex + 1]
+      : null;
+
+  const handleScroll = () => {
+    if (!scrollContainerRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
+    const maxScroll = scrollHeight - clientHeight;
+    if (maxScroll <= 5) {
+      setReadingProgress(100);
+    } else {
+      const pct = Math.min(100, Math.max(0, Math.round((scrollTop / maxScroll) * 100)));
+      setReadingProgress(pct);
+    }
+  };
+
+  // Reset scroll and progress when navigating to another chapter
+  useEffect(() => {
+    setReadingProgress(0);
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+  }, [activeChapterId]);
 
   useEffect(() => {
     if (activeScene) {
@@ -340,10 +372,17 @@ export const ProseEditor: React.FC = () => {
       : 'line-height-normal';
 
   return (
-    <div className={`flex-1 flex flex-col h-full overflow-hidden bg-canvas ${fontClass} ${lineClass}`}>
-      {/* Reader Mode Bar */}
+    <div
+      style={
+        {
+          '--prose-font-size': typography.fontSize ? `${typography.fontSize}px` : undefined,
+        } as React.CSSProperties
+      }
+      className={`flex-1 flex flex-col h-full overflow-hidden bg-canvas ${fontClass} ${lineClass}`}
+    >
+      {/* Reader Mode Bar with Quick Typography Controls */}
       {!isZenMode && isReaderMode && (
-        <div className="w-full bg-amber-500/10 border-b border-amber-500/25 px-3 sm:px-6 py-2 flex items-center justify-between gap-3 text-xs font-sans text-ink flex-shrink-0 animate-fadeIn">
+        <div className="w-full bg-amber-500/10 border-b border-amber-500/25 px-3 sm:px-6 py-1.5 sm:py-2 flex items-center justify-between gap-3 text-xs font-sans text-ink flex-shrink-0 animate-fadeIn">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-6 h-6 rounded-lg bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center flex-shrink-0">
               <BookOpen className="w-3.5 h-3.5" />
@@ -352,15 +391,100 @@ export const ProseEditor: React.FC = () => {
               <span className="font-bold text-amber-700 dark:text-amber-300">
                 Reading Mode (View Only)
               </span>
-              <span className="text-ink-muted hidden sm:inline">
-                • Click any <span className="text-orange-600 dark:text-orange-400 font-bold">orange dot</span> along the lines to write or review comments.
+
+              {/* Chapter Reading Progress Indicator */}
+              <div
+                className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-[10px] sm:text-[11px] font-mono text-amber-800 dark:text-amber-200"
+                title="Reading progress through this chapter"
+              >
+                <span>{readingProgress}% read</span>
+                <div className="w-10 h-1.5 rounded-full bg-amber-200/50 dark:bg-amber-950 overflow-hidden">
+                  <div
+                    className="h-full bg-amber-500 rounded-full transition-all duration-150"
+                    style={{ width: `${readingProgress}%` }}
+                  />
+                </div>
+              </div>
+
+              <span className="text-ink-muted hidden lg:inline">
+                • Click any <span className="text-orange-600 dark:text-orange-400 font-bold">orange dot</span> along the lines to write comments.
               </span>
             </div>
           </div>
 
+          {/* Reader Typography Controls Toolbar */}
           <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="hidden sm:flex items-center gap-1 px-1.5 py-0.5 rounded-lg bg-canvas-card/80 border border-canvas-border text-ink shadow-2xs">
+              {/* Font Family selector */}
+              <button
+                type="button"
+                onClick={() => setTypography({ fontFamily: 'serif' })}
+                className={`px-2 py-0.5 rounded text-[11px] font-serif transition-colors cursor-pointer ${
+                  typography.fontFamily === 'serif'
+                    ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold'
+                    : 'text-ink-muted hover:text-ink'
+                }`}
+                title="Serif font"
+              >
+                Serif
+              </button>
+              <button
+                type="button"
+                onClick={() => setTypography({ fontFamily: 'sans' })}
+                className={`px-2 py-0.5 rounded text-[11px] font-sans transition-colors cursor-pointer ${
+                  typography.fontFamily === 'sans'
+                    ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold'
+                    : 'text-ink-muted hover:text-ink'
+                }`}
+                title="Sans-serif font"
+              >
+                Sans
+              </button>
+              <button
+                type="button"
+                onClick={() => setTypography({ fontFamily: 'typewriter' })}
+                className={`px-2 py-0.5 rounded text-[11px] font-mono transition-colors cursor-pointer ${
+                  typography.fontFamily === 'typewriter'
+                    ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 font-bold'
+                    : 'text-ink-muted hover:text-ink'
+                }`}
+                title="Typewriter / Monospace font"
+              >
+                Mono
+              </button>
+
+              <div className="w-px h-3 bg-canvas-border mx-0.5" />
+
+              {/* Font size A- / A+ */}
+              <button
+                type="button"
+                onClick={() => {
+                  const curr = typography.fontSize || 18;
+                  if (curr > 13) setTypography({ fontSize: curr - 1 });
+                }}
+                className="w-5 h-5 rounded hover:bg-canvas-hover flex items-center justify-center text-[10px] font-mono font-bold text-ink cursor-pointer"
+                title="Decrease font size"
+              >
+                A-
+              </button>
+              <span className="text-[10px] font-mono text-ink-muted min-w-[20px] text-center">
+                {typography.fontSize || 18}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  const curr = typography.fontSize || 18;
+                  if (curr < 28) setTypography({ fontSize: curr + 1 });
+                }}
+                className="w-5 h-5 rounded hover:bg-canvas-hover flex items-center justify-center text-[11px] font-mono font-bold text-ink cursor-pointer"
+                title="Increase font size"
+              >
+                A+
+              </button>
+            </div>
+
             <span className="text-[11px] font-mono text-ink-faint hidden md:inline">
-              Reviewing as: @{activeReaderName || 'Reader'}
+              @{activeReaderName || 'Reader'}
             </span>
             <button
               type="button"
@@ -370,6 +494,16 @@ export const ProseEditor: React.FC = () => {
               Switch to Author
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Sticky Reading Progress Top Bar */}
+      {isReaderMode && (
+        <div className="w-full h-0.5 bg-amber-500/15 overflow-hidden flex-shrink-0">
+          <div
+            className="h-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-150 ease-out"
+            style={{ width: `${readingProgress}%` }}
+          />
         </div>
       )}
 
@@ -392,7 +526,11 @@ export const ProseEditor: React.FC = () => {
       )}
 
       {/* Scrollable Prose Paper Canvas */}
-      <div className="flex-1 overflow-y-auto px-2 sm:px-4 py-4 sm:py-6 md:py-10 flex justify-center bg-canvas">
+      <div
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto px-2 sm:px-4 py-4 sm:py-6 md:py-10 flex justify-center bg-canvas"
+      >
         <div
           className={`w-full transition-all duration-300 ${
             isZenMode
@@ -423,6 +561,51 @@ export const ProseEditor: React.FC = () => {
 
           {/* ProseMirror Canvas Container */}
           <EditorContent editor={editor} />
+
+          {/* Turn the Page Chapter Navigation */}
+          {chapters.length > 1 && (
+            <div className="px-4 py-6 sm:px-8 md:px-16 border-t border-canvas-border/40 mt-8 flex items-center justify-between gap-4">
+              {prevChapter ? (
+                <button
+                  type="button"
+                  onClick={() => selectChapter(prevChapter._id)}
+                  className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-canvas-card hover:bg-canvas-hover border border-canvas-border text-ink hover:text-brand-700 dark:hover:text-amber-400 text-xs sm:text-sm font-sans transition-all group shadow-2xs cursor-pointer"
+                  title={`Previous Chapter: ${prevChapter.title || 'Untitled Chapter'}`}
+                >
+                  <ChevronLeft className="w-4 h-4 text-ink-muted group-hover:text-brand-700 dark:group-hover:text-amber-400 transition-transform group-hover:-translate-x-0.5" />
+                  <div className="text-left">
+                    <div className="text-[10px] font-mono text-ink-faint uppercase tracking-wider">Previous</div>
+                    <div className="font-serif font-semibold truncate max-w-[120px] sm:max-w-[180px] md:max-w-[220px]">
+                      {prevChapter.title || 'Untitled Chapter'}
+                    </div>
+                  </div>
+                </button>
+              ) : (
+                <div />
+              )}
+
+              {nextChapter ? (
+                <button
+                  type="button"
+                  onClick={() => selectChapter(nextChapter._id)}
+                  className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-xs sm:text-sm font-sans transition-all group shadow-sm ml-auto cursor-pointer"
+                  title={`Next Chapter: ${nextChapter.title || 'Untitled Chapter'}`}
+                >
+                  <div className="text-right">
+                    <div className="text-[10px] font-mono text-white/75 uppercase tracking-wider">Next</div>
+                    <div className="font-serif font-semibold truncate max-w-[120px] sm:max-w-[180px] md:max-w-[220px]">
+                      {nextChapter.title || 'Untitled Chapter'}
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-white/90 group-hover:text-white transition-transform group-hover:translate-x-0.5" />
+                </button>
+              ) : (
+                <div className="text-xs text-ink-faint font-serif italic py-2 ml-auto">
+                  End of book
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

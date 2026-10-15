@@ -63,6 +63,18 @@ export const api = {
     const res = await authFetch(`${API_BASE}/novels/${id}`, { method: 'DELETE' });
     return handleResponse<{ success: boolean }>(res);
   },
+  incrementNovelViews: async (id: string): Promise<{ views: number }> => {
+    const res = await authFetch(`${API_BASE}/novels/${id}/view`, { method: 'POST' });
+    return handleResponse<{ views: number }>(res);
+  },
+  rateNovel: async (id: string, rating: number): Promise<{ rating: number; ratingCount: number }> => {
+    const res = await authFetch(`${API_BASE}/novels/${id}/rate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rating }),
+    });
+    return handleResponse<{ rating: number; ratingCount: number }>(res);
+  },
   exportManuscript: async (id: string, format: 'markdown' | 'text' = 'markdown') => {
     const res = await authFetch(`${API_BASE}/novels/${id}/export?format=${format}`);
     return handleResponse<{ title: string; format: string; totalWordCount: number; content: string }>(res);

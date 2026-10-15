@@ -4,6 +4,7 @@ import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import { BookCover } from '../common/BookCover';
 import { NewNovelModal } from './NewNovelModal';
 import { InviteReaderModal } from './InviteReaderModal';
+import { PublishSuccessModal } from './PublishSuccessModal';
 import {
   ArrowLeft,
   Feather,
@@ -25,6 +26,8 @@ import {
   Users,
   CheckCircle,
   Globe,
+  Star,
+  MessageSquare,
 } from 'lucide-react';
 
 export const BookDetailView: React.FC = () => {
@@ -37,6 +40,8 @@ export const BookDetailView: React.FC = () => {
   const openStudio = useWorkspaceStore((s) => s.openStudio);
   const deleteNovel = useWorkspaceStore((s) => s.deleteNovel);
   const togglePublishNovel = useWorkspaceStore((s) => s.togglePublishNovel);
+  const recordNovelView = useWorkspaceStore((s) => s.recordNovelView);
+  const rateNovel = useWorkspaceStore((s) => s.rateNovel);
   const setIsExportOpen = useWorkspaceStore((s) => s.setIsExportOpen);
   const setIsDashboardOpen = useWorkspaceStore((s) => s.setIsDashboardOpen);
   const openLibrary = useWorkspaceStore((s) => s.openLibrary);
@@ -49,24 +54,54 @@ export const BookDetailView: React.FC = () => {
   const setIsReaderMode = useWorkspaceStore((s) => s.setIsReaderMode);
   const activeReaderName = useWorkspaceStore((s) => s.activeReaderName);
   const invitedReadersByNovel = useWorkspaceStore((s) => s.invitedReadersByNovel);
+  const lineComments = useWorkspaceStore((s) => s.lineComments);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isPublishSuccessModalOpen, setIsPublishSuccessModalOpen] = useState(false);
   const [isOpeningStudio, setIsOpeningStudio] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [userGivenRating, setUserGivenRating] = useState<number | null>(null);
+  const [hoverRating, setHoverRating] = useState<number | null>(null);
+  const [isSubmittingRating, setIsSubmittingRating] = useState(false);
 
   // Identify target novel
   const targetId = id || activeNovelId;
   const novel = novels.find((n) => n._id === targetId);
 
+  // Auto record view when viewing a published novel
+  useEffect(() => {
+    if (novel?._id && novel.isPublished) {
+      recordNovelView(novel._id);
+    }
+  }, [novel?._id, novel?.isPublished, recordNovelView]);
+
   const handleTogglePublish = async () => {
     if (!novel || isPublishing) return;
+    const willPublish = !novel.isPublished;
+    if (!willPublish && !confirm(`Unpublish "${novel.title}" from the Explore shelf?`)) {
+      return;
+    }
     setIsPublishing(true);
     try {
-      await togglePublishNovel(novel._id);
+      const res = await togglePublishNovel(novel._id);
+      if (res && willPublish) {
+        setIsPublishSuccessModalOpen(true);
+      }
     } finally {
       setIsPublishing(false);
+    }
+  };
+
+  const handleRate = async (star: number) => {
+    if (!novel || isSubmittingRating) return;
+    setIsSubmittingRating(true);
+    setUserGivenRating(star);
+    try {
+      await rateNovel(novel._id, star);
+    } finally {
+      setIsSubmittingRating(false);
     }
   };
 
@@ -101,7 +136,7 @@ export const BookDetailView: React.FC = () => {
     }
   };
 
-  const handleReadManuscript = async (specificChapterId?: string) => {
+  const handleReadBook = async (specificChapterId?: string) => {
     if (!novel) return;
     setIsOpeningStudio(true);
     try {
@@ -155,7 +190,7 @@ export const BookDetailView: React.FC = () => {
         </div>
         <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink mb-2">Book Not Found</h2>
         <p className="text-xs sm:text-sm text-ink-muted mb-6 text-center max-w-sm font-sans">
-          The requested manuscript could not be found or may have been deleted.
+          The requested book could not be found or may have been deleted.
         </p>
         <button
           type="button"
@@ -199,12 +234,12 @@ export const BookDetailView: React.FC = () => {
           {isViewingAsReader ? (
             <button
               type="button"
-              onClick={() => handleReadManuscript()}
+              onClick={() => handleReadBook()}
               disabled={isOpeningStudio}
               className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-serif font-semibold text-xs shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50"
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span>Read Manuscript</span>
+              <span>Read Book</span>
             </button>
           ) : (
             <div className="flex items-center gap-2">
@@ -263,7 +298,7 @@ export const BookDetailView: React.FC = () => {
                   </span>
                 </div>
                 <p className="text-ink-muted text-xs mt-1 leading-relaxed">
-                  You are viewing this manuscript as an invited reader. Story text is view only. You can read the chapters and click any <span className="text-amber-600 dark:text-amber-400 font-bold">orange dot</span> to leave line-level comments.
+                  You are viewing this book as an invited reader. Story text is view only. You can read the chapters and click any <span className="text-amber-600 dark:text-amber-400 font-bold">orange dot</span> to leave line-level comments.
                 </p>
               </div>
             </div>
@@ -349,14 +384,14 @@ export const BookDetailView: React.FC = () => {
                     </span>
                   )}
                   <span className="text-[10px] font-mono uppercase tracking-widest font-bold px-2.5 py-1 rounded-full bg-brand-50 text-brand-800 border border-brand-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900/50">
-                    {novel.genre === 'Zombie Apocalypse' ? '🧟 Zombie Apocalypse' : novel.genre || 'Manuscript'}
+                    {novel.genre === 'Zombie Apocalypse' ? '🧟 Zombie Apocalypse' : novel.genre || 'Novel'}
                   </span>
                   <span className="text-[10px] font-mono uppercase tracking-widest font-bold px-2.5 py-1 rounded-full bg-canvas-surface text-ink-muted border border-canvas-border">
                     {novel.status || 'Draft'}
                   </span>
                   {novel.isPublished && (
                     <span className="text-[10px] font-mono uppercase tracking-widest font-bold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5 shadow-2xs">
-                      <Globe className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                      <Globe className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                       <span>Published to Explore</span>
                     </span>
                   )}
@@ -389,20 +424,95 @@ export const BookDetailView: React.FC = () => {
                     Last active {new Date(novel.updatedAt).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
                   </span>
                 </div>
+
+                {/* Dynamic Views, Star Ratings & Reader Line Comments */}
+                <div className="mt-4 pt-4 border-t border-canvas-border/80 flex flex-wrap items-center gap-3 sm:gap-4">
+                  {/* Views Counter */}
+                  <div className="flex items-center gap-1.5 text-xs font-mono text-ink-muted bg-canvas-surface/80 px-3 py-1.5 rounded-lg border border-canvas-border shadow-2xs">
+                    <Eye className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                    <span className="font-bold text-ink">{(novel.views ?? 0).toLocaleString()}</span>
+                    <span>views</span>
+                  </div>
+
+                  {/* Interactive Star Rating Widget */}
+                  <div className="flex items-center gap-2 text-xs font-mono bg-canvas-surface/80 px-3 py-1.5 rounded-lg border border-canvas-border shadow-2xs">
+                    <div className="flex items-center gap-0.5">
+                      {[1, 2, 3, 4, 5].map((star) => {
+                        const current = novel.rating ?? 5.0;
+                        const isHovered = hoverRating !== null;
+                        const activeStar = isHovered
+                          ? hoverRating >= star
+                          : userGivenRating !== null
+                          ? userGivenRating >= star
+                          : current >= star;
+
+                        return (
+                          <button
+                            key={star}
+                            type="button"
+                            disabled={isSubmittingRating}
+                            onMouseEnter={() => setHoverRating(star)}
+                            onMouseLeave={() => setHoverRating(null)}
+                            onClick={() => handleRate(star)}
+                            className="cursor-pointer transition-transform hover:scale-125 p-0.5 focus:outline-none"
+                            title={`Rate ${star} star${star > 1 ? 's' : ''}`}
+                          >
+                            <Star
+                              className={`w-4 h-4 transition-colors ${
+                                activeStar
+                                  ? 'text-amber-500 fill-amber-500'
+                                  : 'text-stone-300 dark:text-stone-600'
+                              }`}
+                            />
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <span className="font-bold text-ink ml-1">
+                      {(novel.rating ?? 5.0).toFixed(1)}
+                    </span>
+                    <span className="text-[11px] text-ink-faint">
+                      ({novel.ratingCount ?? 0} {novel.ratingCount === 1 ? 'rating' : 'ratings'})
+                    </span>
+                    {userGivenRating && (
+                      <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold ml-1 animate-fadeIn">
+                        ✓ Rated!
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Reader Feedback / Line Comments Counter */}
+                  <button
+                    type="button"
+                    onClick={() => handleReadBook()}
+                    className="flex items-center gap-1.5 text-xs font-mono text-ink-muted bg-canvas-surface/80 hover:bg-canvas-hover px-3 py-1.5 rounded-lg border border-canvas-border shadow-2xs hover:border-amber-500/40 hover:text-ink cursor-pointer transition-colors"
+                    title="Read book and view line-level reader feedback"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                    <span className="font-bold text-ink">
+                      {lineComments.filter((c) => c.novelId === novel._id).length}
+                    </span>
+                    <span>
+                      {lineComments.filter((c) => c.novelId === novel._id).length === 1
+                        ? 'reader comment'
+                        : 'reader comments'}
+                    </span>
+                  </button>
+                </div>
               </div>
 
-              {/* ACTION AREA: CONTINUE WRITING / READ MANUSCRIPT */}
+              {/* ACTION AREA: CONTINUE WRITING / READ BOOK */}
               <div className="mt-6 pt-6 border-t border-canvas-border space-y-3">
                 {isViewingAsReader ? (
                   <>
                     <button
                       type="button"
-                      onClick={() => handleReadManuscript()}
+                      onClick={() => handleReadBook()}
                       disabled={isOpeningStudio}
                       className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-serif font-bold text-base shadow-md hover:shadow-xl transition-all hover:scale-[1.02] active:scale-98 flex items-center justify-center gap-3 cursor-pointer group disabled:opacity-50"
                     >
                       <BookOpen className="w-5 h-5 transition-transform group-hover:scale-110" />
-                      <span>Read Manuscript</span>
+                      <span>Read Book</span>
                       <ChevronRight className="w-4 h-4 ml-1 opacity-80 transition-transform group-hover:translate-x-1" />
                     </button>
 
@@ -550,7 +660,7 @@ export const BookDetailView: React.FC = () => {
           <div className="p-4 sm:p-5 rounded-xl bg-canvas-card border border-canvas-border shadow-xs flex flex-col justify-between">
             <div className="flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-ink-muted font-semibold">
               <Layers className="w-4 h-4 text-indigo-600" />
-              Manuscript Scale
+              Book Scale
             </div>
             <div className="mt-2">
               <div className="text-xl sm:text-2xl font-serif font-extrabold text-ink">
@@ -632,7 +742,7 @@ export const BookDetailView: React.FC = () => {
           ) : (
             <div className="p-4 rounded-xl bg-canvas-surface/40 border border-dashed border-canvas-border text-center">
               <p className="text-xs text-ink-muted font-sans italic">
-                No synopsis drafted for this manuscript yet.
+                No synopsis drafted for this book yet.
               </p>
               <button
                 type="button"
@@ -772,7 +882,7 @@ export const BookDetailView: React.FC = () => {
                     key={ch._id}
                     onClick={() =>
                       isViewingAsReader
-                        ? handleReadManuscript(ch._id)
+                        ? handleReadBook(ch._id)
                         : handleContinueWriting(ch._id)
                     }
                     className="p-3 sm:p-3.5 rounded-xl bg-canvas-surface hover:bg-canvas-hover border border-canvas-border transition-all flex items-center justify-between gap-3 cursor-pointer group shadow-2xs hover:shadow-xs"
@@ -790,6 +900,15 @@ export const BookDetailView: React.FC = () => {
                           <span>{chScenes.length} scenes</span>
                           <span>•</span>
                           <span>{chWords.toLocaleString()} words</span>
+                          {lineComments.filter((c) => c.chapterId === ch._id).length > 0 && (
+                            <>
+                              <span>•</span>
+                              <span className="text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1">
+                                <MessageSquare className="w-2.5 h-2.5" />
+                                {lineComments.filter((c) => c.chapterId === ch._id).length}
+                              </span>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -823,6 +942,13 @@ export const BookDetailView: React.FC = () => {
       <InviteReaderModal
         isOpen={isInviteModalOpen}
         onClose={() => setIsInviteModalOpen(false)}
+        novel={novel}
+      />
+
+      {/* Publish Celebration Modal */}
+      <PublishSuccessModal
+        isOpen={isPublishSuccessModalOpen}
+        onClose={() => setIsPublishSuccessModalOpen(false)}
         novel={novel}
       />
     </div>

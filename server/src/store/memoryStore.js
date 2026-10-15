@@ -150,6 +150,32 @@ class MemoryStore {
     }
   }
 
+  incrementNovelViews(novelId) {
+    const novel = this.getNovelById(novelId);
+    if (novel) {
+      novel.views = (novel.views || 0) + 1;
+      novel.updatedAt = new Date().toISOString();
+      return novel.views;
+    }
+    return 0;
+  }
+
+  rateNovel(novelId, userRating) {
+    const novel = this.getNovelById(novelId);
+    if (novel) {
+      const currentCount = novel.ratingCount || 0;
+      const currentRating = novel.rating || 5.0;
+      const totalScore = currentRating * currentCount + userRating;
+      const nextCount = currentCount + 1;
+      const nextRating = Math.round((totalScore / nextCount) * 10) / 10;
+      novel.rating = nextRating;
+      novel.ratingCount = nextCount;
+      novel.updatedAt = new Date().toISOString();
+      return { rating: novel.rating, ratingCount: novel.ratingCount };
+    }
+    return null;
+  }
+
   // --- CHAPTERS ---
   getChapters(novelId) {
     return this.chapters

@@ -115,7 +115,7 @@ export const InviteReaderModal: React.FC<InviteReaderModalProps> = ({
                 Invite a Reader
               </h2>
               <p className="text-xs text-ink-muted font-sans mt-0.5">
-                Manuscript: <span className="font-semibold text-ink italic">{novel.title}</span>
+                Book: <span className="font-semibold text-ink italic">{novel.title}</span>
               </p>
             </div>
           </div>
@@ -142,7 +142,7 @@ export const InviteReaderModal: React.FC<InviteReaderModalProps> = ({
             <p className="text-ink-muted leading-relaxed">
               Once invited, the reader will see this book in their library under{' '}
               <strong className="text-ink">"Books I Am Invited to Read"</strong>. They can inspect
-              manuscript details in <strong>View Only</strong> mode and read the story. In their reader, the
+              book details in <strong>View Only</strong> mode and read the story. In their reader, the
               line indicator is an <strong className="text-amber-600 dark:text-amber-400">orange dot</strong>,
               allowing them to write line-level comments and feedback.
             </p>
@@ -257,7 +257,7 @@ export const InviteReaderModal: React.FC<InviteReaderModalProps> = ({
           <div className="pt-4 border-t border-canvas-border space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-mono uppercase tracking-wider font-bold text-ink">
-                Invited Readers on this Manuscript ({currentInvited.length})
+                Invited Readers on this Book ({currentInvited.length})
               </h3>
             </div>
 

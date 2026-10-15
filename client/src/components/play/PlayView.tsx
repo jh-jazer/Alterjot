@@ -9,6 +9,8 @@ import {
   Dice5,
   Dices,
   ArrowRight,
+  Trophy,
+  ChevronDown,
 } from 'lucide-react';
 import vampireSiegeBanner from '../../assets/vampire_siege_banner.jpg';
 import elevatorDeliveryBanner from '../../assets/elevator_delivery_banner.jpg';
@@ -253,6 +255,33 @@ export const PlayView: React.FC = () => {
     <div className="flex-1 overflow-y-auto bg-canvas text-ink select-none pb-24 md:pb-12">
       {/* Full width panel container with 4 separate challenge panels */}
       <div className="w-full px-4 sm:px-8 md:px-12 py-6 sm:py-10 space-y-8 sm:space-y-12">
+
+        {/* Quick Jump Header Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-canvas-card border border-canvas-border p-3.5 sm:p-4 rounded-xl shadow-2xs">
+          <div className="flex items-center gap-2.5">
+            <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]" />
+            <span className="font-serif font-bold text-xs sm:text-sm text-ink">
+              Creative Atelier Arena
+            </span>
+            <span className="text-ink-muted text-xs font-mono hidden md:inline">
+              • Four immersive arenas for generative prompts, timed sprints, and worldbuilding
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              const el = document.getElementById('rankings');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-canvas-surface hover:bg-canvas-hover border border-canvas-border text-xs font-mono text-ink font-semibold shadow-2xs transition-all hover:border-amber-500/40 cursor-pointer self-start sm:self-auto group"
+            title="Scroll directly to Scribes Leaderboard"
+          >
+            <Trophy className="w-3.5 h-3.5 text-amber-500 group-hover:scale-110 transition-transform" />
+            <span>Scribe Leaderboard</span>
+            <ChevronDown className="w-3.5 h-3.5 text-ink-muted group-hover:translate-y-0.5 transition-transform" />
+          </button>
+        </div>
 
         {/* ========================================================
             1. WORLD CHALLENGE PANEL (FIRST)

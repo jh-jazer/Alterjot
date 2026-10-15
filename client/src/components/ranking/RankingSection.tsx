@@ -8,6 +8,7 @@ export const RankingSection: React.FC<{ className?: string }> = ({ className = '
   const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
   const novels = useWorkspaceStore((s) => s.novels);
   const penName = useWorkspaceStore((s) => s.penName);
+  const [timeframe, setTimeframe] = React.useState<'all' | 'month' | 'week'>('all');
 
   const totalWords = novels.reduce((acc, n) => acc + (n.totalWordCount || 0), 0);
 
@@ -47,18 +48,29 @@ export const RankingSection: React.FC<{ className?: string }> = ({ className = '
 
   const rankInfo = getAuthorRank(totalWords);
 
-  // Leaderboard data: woven with user if authenticated, or top 10 if guest
+  // Leaderboard data: woven with user if authenticated, scaled by selected timeframe
   const sortedLeaderboard = React.useMemo(() => {
+    const scaleFactor = timeframe === 'week' ? 0.14 : timeframe === 'month' ? 0.42 : 1;
+
+    const baseAuthors = TOP_10_AUTHORS.map((item) => ({
+      ...item,
+      words: Math.round(item.words * scaleFactor),
+    }));
+
     if (!isAuthenticated) {
-      return TOP_10_AUTHORS.map((item, idx) => ({ ...item, rank: idx + 1, isCurrentUser: false }));
+      return baseAuthors
+        .sort((a, b) => b.words - a.words)
+        .map((item, idx) => ({ ...item, rank: idx + 1, isCurrentUser: false }));
     }
+
+    const userWordsScaled = Math.round(totalWords * scaleFactor);
 
     const userEntry = {
       rank: 4,
       author: penName,
       title: novels[0]?.title || 'Untitled Book',
       genre: novels[0]?.genre || 'General Fiction',
-      words: totalWords,
+      words: userWordsScaled,
       streak: 7,
       badge: rankInfo.title,
       avatarColor: 'from-brand-600 to-brand-800 text-white',
@@ -66,17 +78,17 @@ export const RankingSection: React.FC<{ className?: string }> = ({ className = '
     };
 
     const combined = [
-      ...TOP_10_AUTHORS.filter((a) => a.author.toLowerCase() !== penName.toLowerCase()),
+      ...baseAuthors.filter((a) => a.author.toLowerCase() !== penName.toLowerCase()),
       userEntry,
     ].sort((a, b) => b.words - a.words);
 
     return combined.map((item, idx) => ({ ...item, rank: idx + 1 }));
-  }, [isAuthenticated, penName, novels, totalWords, rankInfo.title]);
+  }, [isAuthenticated, penName, novels, totalWords, rankInfo.title, timeframe]);
 
   return (
     <section id="rankings" className={`space-y-6 select-none ${className}`}>
       {/* SECTION HEADER: MATCHING PLAY CHALLENGE PANELS */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-canvas-border pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-canvas-border pb-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 bg-black/60 backdrop-blur-md border border-white/15 rounded-none shadow-sm mb-2">
             <div className="w-0.5 h-3 bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.8)]" />
@@ -93,9 +105,35 @@ export const RankingSection: React.FC<{ className?: string }> = ({ className = '
           </p>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-mono text-ink-muted">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>Live Word Counts</span>
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Timeframe Filter Tabs */}
+          <div className="inline-flex items-center p-1 rounded-xl bg-canvas-surface border border-canvas-border shadow-2xs">
+            {(
+              [
+                { id: 'all', label: 'All Time' },
+                { id: 'month', label: 'This Month' },
+                { id: 'week', label: 'This Week' },
+              ] as const
+            ).map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setTimeframe(t.id)}
+                className={`px-3 py-1 rounded-lg text-xs font-mono font-medium transition-all cursor-pointer ${
+                  timeframe === t.id
+                    ? 'bg-canvas-card text-ink font-bold shadow-xs'
+                    : 'text-ink-muted hover:text-ink'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 text-xs font-mono text-ink-muted">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Live Word Counts</span>
+          </div>
         </div>
       </div>
 

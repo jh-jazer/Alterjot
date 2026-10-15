@@ -206,3 +206,55 @@ export async function exportManuscript(req, res) {
     return res.status(500).json({ success: false, error: err.message });
   }
 }
+
+export async function incrementNovelViews(req, res) {
+  try {
+    const { id } = req.params;
+    if (isConnectedToAtlas()) {
+      const novel = await Novel.findByIdAndUpdate(
+        id,
+        { $inc: { views: 1 } },
+        { new: true }
+      );
+      if (!novel) return res.status(404).json({ success: false, error: 'Novel not found' });
+      return res.json({ success: true, data: { views: novel.views } });
+    }
+    const views = memoryStore.incrementNovelViews(id);
+    return res.json({ success: true, data: { views } });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+}
+
+export async function rateNovel(req, res) {
+  try {
+    const { id } = req.params;
+    const ratingValue = Number(req.body.rating);
+    if (!ratingValue || ratingValue < 1 || ratingValue > 5) {
+      return res.status(400).json({ success: false, error: 'Rating must be between 1 and 5' });
+    }
+
+    if (isConnectedToAtlas()) {
+      const novel = await Novel.findById(id);
+      if (!novel) return res.status(404).json({ success: false, error: 'Novel not found' });
+
+      const currentCount = novel.ratingCount || 0;
+      const currentRating = novel.rating || 5.0;
+      const totalScore = currentRating * currentCount + ratingValue;
+      const nextCount = currentCount + 1;
+      const nextRating = Math.round((totalScore / nextCount) * 10) / 10;
+
+      novel.rating = nextRating;
+      novel.ratingCount = nextCount;
+      await novel.save();
+
+      return res.json({ success: true, data: { rating: novel.rating, ratingCount: novel.ratingCount } });
+    }
+
+    const result = memoryStore.rateNovel(id, ratingValue);
+    if (!result) return res.status(404).json({ success: false, error: 'Novel not found' });
+    return res.json({ success: true, data: result });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+}

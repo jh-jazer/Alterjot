@@ -122,6 +122,8 @@ interface WorkspaceState {
   publishedNovels: Novel[];
   loadPublishedNovels: () => Promise<void>;
   togglePublishNovel: (novelId: string) => Promise<boolean>;
+  recordNovelView: (novelId: string) => Promise<void>;
+  rateNovel: (novelId: string, rating: number) => Promise<{ rating: number; ratingCount: number } | null>;
   updateSceneTitle: (sceneId: string, title: string) => Promise<void>;
   updateChapterTitle: (chapterId: string, title: string) => Promise<void>;
 
@@ -1395,6 +1397,44 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     } catch (err) {
       console.error('Failed to toggle publish status:', err);
       return false;
+    }
+  },
+
+  recordNovelView: async (novelId: string) => {
+    if (typeof window !== 'undefined') {
+      const viewedKey = `viewed_novel_${novelId}`;
+      if (sessionStorage.getItem(viewedKey)) return;
+      sessionStorage.setItem(viewedKey, 'true');
+    }
+    try {
+      const res = await api.incrementNovelViews(novelId);
+      set((state) => ({
+        novels: state.novels.map((n) => (n._id === novelId ? { ...n, views: res.views } : n)),
+        publishedNovels: state.publishedNovels.map((n) => (n._id === novelId ? { ...n, views: res.views } : n)),
+      }));
+    } catch {
+      set((state) => ({
+        novels: state.novels.map((n) => (n._id === novelId ? { ...n, views: (n.views || 0) + 1 } : n)),
+        publishedNovels: state.publishedNovels.map((n) => (n._id === novelId ? { ...n, views: (n.views || 0) + 1 } : n)),
+      }));
+    }
+  },
+
+  rateNovel: async (novelId: string, rating: number) => {
+    try {
+      const res = await api.rateNovel(novelId, rating);
+      set((state) => ({
+        novels: state.novels.map((n) =>
+          n._id === novelId ? { ...n, rating: res.rating, ratingCount: res.ratingCount } : n
+        ),
+        publishedNovels: state.publishedNovels.map((n) =>
+          n._id === novelId ? { ...n, rating: res.rating, ratingCount: res.ratingCount } : n
+        ),
+      }));
+      return res;
+    } catch (err) {
+      console.error('Failed to rate novel:', err);
+      return null;
     }
   },
 

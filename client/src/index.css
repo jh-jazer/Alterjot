@@ -182,21 +182,21 @@
 /* Font variations for canvas */
 .font-prose-serif .ProseMirror {
   font-family: 'Newsreader', 'EB Garamond', 'Merriweather', 'Lora', Georgia, serif;
-  font-size: 1.22rem;
+  font-size: var(--prose-font-size, 1.22rem);
   letter-spacing: 0.01em;
 }
 .font-prose-sans .ProseMirror {
   font-family: 'Inter', -apple-system, sans-serif;
-  font-size: 1.125rem;
+  font-size: var(--prose-font-size, 1.125rem);
 }
 .font-prose-typewriter .ProseMirror {
   font-family: 'Courier Prime', ui-monospace, monospace;
-  font-size: 1.1rem;
+  font-size: var(--prose-font-size, 1.1rem);
   letter-spacing: -0.01em;
 }
 .font-prose-mono .ProseMirror {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 1.05rem;
+  font-size: var(--prose-font-size, 1.05rem);
 }
 
 /* Zen mode transitions */

@@ -62,7 +62,7 @@ export const ExportModal: React.FC = () => {
               <FileDown className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg sm:text-xl font-serif font-bold text-ink">Black Box Dossier Export</h3>
+              <h3 className="text-lg sm:text-xl font-serif font-bold text-ink">Book Dossier Export</h3>
               <p className="text-[11px] sm:text-xs text-ink-muted font-mono">
                 Compile complete survival chronicle with structured logs & dividers
               </p>
