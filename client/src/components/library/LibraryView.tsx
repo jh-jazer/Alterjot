@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import type { Novel } from '../../types';
 import { NewNovelModal } from './NewNovelModal';
@@ -16,6 +17,7 @@ import {
 import { BookCover } from '../common/BookCover';
 
 export const LibraryView: React.FC = () => {
+  const navigate = useNavigate();
   const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
   const setIsAuthModalOpen = useWorkspaceStore((s) => s.setIsAuthModalOpen);
   const novels = useWorkspaceStore((s) => s.novels);
@@ -93,6 +95,7 @@ export const LibraryView: React.FC = () => {
   const handleOpenBook = async (novelId: string) => {
     if (hasMovedRef.current || isMouseDragging) return;
     await openStudio(novelId);
+    navigate(`/works/${novelId}`);
   };
 
   const handleEditBook = (novel: Novel, e: React.MouseEvent) => {

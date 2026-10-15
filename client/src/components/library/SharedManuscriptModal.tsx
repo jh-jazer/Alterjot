@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { SharedManuscript } from '../../data/communityData';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import {
@@ -23,6 +24,7 @@ export const SharedManuscriptModal: React.FC<SharedManuscriptModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'excerpt' | 'chapters'>('overview');
   const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
   const setIsAuthModalOpen = useWorkspaceStore((s) => s.setIsAuthModalOpen);
@@ -52,6 +54,10 @@ export const SharedManuscriptModal: React.FC<SharedManuscriptModalProps> = ({
       setIsAuthModalOpen(true, 'signin');
     } else {
       await startWritingImmediately();
+      const nid = useWorkspaceStore.getState().activeNovelId;
+      if (nid) {
+        navigate(`/works/${nid}`);
+      }
     }
   };
 
