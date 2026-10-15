@@ -1,10 +1,10 @@
 import { create } from 'zustand';
-import type { Novel, Chapter, Scene, CodexEntry, SaveStatus, NarrativeTheme, OnboardingAnswers, AuthUser, ActivePassage } from '../types';
+import type { Novel, Chapter, Scene, CodexEntry, SaveStatus, NarrativeTheme, OnboardingAnswers, AuthUser, ActivePassage, InvitedReader, LineComment } from '../types';
 import type { CollaborativeProject, ContributorRequest, ApprovedCollaborator, CreativeDiscipline } from '../data/collaborativeProjectsData';
 import { COLLABORATIVE_PROJECTS } from '../data/collaborativeProjectsData';
 import { api } from '../services/api';
 
-export type LeftPanelTab = 'chapters' | 'contexts' | 'ai';
+export type LeftPanelTab = 'search' | 'chapters' | 'contexts' | 'ai';
 
 export interface PanelState {
   isSidebarOpen: boolean;
@@ -23,7 +23,7 @@ interface TypographySettings {
 }
 
 interface WorkspaceState {
-  currentView: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge';
+  currentView: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge' | 'book';
   activeChallengeId: string | null;
   activeNovelId: string | null;
   activeChapterId: string | null;
@@ -59,13 +59,14 @@ interface WorkspaceState {
   librarySearchQuery: string;
   setLibrarySearchQuery: (query: string) => void;
 
-  setCurrentView: (view: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge') => void;
+  setCurrentView: (view: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge' | 'book') => void;
   openDashboard: () => void;
   openLanding: () => void;
   openLibrary: () => void;
   openPlay: () => void;
   openRanking: () => void;
   openStudio: (novelId?: string) => Promise<void>;
+  openBook: (novelId?: string) => Promise<void>;
   openChallenge: (challengeId: string) => void;
   closeChallenge: () => void;
 
@@ -77,6 +78,12 @@ interface WorkspaceState {
   toggleSidebar: () => void;
   toggleCodex: () => void;
   toggleNotesDeck: () => void;
+  openSearch: () => void;
+  replaceTextThroughoutStory: (
+    searchTerm: string,
+    replaceWith: string,
+    options?: { caseSensitive?: boolean; wholeWord?: boolean; sceneId?: string }
+  ) => { totalReplacements: number; affectedScenes: number; affectedChapters: number };
   toggleAiAssistant: () => void;
   openAiAssistant: (passage?: ActivePassage) => void;
   closeAiAssistant: () => void;
@@ -148,6 +155,23 @@ interface WorkspaceState {
   completeOnboarding: (answers: OnboardingAnswers) => void;
   setPreferredTheme: (theme: NarrativeTheme) => void;
   requireAuth: (callback?: () => void) => boolean;
+
+  // Reader Mode & Invited Readers
+  isReaderMode: boolean;
+  activeReaderName: string;
+  setIsReaderMode: (isReader: boolean, readerName?: string) => void;
+  invitedReadersByNovel: Record<string, InvitedReader[]>;
+  inviteReaderToNovel: (novelId: string, username: string, email?: string) => void;
+  removeInvitedReader: (novelId: string, username: string) => void;
+
+  // Line-Level Comments for Readers
+  lineComments: LineComment[];
+  addLineComment: (comment: Omit<LineComment, 'id' | 'createdAt'>) => LineComment;
+  deleteLineComment: (commentId: string) => void;
+  isLineCommentsOpen: boolean;
+  activeCommentLine: { novelId: string; chapterId: string; lineFrom: number; lineTo: number; lineText: string } | null;
+  openLineComments: (target: { novelId: string; chapterId: string; lineFrom: number; lineTo: number; lineText: string }) => void;
+  closeLineComments: () => void;
 }
 
 // Storage helpers for Alterjot with backward compatibility for existing keys
@@ -192,23 +216,49 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   activeChapterId: null,
   activeSceneId: null,
 
-  penName: (typeof window !== 'undefined' && getStorageItem('pen_name')) || 'Ernest Quill',
+  penName: (() => {
+    if (typeof window === 'undefined') return '';
+    const stored = getStorageItem('pen_name');
+    if (stored === 'Ernest Quill') return '';
+    return stored || '';
+  })(),
   setPenName: (name) => {
     setStorageItem('pen_name', name);
     set({ penName: name });
   },
 
   // Auth & Onboarding State
-  isAuthenticated: (typeof window !== 'undefined' && getStorageItem('auth') === 'true') || false,
-  currentUser:
-    typeof window !== 'undefined' && getStorageItem('auth') === 'true'
-      ? {
-          id: getStorageItem('user_id') || 'author_default',
-          penName: getStorageItem('pen_name') || 'Ernest Quill',
-          email: getStorageItem('user_email') || 'scribe@alterjot.com',
-          avatarUrl: getStorageItem('user_avatar') || undefined,
-        }
-      : null,
+  isAuthenticated: (() => {
+    if (typeof window === 'undefined') return false;
+    if (getStorageItem('auth') !== 'true') return false;
+    const email = getStorageItem('user_email');
+    const pen = getStorageItem('pen_name');
+    if (email === 'scribe@alterjot.com' && pen === 'Ernest Quill' && !getStorageItem('user_id')?.startsWith('google_')) {
+      return false;
+    }
+    return true;
+  })(),
+  currentUser: (() => {
+    if (typeof window === 'undefined') return null;
+    if (getStorageItem('auth') !== 'true') return null;
+    const pen = getStorageItem('pen_name');
+    const email = getStorageItem('user_email');
+    if (email === 'scribe@alterjot.com' && pen === 'Ernest Quill' && !getStorageItem('user_id')?.startsWith('google_')) {
+      try {
+        removeStorageItem('auth');
+        removeStorageItem('pen_name');
+        removeStorageItem('user_id');
+        removeStorageItem('user_email');
+      } catch {}
+      return null;
+    }
+    return {
+      id: getStorageItem('user_id') || 'author_default',
+      penName: pen || 'Author',
+      email: email || '',
+      avatarUrl: getStorageItem('user_avatar') || undefined,
+    };
+  })(),
   isAuthModalOpen: false,
   authModalMode: 'signin',
   isProfileModalOpen: false,
@@ -379,11 +429,19 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       set({ currentView: 'studio', activeChallengeId: null });
     }
   },
+  openBook: async (novelId) => {
+    if (!get().requireAuth()) return;
+    const targetId = novelId || get().activeNovelId;
+    if (targetId) {
+      await get().selectNovel(targetId);
+      set({ currentView: 'book', activeChallengeId: null });
+    }
+  },
 
   // Auth & Onboarding Actions
   login: (penName: string, email?: string) => {
-    const finalPenName = penName.trim() || 'Ernest Quill';
-    const finalEmail = email?.trim() || `${finalPenName.toLowerCase().replace(/\s+/g, '')}@alterjot.com`;
+    const finalPenName = penName.trim() || 'Author';
+    const finalEmail = email?.trim() || '';
     const user: AuthUser = {
       id: 'author_' + Date.now(),
       penName: finalPenName,
@@ -522,6 +580,128 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     return false;
   },
 
+  // Reader Mode & Invited Readers
+  isReaderMode: false,
+  activeReaderName: '',
+  setIsReaderMode: (isReader, readerName) => {
+    set({ isReaderMode: isReader, activeReaderName: readerName || '' });
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('alterjot:reader-mode-changed', { detail: { isReader } }));
+    }
+  },
+
+  invitedReadersByNovel: (() => {
+    try {
+      const raw = getStorageItem('invited_readers_map');
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return {};
+  })(),
+
+  inviteReaderToNovel: (novelId, username, email) => {
+    const cleanUser = username.trim();
+    if (!cleanUser) return;
+    const currentMap = { ...get().invitedReadersByNovel };
+    const list = currentMap[novelId] ? [...currentMap[novelId]] : [];
+
+    const existingIndex = list.findIndex((r) => r.username.toLowerCase() === cleanUser.toLowerCase());
+    const newReader: InvitedReader = {
+      username: cleanUser,
+      email: email?.trim(),
+      invitedAt: new Date().toISOString(),
+      status: 'invited',
+      role: 'reader',
+    };
+
+    if (existingIndex >= 0) {
+      list[existingIndex] = { ...list[existingIndex], ...newReader };
+    } else {
+      list.unshift(newReader);
+    }
+
+    currentMap[novelId] = list;
+    try {
+      setStorageItem('invited_readers_map', JSON.stringify(currentMap));
+    } catch {}
+
+    set({
+      invitedReadersByNovel: currentMap,
+      novels: get().novels.map((n) => (n._id === novelId ? { ...n, invitedReaders: list } : n)),
+    });
+  },
+
+  removeInvitedReader: (novelId, username) => {
+    const currentMap = { ...get().invitedReadersByNovel };
+    if (!currentMap[novelId]) return;
+    const filtered = currentMap[novelId].filter((r) => r.username.toLowerCase() !== username.toLowerCase());
+    currentMap[novelId] = filtered;
+    try {
+      setStorageItem('invited_readers_map', JSON.stringify(currentMap));
+    } catch {}
+
+    set({
+      invitedReadersByNovel: currentMap,
+      novels: get().novels.map((n) => (n._id === novelId ? { ...n, invitedReaders: filtered } : n)),
+    });
+  },
+
+  // Line Comments for Readers
+  lineComments: (() => {
+    try {
+      const raw = getStorageItem('line_comments');
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return [];
+  })(),
+
+  addLineComment: (commentData) => {
+    const id = 'lc-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6);
+    const newComment: LineComment = {
+      ...commentData,
+      id,
+      createdAt: new Date().toISOString(),
+    };
+
+    const updated = [newComment, ...get().lineComments];
+    try {
+      setStorageItem('line_comments', JSON.stringify(updated));
+    } catch {}
+
+    set({ lineComments: updated });
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('alterjot:comments-updated'));
+    }
+    return newComment;
+  },
+
+  deleteLineComment: (commentId) => {
+    const updated = get().lineComments.filter((c) => c.id !== commentId);
+    try {
+      setStorageItem('line_comments', JSON.stringify(updated));
+    } catch {}
+    set({ lineComments: updated });
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('alterjot:comments-updated'));
+    }
+  },
+
+  isLineCommentsOpen: false,
+  activeCommentLine: null,
+
+  openLineComments: (target) => {
+    set({
+      activeCommentLine: target,
+      isLineCommentsOpen: true,
+    });
+  },
+
+  closeLineComments: () => {
+    set({
+      activeCommentLine: null,
+      isLineCommentsOpen: false,
+    });
+  },
+
   saveStatus: 'idle',
   lastSavedAt: null,
   serverConnected: true,
@@ -624,6 +804,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       panelState: { ...state.panelState, isNotesDeckOpen: !state.panelState.isNotesDeckOpen },
     })),
 
+  openSearch: () => get().openLeftPanel('search'),
+
   toggleAiAssistant: () => get().toggleLeftPanel('ai'),
 
   openAiAssistant: (passage) =>
@@ -694,7 +876,17 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   collaborativeProjects: (() => {
     try {
       const saved = getStorageItem('collab_projects');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const dummyIds = new Set(['cinder-wastes', 'ironveil-foundry', 'voidwalker-expanse', 'sunstone-chronicles']);
+        const filtered = Array.isArray(parsed) ? parsed.filter((p: any) => !dummyIds.has(p.id)) : [];
+        if (filtered.length !== parsed.length) {
+          try {
+            setStorageItem('collab_projects', JSON.stringify(filtered));
+          } catch {}
+        }
+        return filtered;
+      }
     } catch {}
     return COLLABORATIVE_PROJECTS;
   })(),
@@ -861,6 +1053,129 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       activeScene: updatedScene,
       scenes: scenes.map((s) => (s._id === updatedScene._id ? updatedScene : s)),
     });
+  },
+
+  replaceTextThroughoutStory: (searchTerm, replaceWith, options = {}) => {
+    const { caseSensitive = false, wholeWord = false, sceneId } = options;
+    if (!searchTerm) return { totalReplacements: 0, affectedScenes: 0, affectedChapters: 0 };
+
+    const escaped = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const pattern = wholeWord ? `\\b${escaped}\\b` : escaped;
+    const flags = caseSensitive ? 'g' : 'gi';
+    const regex = new RegExp(pattern, flags);
+
+    const { scenes, activeScene } = get();
+    let totalReplacements = 0;
+    const affectedSceneIds = new Set<string>();
+    const affectedChapterIds = new Set<string>();
+
+    const helperReplaceInJson = (node: any): { updated: any; count: number } => {
+      if (!node) return { updated: node, count: 0 };
+      let count = 0;
+      if (node.type === 'text' && typeof node.text === 'string') {
+        const matches = node.text.match(regex);
+        if (matches) {
+          count += matches.length;
+          return {
+            updated: { ...node, text: node.text.replace(regex, replaceWith) },
+            count,
+          };
+        }
+        return { updated: node, count: 0 };
+      }
+      if (Array.isArray(node.content)) {
+        let childCount = 0;
+        const newContent = node.content.map((child: any) => {
+          const res = helperReplaceInJson(child);
+          childCount += res.count;
+          return res.updated;
+        });
+        return {
+          updated: { ...node, content: newContent },
+          count: childCount,
+        };
+      }
+      return { updated: node, count: 0 };
+    };
+
+    const updatedScenes = scenes.map((scene) => {
+      if (sceneId && scene._id !== sceneId) return scene;
+
+      const plainMatches = (scene.plainText || '').match(regex);
+      if (!plainMatches) return scene;
+
+      const plainReplacements = plainMatches.length;
+      totalReplacements += plainReplacements;
+      affectedSceneIds.add(scene._id);
+      affectedChapterIds.add(scene.chapterId);
+
+      const newPlainText = (scene.plainText || '').replace(regex, replaceWith);
+      let newContentJson = scene.contentJson;
+      if (scene.contentJson) {
+        const jsonResult = helperReplaceInJson(scene.contentJson);
+        newContentJson = jsonResult.updated;
+      } else {
+        newContentJson = {
+          type: 'doc',
+          content: newPlainText.split('\n\n').map((p) => ({
+            type: 'paragraph',
+            content: p ? [{ type: 'text', text: p }] : [],
+          })),
+        };
+      }
+
+      const words = newPlainText.trim().split(/\s+/).filter(Boolean).length;
+      const chars = newPlainText.length;
+
+      const updated: Scene = {
+        ...scene,
+        plainText: newPlainText,
+        contentJson: newContentJson,
+        wordCount: words,
+        characterCount: chars,
+        updatedAt: new Date().toISOString(),
+      };
+
+      try {
+        setStorageItem(`scene_${scene._id}`, JSON.stringify(updated));
+      } catch {}
+
+      return updated;
+    });
+
+    const activeSceneModified = activeScene
+      ? updatedScenes.find((s) => s._id === activeScene._id && affectedSceneIds.has(s._id))
+      : undefined;
+
+    if (totalReplacements > 0) {
+      const newTotalWords = updatedScenes.reduce((acc, s) => acc + (s.wordCount || 0), 0);
+      set({
+        scenes: updatedScenes,
+        ...(activeSceneModified ? { activeScene: activeSceneModified } : {}),
+        novels: get().novels.map((n) =>
+          n._id === get().activeNovelId ? { ...n, totalWordCount: newTotalWords } : n
+        ),
+      });
+
+      if (activeSceneModified && typeof window !== 'undefined') {
+        window.dispatchEvent(
+          new CustomEvent('alterjot:replace-active-scene-content', {
+            detail: {
+              newContentJson: activeSceneModified.contentJson,
+              newPlainText: activeSceneModified.plainText,
+              wordCount: activeSceneModified.wordCount,
+              characterCount: activeSceneModified.characterCount,
+            },
+          })
+        );
+      }
+    }
+
+    return {
+      totalReplacements,
+      affectedScenes: affectedSceneIds.size,
+      affectedChapters: affectedChapterIds.size,
+    };
   },
 
   startWritingImmediately: async () => {
@@ -1181,10 +1496,16 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         api.getNovels().catch(() => []),
       ]);
 
+      const invitedMap = get().invitedReadersByNovel || {};
+      const enrichedNovels = novels.map((n: Novel) => ({
+        ...n,
+        invitedReaders: invitedMap[n._id] || n.invitedReaders || [],
+      }));
+
       set({
         serverConnected: true,
         isAtlas: !!health.isAtlas,
-        novels,
+        novels: enrichedNovels,
       });
 
       if (novels.length === 0) {

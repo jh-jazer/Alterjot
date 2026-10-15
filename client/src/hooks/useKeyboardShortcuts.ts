@@ -47,9 +47,16 @@ export function useKeyboardShortcuts() {
         toggleSidebar();
         return;
       }
+
+      // Cmd/Ctrl + Shift + F -> Toggle Search & Replace in Story
+      if (isCmdOrCtrl && e.shiftKey && (e.key === 'F' || e.key === 'f')) {
+        e.preventDefault();
+        useWorkspaceStore.getState().toggleLeftPanel('search');
+        return;
+      }
     }
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toggleZenMode, toggleSidebar, toggleCodex, isZenMode, setZenMode]);
+  }, [toggleZenMode, toggleSidebar, toggleCodex, toggleAiAssistant, isZenMode, setZenMode]);
 }

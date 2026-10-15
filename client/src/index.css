@@ -291,5 +291,63 @@ html.theme-transitioning *::after {
   background-color: #f59e0b;
 }
 
+/* ==========================================================================
+   Reader Review Mode - Orange Dot Indicator & Line Comment Pin
+   ========================================================================== */
+
+.reader-orange-led {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  border-radius: 9999px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.15s ease;
+}
+
+.reader-orange-led:hover {
+  transform: scale(1.3);
+}
+
+.reader-led-bulb {
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background-color: #f97316; /* vibrant orange dot for invited readers */
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.reader-orange-led:hover .reader-led-bulb {
+  background-color: #ea580c;
+  box-shadow: 0 0 6px rgba(234, 88, 12, 0.75);
+}
+
+.reader-orange-led.is-active .reader-led-bulb {
+  background-color: #c2410c;
+  box-shadow: 0 0 8px rgba(194, 65, 12, 0.9);
+  transform: scale(1.25);
+}
+
+.reader-orange-led.has-comments .reader-led-bulb {
+  background-color: #ea580c;
+  box-shadow: 0 0 5px rgba(249, 115, 22, 0.6);
+  animation: readerLedPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes readerLedPulse {
+  0%, 100% {
+    box-shadow: 0 0 3px rgba(249, 115, 22, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 7px rgba(249, 115, 22, 0.85);
+  }
+}
+
 
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import { usePWA } from '../../hooks/usePWA';
+import { AlterjotLogo } from '../common/AlterjotLogo';
 import {
-  Radio,
   Feather,
   Trophy,
   Timer,
@@ -44,12 +44,7 @@ export const Footer: React.FC = () => {
         {/* Brand & Scroll Top Row */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-none bg-gradient-to-tr from-amber-600 via-orange-600 to-amber-700 flex items-center justify-center text-white shadow-xs">
-              <Radio className="w-3.5 h-3.5" />
-            </div>
-            <span className="font-serif font-black text-base text-white tracking-tight">
-              Alterjot
-            </span>
+            <AlterjotLogo size="sm" textMode="light" />
             <span className="px-1.5 py-0.2 rounded-none text-[9px] font-mono uppercase tracking-widest bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold">
               ATELIER
             </span>
@@ -115,13 +110,8 @@ export const Footer: React.FC = () => {
             
             {/* Brand Column */}
             <div className="col-span-12 md:col-span-5 space-y-4">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-none bg-gradient-to-tr from-amber-600 via-orange-600 to-amber-700 flex items-center justify-center text-white shadow-sm shadow-amber-600/30">
-                  <Radio className="w-4 h-4 animate-pulse" />
-                </div>
-                <span className="font-serif font-black text-xl text-white tracking-tight">
-                  Alterjot
-                </span>
+              <div className="flex items-center gap-3">
+                <AlterjotLogo size="md" textMode="light" />
                 <span className="px-1.5 py-0.5 rounded-none text-[10px] font-mono uppercase tracking-widest bg-amber-500/15 text-amber-300 border border-amber-500/30 font-semibold">
                   ATELIER
                 </span>
@@ -186,7 +176,7 @@ export const Footer: React.FC = () => {
                     onClick={openDashboard}
                     className="hover:text-amber-400 transition-colors cursor-pointer text-left"
                   >
-                    Atelier Overview
+                    Home
                   </button>
                 </li>
               </ul>

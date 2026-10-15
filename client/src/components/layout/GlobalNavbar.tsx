@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
+import { AlterjotLogo } from '../common/AlterjotLogo';
 import {
-  Radio,
   Feather,
   Sun,
   Moon,
@@ -85,26 +85,19 @@ export const GlobalNavbar: React.FC = () => {
           <Link
             to="/"
             onClick={handleBrandClick}
-            className="flex items-center gap-2 sm:gap-2.5 hover:opacity-85 transition-opacity group cursor-pointer"
+            className="flex items-center hover:opacity-90 transition-opacity group cursor-pointer"
             title="Alterjot Studio"
           >
-            <div className="w-7 h-7 sm:w-8 h-8 rounded-none bg-gradient-to-tr from-amber-600 via-orange-600 to-amber-700 flex items-center justify-center text-white shadow-sm shadow-amber-600/30 group-hover:scale-105 transition-transform">
-              <Radio className="w-3.5 h-3.5 sm:w-4 h-4 animate-pulse" />
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="font-serif font-bold text-lg sm:text-xl text-ink tracking-tight">
-                Alterjot
-              </span>
-            </div>
+            <AlterjotLogo size="md" />
           </Link>
 
-          {/* Beside Website Name: DASHBOARD, PLAY, RANKING, LIBRARY (Desktop and Tablet) */}
+          {/* Beside Website Name: HOME, PLAY, RANKING, LIBRARY (Desktop and Tablet) */}
           <nav className="hidden md:flex items-center gap-2 sm:gap-4 pl-3 sm:pl-5 border-l border-canvas-border text-xs font-mono font-medium">
             <button
               type="button"
               onClick={() => {
                 openDashboard();
-                navigate('/dashboard');
+                navigate('/');
               }}
               className={`py-1.5 px-2 uppercase tracking-wider relative transition-colors ${
                 currentView === 'dashboard' || currentView === 'landing'
@@ -112,7 +105,7 @@ export const GlobalNavbar: React.FC = () => {
                   : 'text-ink-muted hover:text-ink'
               }`}
             >
-              DASHBOARD
+              HOME
               {(currentView === 'dashboard' || currentView === 'landing') && (
                 <span className="absolute bottom-0 left-1 right-1 h-[2px] bg-brand-500/70 dark:bg-brand-400/80 rounded-full" />
               )}

@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import {
   ArrowRight,
-  Star,
   ChevronLeft,
   ChevronRight,
   LayoutGrid,
@@ -180,8 +179,33 @@ export const DashboardView: React.FC = () => {
           </div>
 
           {/* Constant Size Manuscripts Panel Container */}
-          <div className="min-h-0 sm:min-h-[440px] md:min-h-[460px] flex flex-col justify-start px-3 sm:px-8 md:px-12 space-y-3">
-            {shelfLayout === 'slider' ? (
+          <div className="min-h-0 sm:min-h-[360px] flex flex-col justify-start px-3 sm:px-8 md:px-12 space-y-3">
+            {SHARED_MANUSCRIPTS.length === 0 ? (
+              <div className="py-16 px-4 rounded-xl bg-canvas-card border border-canvas-border text-center max-w-lg mx-auto space-y-3 my-auto w-full">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center mx-auto shadow-xs">
+                  <Columns3 className="w-6 h-6" />
+                </div>
+                <h3 className="text-base font-serif font-bold text-ink">
+                  The Library Shelf is Open
+                </h3>
+                <p className="text-xs text-ink-muted font-sans leading-relaxed">
+                  No public community manuscripts published yet. Pen and publish your stories to display them on the Atelier shelf.
+                </p>
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      openLibrary();
+                      navigate('/library');
+                    }}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-bold text-xs shadow-md transition-all cursor-pointer"
+                  >
+                    <span>Go to My Library</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ) : shelfLayout === 'slider' ? (
                 /* 1. DRAGGABLE HORIZONTAL SHELF CAROUSEL SLIDER */
                 <div className="relative group/shelf w-full">
                   {/* Left Chevron Button */}
@@ -199,7 +223,7 @@ export const DashboardView: React.FC = () => {
                   <div
                     ref={shelfRef}
                     onMouseDown={handleMouseDown}
-                    className={`flex gap-3.5 sm:gap-4 md:gap-5 overflow-x-auto scrollbar-none pb-4 pt-1 px-1 select-none transition-all ${
+                    className={`flex gap-3 sm:gap-3.5 md:gap-4 overflow-x-auto scrollbar-none pb-4 pt-1 px-1 select-none transition-all ${
                       isMouseDragging ? 'cursor-grabbing' : 'cursor-grab'
                     }`}
                     style={{
@@ -207,49 +231,34 @@ export const DashboardView: React.FC = () => {
                       userSelect: 'none',
                     }}
                   >
-                    {SHARED_MANUSCRIPTS.map((novel, idx) => (
+                    {SHARED_MANUSCRIPTS.map((novel) => (
                       <div
                         key={novel.id}
                         onClick={() => handleBookClick(novel)}
                         style={{ userSelect: 'none' }}
-                        className={`w-[160px] xs:w-[175px] sm:w-[195px] md:w-[215px] flex-shrink-0 flex flex-col group select-none transition-all duration-300 ${
+                        className={`w-[110px] xs:w-[125px] sm:w-[140px] md:w-[155px] flex-shrink-0 flex flex-col group select-none transition-all duration-300 ${
                           isMouseDragging ? 'cursor-grabbing' : 'cursor-pointer'
                         } hover:scale-[1.02]`}
                         title={`${novel.title} by ${novel.author}`}
                       >
-                        <div className="relative aspect-[2/3] w-full rounded-none overflow-hidden shadow-sm group-hover:shadow-2xl transition-all duration-300 border border-black/15 dark:border-white/10 bg-neutral-900">
+                        <div className="relative aspect-[2/3] w-full rounded-none overflow-hidden shadow-sm border border-black/15 dark:border-white/10 bg-neutral-900">
                           <BookCover
                             title={novel.title}
                             author={novel.author}
                             genre={novel.genre}
                             coverImage={novel.coverImage}
                             size="full"
-                            badge={idx === 0 ? 'alterjot' : undefined}
                           />
-
-                          {/* Genre tag badge */}
-                          <div className="absolute top-1.5 left-1.5 z-20 text-[9px] font-mono uppercase tracking-wider font-semibold px-1.5 py-0.5 bg-black/75 backdrop-blur-md text-stone-200 border border-white/10 pointer-events-none">
-                            {novel.genre === 'Zombie Apocalypse' ? '🧟 Zombie' : novel.genre}
-                          </div>
-
-                          {/* Top-Right Star Rating Badge */}
-                          <div className="absolute top-1.5 right-1.5 z-20 flex items-center gap-1 text-[10px] font-mono font-bold px-1.5 py-0.5 bg-black/75 backdrop-blur-md text-amber-400 border border-white/10 shadow-sm pointer-events-none select-none">
-                            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                            <span>{novel.rating.toFixed(2)}</span>
-                          </div>
-
-                          {/* Subtle hover gradient vignette */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
 
-                        <div className="mt-2 px-0.5">
-                          <h4 className="font-serif font-bold text-xs sm:text-sm text-ink truncate group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                        <div className="mt-1.5 px-0.5">
+                          <h4 className="font-serif font-bold text-xs text-ink truncate group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
                             {novel.title}
                           </h4>
-                          <p className="text-[11px] text-ink-muted truncate font-sans mt-0.5">
+                          <p className="text-[10px] sm:text-[11px] text-ink-muted truncate font-sans mt-0.5">
                             {novel.author} • {novel.authorRank}
                           </p>
-                          <p className="text-[10px] text-ink-faint font-mono mt-0.5 truncate">
+                          <p className="text-[9px] sm:text-[10px] text-ink-faint font-mono mt-0.5 truncate">
                             {novel.chapterCount} ch • {(novel.totalWordCount || 0).toLocaleString()} words
                           </p>
                         </div>
@@ -271,7 +280,7 @@ export const DashboardView: React.FC = () => {
               ) : (
                 /* 2. FULL RESPONSIVE GRID VIEW */
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5 sm:gap-4.5">
-                  {SHARED_MANUSCRIPTS.map((novel, idx) => (
+                  {SHARED_MANUSCRIPTS.map((novel) => (
                     <div
                       key={novel.id}
                       onClick={() => handleBookClick(novel)}
@@ -279,26 +288,14 @@ export const DashboardView: React.FC = () => {
                       className="cursor-pointer group flex flex-col select-none transition-all duration-300 hover:scale-[1.02]"
                       title={`${novel.title} by ${novel.author}`}
                     >
-                      <div className="relative aspect-[2/3] w-full rounded-none overflow-hidden shadow-sm group-hover:shadow-xl transition-all duration-300 border border-black/15 dark:border-white/10 bg-neutral-900">
+                      <div className="relative aspect-[2/3] w-full rounded-none overflow-hidden shadow-sm border border-black/15 dark:border-white/10 bg-neutral-900">
                         <BookCover
                           title={novel.title}
                           author={novel.author}
                           genre={novel.genre}
                           coverImage={novel.coverImage}
                           size="full"
-                          badge={idx === 0 ? 'alterjot' : undefined}
                         />
-
-                        <div className="absolute top-1.5 left-1.5 z-20 text-[9px] font-mono uppercase tracking-wider font-semibold px-1.5 py-0.5 bg-black/75 backdrop-blur-md text-stone-200 border border-white/10 pointer-events-none">
-                          {novel.genre === 'Zombie Apocalypse' ? '🧟 Zombie' : novel.genre}
-                        </div>
-
-                        <div className="absolute top-1.5 right-1.5 z-20 flex items-center gap-1 text-[10px] font-mono font-bold px-1.5 py-0.5 bg-black/75 backdrop-blur-md text-amber-400 border border-white/10 shadow-sm pointer-events-none select-none">
-                          <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-                          <span>{novel.rating.toFixed(2)}</span>
-                        </div>
-
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
 
                       <div className="mt-2 px-0.5">

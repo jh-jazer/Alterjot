@@ -179,177 +179,190 @@ export const Top10Leaderboard: React.FC<Top10LeaderboardProps> = ({
         <div className="absolute bottom-0 inset-x-0 h-24 sm:h-32 bg-gradient-to-t from-[#dde1e7] via-[#dde1e7]/70 to-transparent dark:from-[#0c0d10] dark:via-[#0c0d10]/70 dark:to-transparent pointer-events-none z-10" />
 
         {/* Unified 3-Pillars Podium Stage (Single Viewable Frame on Mobile) */}
-        <div className="relative z-10 flex items-end justify-center gap-1.5 xs:gap-3 sm:gap-6 md:gap-8 max-w-lg mx-auto w-full px-2 sm:px-4">
-          
-          {/* ================= 2ND PLACE: SILVER (LEFT) ================= */}
-          {silverHolder && (
-            <div
-              onClick={() => onSelectAuthorWork && onSelectAuthorWork(silverHolder.title)}
-              className="flex-1 max-w-[110px] xs:max-w-[135px] sm:max-w-[170px] md:max-w-[190px] flex flex-col items-center group cursor-pointer transition-transform duration-200 hover:-translate-y-1"
-              title={`2nd Place: ${silverHolder.author} - ${silverHolder.title}`}
-            >
-              {/* Profile Icon with Trophy */}
-              <div className="relative mb-1">
-                <AuthorAvatar
-                  author={silverHolder.author}
-                  rank={2}
-                  avatarUrl={silverHolder.isCurrentUser ? currentUser?.avatarUrl : undefined}
-                />
-                {/* Silver Trophy Badge */}
-                <div 
-                  className="absolute -top-1 -right-1 xs:-top-1.5 xs:-right-1.5 w-5 h-5 xs:w-6 xs:h-6 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-slate-200 via-slate-300 to-slate-400 border border-white/80 shadow-md flex items-center justify-center z-20"
-                  title="Silver Trophy"
-                >
-                  <Trophy className="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-3.5 sm:h-3.5 text-slate-900 fill-slate-900" />
-                </div>
-              </div>
-
-              {/* Username */}
-              <span className="font-serif font-black text-xs xs:text-sm sm:text-base text-stone-900 dark:text-white tracking-tight truncate w-full text-center group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors px-0.5">
-                {silverHolder.author}
-              </span>
-
-              {/* Genre / Streak Subtext */}
-              <span className="text-[9px] xs:text-[10px] sm:text-xs text-stone-600 dark:text-slate-400 font-sans truncate w-full text-center mt-0.5 px-0.5">
-                {silverHolder.genre}
-              </span>
-
-              {/* 2nd Place Pedestal Pillar */}
-              <div className="w-full h-28 xs:h-32 sm:h-44 md:h-52 rounded-t-xl sm:rounded-t-2xl bg-gradient-to-b from-[#2b3038] via-[#1d2127] to-[#121417] border-t border-x border-slate-500/40 shadow-xl flex flex-col items-center pt-2 xs:pt-3 sm:pt-4 px-1 sm:px-2 relative overflow-hidden mt-2">
-                {/* Top Silver Highlight Line */}
-                <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-slate-300 to-transparent opacity-70" />
-
-                {/* Rank 2 Square Badge */}
-                <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-md bg-slate-300 text-slate-950 font-sans font-black text-xs xs:text-sm sm:text-base flex items-center justify-center shadow-md flex-shrink-0">
-                  2
-                </div>
-
-                {/* Score / Words */}
-                <div className="mt-1.5 xs:mt-2 sm:mt-2.5 text-center">
-                  <div className="font-sans font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white tracking-tight leading-none">
-                    {silverHolder.words.toLocaleString()}
-                  </div>
-                  <div className="font-sans text-[8px] xs:text-[9px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-semibold mt-0.5">
-                    words
-                  </div>
-                </div>
-              </div>
+        {authorsList.length === 0 ? (
+          <div className="relative z-10 py-12 px-4 text-center max-w-sm mx-auto space-y-2.5">
+            <div className="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto shadow-sm">
+              <Trophy className="w-6 h-6 text-amber-600 dark:text-amber-400" />
             </div>
-          )}
-
-          {/* ================= 1ST PLACE: GOLD (CENTER — TALLEST) ================= */}
-          {goldHolder && (
-            <div
-              onClick={() => onSelectAuthorWork && onSelectAuthorWork(goldHolder.title)}
-              className="flex-1 max-w-[125px] xs:max-w-[150px] sm:max-w-[190px] md:max-w-[215px] flex flex-col items-center group cursor-pointer transition-transform duration-200 hover:-translate-y-1 relative z-20"
-              title={`1st Place: ${goldHolder.author} - ${goldHolder.title}`}
-            >
-              {/* Profile Icon with Gold Trophy */}
-              <div className="relative mb-1">
-                <AuthorAvatar
-                  author={goldHolder.author}
-                  rank={1}
-                  avatarUrl={goldHolder.isCurrentUser ? currentUser?.avatarUrl : undefined}
-                  className="w-14 h-14 xs:w-16 xs:h-16 sm:w-20 sm:h-20 md:w-22 md:h-22"
-                />
-                {/* Gold Trophy Badge */}
-                <div 
-                  className="absolute -top-1 -right-1 xs:-top-1.5 xs:-right-1.5 w-6 h-6 xs:w-7 xs:h-7 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-yellow-500 border border-white/80 shadow-lg flex items-center justify-center z-20"
-                  title="Gold Trophy"
-                >
-                  <Trophy className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 text-stone-950 fill-stone-950" />
-                </div>
-              </div>
-
-              {/* Username */}
-              <span className="font-serif font-black text-xs xs:text-sm sm:text-base md:text-lg text-stone-900 dark:text-white tracking-tight truncate w-full text-center group-hover:text-amber-600 dark:group-hover:text-amber-300 transition-colors px-0.5">
-                {goldHolder.author}
-              </span>
-
-              {/* Genre / Streak Subtext */}
-              <span className="text-[9px] xs:text-[10px] sm:text-xs text-amber-800 dark:text-amber-300/80 font-sans font-medium truncate w-full text-center mt-0.5 px-0.5">
-                {goldHolder.genre}
-              </span>
-
-              {/* 1st Place Pedestal Pillar (Tallest) */}
-              <div className="w-full h-40 xs:h-46 sm:h-60 md:h-70 rounded-t-xl sm:rounded-t-2xl bg-gradient-to-b from-[#38414e] via-[#242a32] to-[#14161a] border-t-2 border-x border-amber-400/80 shadow-[0_-10px_35px_rgba(245,158,11,0.22)] flex flex-col items-center pt-2.5 xs:pt-3.5 sm:pt-5 px-1 sm:px-2 relative overflow-hidden mt-2">
-                {/* Top Gold Highlight Line */}
-                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-500 via-yellow-300 to-amber-500 opacity-90" />
-
-                {/* Rank 1 Square Badge */}
-                <div className="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 rounded-md bg-amber-400 text-stone-950 font-sans font-black text-sm xs:text-base sm:text-lg flex items-center justify-center shadow-lg flex-shrink-0">
-                  1
-                </div>
-
-                {/* Score / Words */}
-                <div className="mt-1.5 xs:mt-2 sm:mt-2.5 text-center">
-                  <div className="font-sans font-black text-sm xs:text-base sm:text-xl md:text-2xl text-white tracking-tight leading-none">
-                    {goldHolder.words.toLocaleString()}
-                  </div>
-                  <div className="font-sans text-[8px] xs:text-[9px] sm:text-[11px] text-amber-300/80 uppercase tracking-wider font-bold mt-0.5">
-                    words
+            <h3 className="font-serif font-bold text-sm text-stone-900 dark:text-stone-100">
+              The Scribe Podium Awaits Its First Champion
+            </h3>
+            <p className="text-xs text-stone-600 dark:text-stone-400 font-sans leading-relaxed">
+              Pen manuscripts and log daily word counts to claim the top podium ranks.
+            </p>
+          </div>
+        ) : (
+          <div className="relative z-10 flex items-end justify-center gap-1.5 xs:gap-3 sm:gap-6 md:gap-8 max-w-lg mx-auto w-full px-2 sm:px-4">
+            {/* ================= 2ND PLACE: SILVER (LEFT) ================= */}
+            {silverHolder && (
+              <div
+                onClick={() => onSelectAuthorWork && onSelectAuthorWork(silverHolder.title)}
+                className="flex-1 max-w-[110px] xs:max-w-[135px] sm:max-w-[170px] md:max-w-[190px] flex flex-col items-center group cursor-pointer transition-transform duration-200 hover:-translate-y-1"
+                title={`2nd Place: ${silverHolder.author} - ${silverHolder.title}`}
+              >
+                {/* Profile Icon with Trophy */}
+                <div className="relative mb-1">
+                  <AuthorAvatar
+                    author={silverHolder.author}
+                    rank={2}
+                    avatarUrl={silverHolder.isCurrentUser ? currentUser?.avatarUrl : undefined}
+                  />
+                  {/* Silver Trophy Badge */}
+                  <div 
+                    className="absolute -top-1 -right-1 xs:-top-1.5 xs:-right-1.5 w-5 h-5 xs:w-6 xs:h-6 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-slate-200 via-slate-300 to-slate-400 border border-white/80 shadow-md flex items-center justify-center z-20"
+                    title="Silver Trophy"
+                  >
+                    <Trophy className="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-3.5 sm:h-3.5 text-slate-900 fill-slate-900" />
                   </div>
                 </div>
-              </div>
-            </div>
-          )}
 
-          {/* ================= 3RD PLACE: BRONZE (RIGHT — SHORTEST) ================= */}
-          {bronzeHolder && (
-            <div
-              onClick={() => onSelectAuthorWork && onSelectAuthorWork(bronzeHolder.title)}
-              className="flex-1 max-w-[110px] xs:max-w-[135px] sm:max-w-[170px] md:max-w-[190px] flex flex-col items-center group cursor-pointer transition-transform duration-200 hover:-translate-y-1"
-              title={`3rd Place: ${bronzeHolder.author} - ${bronzeHolder.title}`}
-            >
-              {/* Profile Icon with Bronze Trophy */}
-              <div className="relative mb-1">
-                <AuthorAvatar
-                  author={bronzeHolder.author}
-                  rank={3}
-                  avatarUrl={bronzeHolder.isCurrentUser ? currentUser?.avatarUrl : undefined}
-                />
-                {/* Bronze Trophy Badge */}
-                <div 
-                  className="absolute -top-1 -right-1 xs:-top-1.5 xs:-right-1.5 w-5 h-5 xs:w-6 xs:h-6 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-amber-500 via-orange-500 to-amber-700 border border-white/80 shadow-md flex items-center justify-center z-20"
-                  title="Bronze Trophy"
-                >
-                  <Trophy className="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-3.5 sm:h-3.5 text-stone-950 fill-stone-950" />
-                </div>
-              </div>
+                {/* Username */}
+                <span className="font-serif font-black text-xs xs:text-sm sm:text-base text-stone-900 dark:text-white tracking-tight truncate w-full text-center group-hover:text-slate-700 dark:group-hover:text-slate-200 transition-colors px-0.5">
+                  {silverHolder.author}
+                </span>
 
-              {/* Username */}
-              <span className="font-serif font-black text-xs xs:text-sm sm:text-base text-stone-900 dark:text-white tracking-tight truncate w-full text-center group-hover:text-orange-600 dark:group-hover:text-orange-300 transition-colors px-0.5">
-                {bronzeHolder.author}
-              </span>
+                {/* Genre / Streak Subtext */}
+                <span className="text-[9px] xs:text-[10px] sm:text-xs text-stone-600 dark:text-slate-400 font-sans truncate w-full text-center mt-0.5 px-0.5">
+                  {silverHolder.genre}
+                </span>
 
-              {/* Genre / Streak Subtext */}
-              <span className="text-[9px] xs:text-[10px] sm:text-xs text-stone-600 dark:text-orange-300/80 font-sans truncate w-full text-center mt-0.5 px-0.5">
-                {bronzeHolder.genre}
-              </span>
+                {/* 2nd Place Pedestal Pillar */}
+                <div className="w-full h-28 xs:h-32 sm:h-44 md:h-52 rounded-t-xl sm:rounded-t-2xl bg-gradient-to-b from-[#2b3038] via-[#1d2127] to-[#121417] border-t border-x border-slate-500/40 shadow-xl flex flex-col items-center pt-2 xs:pt-3 sm:pt-4 px-1 sm:px-2 relative overflow-hidden mt-2">
+                  {/* Top Silver Highlight Line */}
+                  <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-slate-300 to-transparent opacity-70" />
 
-              {/* 3rd Place Pedestal Pillar */}
-              <div className="w-full h-20 xs:h-24 sm:h-34 md:h-40 rounded-t-xl sm:rounded-t-2xl bg-gradient-to-b from-[#262b32] via-[#1a1e23] to-[#101215] border-t border-x border-orange-700/40 shadow-lg flex flex-col items-center pt-2 xs:pt-2.5 sm:pt-3.5 px-1 sm:px-2 relative overflow-hidden mt-2">
-                {/* Top Bronze Highlight Line */}
-                <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-70" />
-
-                {/* Rank 3 Square Badge */}
-                <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-md bg-amber-600 text-white font-sans font-black text-xs xs:text-sm sm:text-base flex items-center justify-center shadow-md flex-shrink-0">
-                  3
-                </div>
-
-                {/* Score / Words */}
-                <div className="mt-1.5 xs:mt-2 text-center">
-                  <div className="font-sans font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white tracking-tight leading-none">
-                    {bronzeHolder.words.toLocaleString()}
+                  {/* Rank 2 Square Badge */}
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-md bg-slate-300 text-slate-950 font-sans font-black text-xs xs:text-sm sm:text-base flex items-center justify-center shadow-md flex-shrink-0">
+                    2
                   </div>
-                  <div className="font-sans text-[8px] xs:text-[9px] sm:text-[11px] text-orange-300/70 uppercase tracking-wider font-semibold mt-0.5">
-                    words
+
+                  {/* Score / Words */}
+                  <div className="mt-1.5 xs:mt-2 sm:mt-2.5 text-center">
+                    <div className="font-sans font-black text-xs xs:text-sm sm:lg md:text-xl text-white tracking-tight leading-none">
+                      {silverHolder.words.toLocaleString()}
+                    </div>
+                    <div className="font-sans text-[8px] xs:text-[9px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-semibold mt-0.5">
+                      words
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+
+            {/* ================= 1ST PLACE: GOLD (CENTER — TALLEST) ================= */}
+            {goldHolder && (
+              <div
+                onClick={() => onSelectAuthorWork && onSelectAuthorWork(goldHolder.title)}
+                className="flex-1 max-w-[125px] xs:max-w-[150px] sm:max-w-[190px] md:max-w-[215px] flex flex-col items-center group cursor-pointer transition-transform duration-200 hover:-translate-y-1 relative z-20"
+                title={`1st Place: ${goldHolder.author} - ${goldHolder.title}`}
+              >
+                {/* Profile Icon with Gold Trophy */}
+                <div className="relative mb-1">
+                  <AuthorAvatar
+                    author={goldHolder.author}
+                    rank={1}
+                    avatarUrl={goldHolder.isCurrentUser ? currentUser?.avatarUrl : undefined}
+                    className="w-14 h-14 xs:w-16 xs:h-16 sm:w-20 sm:h-20 md:w-22 md:h-22"
+                  />
+                  {/* Gold Trophy Badge */}
+                  <div 
+                    className="absolute -top-1 -right-1 xs:-top-1.5 xs:-right-1.5 w-6 h-6 xs:w-7 xs:h-7 sm:w-7 sm:h-7 rounded-full bg-gradient-to-br from-amber-300 via-amber-400 to-yellow-500 border border-white/80 shadow-lg flex items-center justify-center z-20"
+                    title="Gold Trophy"
+                  >
+                    <Trophy className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 text-stone-950 fill-stone-950" />
+                  </div>
+                </div>
+
+                {/* Username */}
+                <span className="font-serif font-black text-xs xs:text-sm sm:text-base md:text-lg text-stone-900 dark:text-white tracking-tight truncate w-full text-center group-hover:text-amber-600 dark:group-hover:text-amber-300 transition-colors px-0.5">
+                  {goldHolder.author}
+                </span>
+
+                {/* Genre / Streak Subtext */}
+                <span className="text-[9px] xs:text-[10px] sm:text-xs text-amber-800 dark:text-amber-300/80 font-sans font-medium truncate w-full text-center mt-0.5 px-0.5">
+                  {goldHolder.genre}
+                </span>
+
+                {/* 1st Place Pedestal Pillar (Tallest) */}
+                <div className="w-full h-40 xs:h-46 sm:h-60 md:h-70 rounded-t-xl sm:rounded-t-2xl bg-gradient-to-b from-[#38414e] via-[#242a32] to-[#14161a] border-t-2 border-x border-amber-400/80 shadow-[0_-10px_35px_rgba(245,158,11,0.22)] flex flex-col items-center pt-2.5 xs:pt-3.5 sm:pt-5 px-1 sm:px-2 relative overflow-hidden mt-2">
+                  {/* Top Gold Highlight Line */}
+                  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-500 via-yellow-300 to-amber-500 opacity-90" />
+
+                  {/* Rank 1 Square Badge */}
+                  <div className="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 rounded-md bg-amber-400 text-stone-950 font-sans font-black text-sm xs:text-base sm:text-lg flex items-center justify-center shadow-lg flex-shrink-0">
+                    1
+                  </div>
+
+                  {/* Score / Words */}
+                  <div className="mt-1.5 xs:mt-2 sm:mt-2.5 text-center">
+                    <div className="font-sans font-black text-sm xs:text-base sm:text-xl md:text-2xl text-white tracking-tight leading-none">
+                      {goldHolder.words.toLocaleString()}
+                    </div>
+                    <div className="font-sans text-[8px] xs:text-[9px] sm:text-[11px] text-amber-300/80 uppercase tracking-wider font-bold mt-0.5">
+                      words
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ================= 3RD PLACE: BRONZE (RIGHT — SHORTEST) ================= */}
+            {bronzeHolder && (
+              <div
+                onClick={() => onSelectAuthorWork && onSelectAuthorWork(bronzeHolder.title)}
+                className="flex-1 max-w-[110px] xs:max-w-[135px] sm:max-w-[170px] md:max-w-[190px] flex flex-col items-center group cursor-pointer transition-transform duration-200 hover:-translate-y-1"
+                title={`3rd Place: ${bronzeHolder.author} - ${bronzeHolder.title}`}
+              >
+                {/* Profile Icon with Bronze Trophy */}
+                <div className="relative mb-1">
+                  <AuthorAvatar
+                    author={bronzeHolder.author}
+                    rank={3}
+                    avatarUrl={bronzeHolder.isCurrentUser ? currentUser?.avatarUrl : undefined}
+                  />
+                  {/* Bronze Trophy Badge */}
+                  <div 
+                    className="absolute -top-1 -right-1 xs:-top-1.5 xs:-right-1.5 w-5 h-5 xs:w-6 xs:h-6 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-amber-500 via-orange-500 to-amber-700 border border-white/80 shadow-md flex items-center justify-center z-20"
+                    title="Bronze Trophy"
+                  >
+                    <Trophy className="w-2.5 h-2.5 xs:w-3 xs:h-3 sm:w-3.5 sm:h-3.5 text-stone-950 fill-stone-950" />
+                  </div>
+                </div>
+
+                {/* Username */}
+                <span className="font-serif font-black text-xs xs:text-sm sm:text-base text-stone-900 dark:text-white tracking-tight truncate w-full text-center group-hover:text-orange-600 dark:group-hover:text-orange-300 transition-colors px-0.5">
+                  {bronzeHolder.author}
+                </span>
+
+                {/* Genre / Streak Subtext */}
+                <span className="text-[9px] xs:text-[10px] sm:text-xs text-stone-600 dark:text-orange-300/80 font-sans truncate w-full text-center mt-0.5 px-0.5">
+                  {bronzeHolder.genre}
+                </span>
+
+                {/* 3rd Place Pedestal Pillar */}
+                <div className="w-full h-20 xs:h-24 sm:h-34 md:h-40 rounded-t-xl sm:rounded-t-2xl bg-gradient-to-b from-[#262b32] via-[#1a1e23] to-[#101215] border-t border-x border-orange-700/40 shadow-lg flex flex-col items-center pt-2 xs:pt-2.5 sm:pt-3.5 px-1 sm:px-2 relative overflow-hidden mt-2">
+                  {/* Top Bronze Highlight Line */}
+                  <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-70" />
+
+                  {/* Rank 3 Square Badge */}
+                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-md bg-amber-600 text-white font-sans font-black text-xs xs:text-sm sm:text-base flex items-center justify-center shadow-md flex-shrink-0">
+                    3
+                  </div>
+
+                  {/* Score / Words */}
+                  <div className="mt-1.5 xs:mt-2 text-center">
+                    <div className="font-sans font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white tracking-tight leading-none">
+                      {bronzeHolder.words.toLocaleString()}
+                    </div>
+                    <div className="font-sans text-[8px] xs:text-[9px] sm:text-[11px] text-orange-300/70 uppercase tracking-wider font-semibold mt-0.5">
+                      words
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* FOOTER BAR: User Standing (if signed in) */}

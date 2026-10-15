@@ -9,11 +9,10 @@ import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import { useAutosave } from '../../hooks/useAutosave';
 import { EditorToolbar } from './EditorToolbar';
 import { WordCounter } from './WordCounter';
-import { SceneNotesDeck } from './SceneNotesDeck';
 import { StatusDot } from '../common/StatusDot';
-import { Minimize2, Edit3 } from 'lucide-react';
-import type { SceneStatus, SceneMetadata } from '../../types';
+import { Minimize2, Edit3, BookOpen } from 'lucide-react';
 import { AiLedExtension } from './extensions/AiLedExtension';
+import { LineCommentsDrawer } from './LineCommentsDrawer';
 
 export const ProseEditor: React.FC = () => {
   const activeScene = useWorkspaceStore((s) => s.activeScene);
@@ -21,15 +20,18 @@ export const ProseEditor: React.FC = () => {
   const isZenMode = useWorkspaceStore((s) => s.panelState.isZenMode);
   const toggleZenMode = useWorkspaceStore((s) => s.toggleZenMode);
   const updateActiveSceneLocally = useWorkspaceStore((s) => s.updateActiveSceneLocally);
-  const updateSceneMetadataLocally = useWorkspaceStore((s) => s.updateSceneMetadataLocally);
   const activeChapterId = useWorkspaceStore((s) => s.activeChapterId);
   const chapters = useWorkspaceStore((s) => s.chapters);
   const activeChapter = chapters.find((c) => c._id === activeChapterId);
   const updateChapterTitle = useWorkspaceStore((s) => s.updateChapterTitle);
   const updateSceneTitle = useWorkspaceStore((s) => s.updateSceneTitle);
   const saveStatus = useWorkspaceStore((s) => s.saveStatus);
-  const lastSavedAt = useWorkspaceStore((s) => s.lastSavedAt);
   const activePassage = useWorkspaceStore((s) => s.activePassage);
+  const isReaderMode = useWorkspaceStore((s) => s.isReaderMode);
+  const setIsReaderMode = useWorkspaceStore((s) => s.setIsReaderMode);
+  const activeReaderName = useWorkspaceStore((s) => s.activeReaderName);
+  const activeCommentLine = useWorkspaceStore((s) => s.activeCommentLine);
+  const lineComments = useWorkspaceStore((s) => s.lineComments);
 
   const [wordCount, setWordCount] = useState(activeScene?.wordCount || 0);
   const [characterCount, setCharacterCount] = useState(activeScene?.characterCount || 0);
@@ -55,7 +57,8 @@ export const ProseEditor: React.FC = () => {
   };
 
   const editor = useEditor({
-    autofocus: 'end',
+    editable: !isReaderMode,
+    autofocus: isReaderMode ? false : 'end',
     extensions: [
       StarterKit.configure({
         heading: {
@@ -118,14 +121,41 @@ export const ProseEditor: React.FC = () => {
     }
   }, [editor, activeScene?._id]);
 
-  // Keep active blue LED synchronized with active passage in workspace
+  // Sync TipTap editable state with reader mode
+  useEffect(() => {
+    if (editor && !editor.isDestroyed) {
+      editor.setEditable(!isReaderMode);
+      try {
+        editor.view.dispatch(editor.state.tr.setMeta('forceUpdateAiLeds', true));
+      } catch {}
+    }
+  }, [editor, isReaderMode]);
+
+  // Keep LEDs synchronized with active passage and active comment line
   useEffect(() => {
     if (editor && !editor.isDestroyed) {
       try {
         editor.view.dispatch(editor.state.tr.setMeta('forceUpdateAiLeds', true));
       } catch {}
     }
-  }, [editor, activePassage]);
+  }, [editor, activePassage, activeCommentLine, lineComments.length]);
+
+  // Global event listener for reader comments and reader mode updates
+  useEffect(() => {
+    const handleRefreshLeds = () => {
+      if (editor && !editor.isDestroyed) {
+        try {
+          editor.view.dispatch(editor.state.tr.setMeta('forceUpdateAiLeds', true));
+        } catch {}
+      }
+    };
+    window.addEventListener('alterjot:comments-updated', handleRefreshLeds);
+    window.addEventListener('alterjot:reader-mode-changed', handleRefreshLeds);
+    return () => {
+      window.removeEventListener('alterjot:comments-updated', handleRefreshLeds);
+      window.removeEventListener('alterjot:reader-mode-changed', handleRefreshLeds);
+    };
+  }, [editor]);
 
   // Handle AI approved passage replacement in TipTap
   useEffect(() => {
@@ -152,6 +182,120 @@ export const ProseEditor: React.FC = () => {
     };
   }, [editor]);
 
+  // Handle Global Search & Replace events in TipTap
+  useEffect(() => {
+    if (!editor || editor.isDestroyed) return;
+
+    // 1. Full active scene content replacement (from Search & Replace All / In Scene)
+    const handleReplaceSceneContent = (e: Event) => {
+      const customEvent = e as CustomEvent<{
+        newContentJson: any;
+        newPlainText: string;
+        wordCount: number;
+        characterCount: number;
+      }>;
+      if (!customEvent.detail) return;
+      const { newContentJson, wordCount: newWords, characterCount: newChars } = customEvent.detail;
+      editor.commands.setContent(newContentJson, { emitUpdate: false });
+      setWordCount(newWords);
+      setCharacterCount(newChars);
+    };
+
+    // 2. Scroll to match in editor and select text
+    const handleScrollToMatch = (e: Event) => {
+      const customEvent = e as CustomEvent<{ searchTerm: string; occurrence: number }>;
+      if (!customEvent.detail?.searchTerm) return;
+      const { searchTerm, occurrence } = customEvent.detail;
+
+      const doc = editor.state.doc;
+      let currentOcc = 0;
+      let targetFrom = -1;
+      let targetTo = -1;
+
+      const escaped = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(escaped, 'gi');
+
+      doc.descendants((node, pos) => {
+        if (node.isText && node.text) {
+          regex.lastIndex = 0;
+          let m: RegExpExecArray | null;
+          while ((m = regex.exec(node.text)) !== null) {
+            if (currentOcc === occurrence) {
+              targetFrom = pos + m.index;
+              targetTo = targetFrom + m[0].length;
+              return false;
+            }
+            currentOcc++;
+          }
+        }
+        return true;
+      });
+
+      if (targetFrom !== -1 && targetTo !== -1) {
+        editor.chain().focus().setTextSelection({ from: targetFrom, to: targetTo }).run();
+        try {
+          const dom = editor.view.domAtPos(targetFrom);
+          const el = dom.node instanceof HTMLElement ? dom.node : dom.node.parentElement;
+          el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } catch {}
+      }
+    };
+
+    // 3. Replace single occurrence in active editor
+    const handleReplaceSingle = (e: Event) => {
+      const customEvent = e as CustomEvent<{
+        searchTerm: string;
+        replaceWith: string;
+        occurrence: number;
+      }>;
+      if (!customEvent.detail) return;
+      const { searchTerm, replaceWith, occurrence } = customEvent.detail;
+
+      const doc = editor.state.doc;
+      let currentOcc = 0;
+      let targetFrom = -1;
+      let targetTo = -1;
+
+      const escaped = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(escaped, 'gi');
+
+      doc.descendants((node, pos) => {
+        if (node.isText && node.text) {
+          regex.lastIndex = 0;
+          let m: RegExpExecArray | null;
+          while ((m = regex.exec(node.text)) !== null) {
+            if (currentOcc === occurrence) {
+              targetFrom = pos + m.index;
+              targetTo = targetFrom + m[0].length;
+              return false;
+            }
+            currentOcc++;
+          }
+        }
+        return true;
+      });
+
+      if (targetFrom !== -1 && targetTo !== -1) {
+        editor
+          .chain()
+          .focus()
+          .setTextSelection({ from: targetFrom, to: targetTo })
+          .insertContent(replaceWith)
+          .run();
+      }
+    };
+
+    window.addEventListener('alterjot:replace-active-scene-content', handleReplaceSceneContent);
+    window.addEventListener('alterjot:scroll-to-match', handleScrollToMatch);
+    window.addEventListener('alterjot:replace-single-occurrence', handleReplaceSingle);
+
+    return () => {
+      window.removeEventListener('alterjot:replace-active-scene-content', handleReplaceSceneContent);
+      window.removeEventListener('alterjot:scroll-to-match', handleScrollToMatch);
+      window.removeEventListener('alterjot:replace-single-occurrence', handleReplaceSingle);
+    };
+  }, [editor]);
+
   // Two-Tier autosave hook
   useAutosave(
     activeScene?._id || null,
@@ -166,19 +310,6 @@ export const ProseEditor: React.FC = () => {
         }
       : null
   );
-
-  const handleMetadataChange = (metadata: Partial<SceneMetadata>, status?: SceneStatus) => {
-    if (!activeScene) return;
-    updateSceneMetadataLocally({
-      ...metadata,
-    });
-    if (status) {
-      useWorkspaceStore.setState((state) => ({
-        activeScene: state.activeScene ? { ...state.activeScene, status } : null,
-        scenes: state.scenes.map((s) => (s._id === activeScene._id ? { ...s, status } : s)),
-      }));
-    }
-  };
 
   if (!activeScene) {
     return (
@@ -210,12 +341,40 @@ export const ProseEditor: React.FC = () => {
 
   return (
     <div className={`flex-1 flex flex-col h-full overflow-hidden bg-canvas ${fontClass} ${lineClass}`}>
-      {!isZenMode && (
-        <>
-          <EditorToolbar editor={editor} />
-          <SceneNotesDeck scene={activeScene} onChange={handleMetadataChange} />
-        </>
+      {/* Reader Mode Bar */}
+      {!isZenMode && isReaderMode && (
+        <div className="w-full bg-amber-500/10 border-b border-amber-500/25 px-3 sm:px-6 py-2 flex items-center justify-between gap-3 text-xs font-sans text-ink flex-shrink-0 animate-fadeIn">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-6 h-6 rounded-lg bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center flex-shrink-0">
+              <BookOpen className="w-3.5 h-3.5" />
+            </div>
+            <div className="min-w-0 flex items-center gap-2 flex-wrap">
+              <span className="font-bold text-amber-700 dark:text-amber-300">
+                Reading Mode (View Only)
+              </span>
+              <span className="text-ink-muted hidden sm:inline">
+                • Click any <span className="text-orange-600 dark:text-orange-400 font-bold">orange dot</span> along the lines to write or review comments.
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="text-[11px] font-mono text-ink-faint hidden md:inline">
+              Reviewing as: @{activeReaderName || 'Reader'}
+            </span>
+            <button
+              type="button"
+              onClick={() => setIsReaderMode(false)}
+              className="px-2.5 py-1 rounded-lg bg-canvas-card hover:bg-canvas-hover border border-canvas-border text-[11px] font-mono text-ink transition-colors cursor-pointer shadow-2xs"
+            >
+              Switch to Author
+            </button>
+          </div>
+        </div>
       )}
+
+      {/* Author Toolbar */}
+      {!isZenMode && !isReaderMode && <EditorToolbar editor={editor} />}
 
       {isZenMode && (
         <div className="absolute top-4 right-6 z-30 flex items-center gap-3 opacity-40 hover:opacity-100 transition-opacity">
@@ -246,6 +405,7 @@ export const ProseEditor: React.FC = () => {
             <input
               type="text"
               value={chapterTitle}
+              readOnly={isReaderMode}
               onChange={(e) => handleTitleChange(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === 'ArrowDown') {
@@ -254,8 +414,10 @@ export const ProseEditor: React.FC = () => {
                 }
               }}
               placeholder="Untitled Chapter"
-              className="w-full text-xl sm:text-2xl md:text-3xl font-serif font-bold text-ink placeholder:text-ink-faint/30 bg-transparent border-none outline-none focus:outline-none transition-colors"
-              title="Chapter title (optional — edit anytime)"
+              className={`w-full text-xl sm:text-2xl md:text-3xl font-serif font-bold text-ink placeholder:text-ink-faint/30 bg-transparent border-none outline-none focus:outline-none transition-colors ${
+                isReaderMode ? 'cursor-default select-none' : ''
+              }`}
+              title={isReaderMode ? 'Chapter Title' : 'Chapter title (optional — edit anytime)'}
             />
           </div>
 
@@ -266,16 +428,27 @@ export const ProseEditor: React.FC = () => {
 
       {!isZenMode && (
         <div className="px-3 sm:px-6 py-1.5 sm:py-2 border-t border-canvas-border bg-canvas/90 backdrop-blur-md flex items-center justify-between text-xs text-ink-muted font-mono gap-2">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <span className="capitalize text-ink-muted">{typography.fontFamily}</span>
+          <div className="text-[11px] text-ink-faint">
+            {isReaderMode ? (
+              <span className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400 font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                Reader Review Mode
+              </span>
+            ) : (
+              <span>Author Workspace</span>
+            )}
           </div>
-
-          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
-            <StatusDot status={saveStatus} lastSavedAt={lastSavedAt} />
+          <div className="flex items-center gap-2">
+            {saveStatus === 'error' && (
+              <StatusDot status="error" />
+            )}
             <WordCounter wordCount={wordCount} characterCount={characterCount} />
           </div>
         </div>
       )}
+
+      {/* Line Comments Drawer */}
+      <LineCommentsDrawer />
     </div>
   );
 };

@@ -47,9 +47,28 @@ export function usePWA() {
     };
   }, []);
 
-  // Register Service Worker
+  // Register Service Worker in production only, or unregister in dev
   useEffect(() => {
     if ('serviceWorker' in navigator) {
+      if (import.meta.env.DEV) {
+        // In local development, unregister service worker and clear caches to prevent stale React chunk conflicts
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          for (const registration of registrations) {
+            registration.unregister();
+          }
+        });
+        if ('caches' in window) {
+          caches.keys().then((keys) => {
+            for (const key of keys) {
+              if (key.startsWith('alterjot-')) {
+                caches.delete(key);
+              }
+            }
+          });
+        }
+        return;
+      }
+
       window.addEventListener('load', () => {
         navigator.serviceWorker
           .register('/sw.js')

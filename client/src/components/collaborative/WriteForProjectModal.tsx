@@ -38,7 +38,7 @@ export const WriteForProjectModal: React.FC = () => {
   const claimProjectAsCreator = useWorkspaceStore((s) => s.claimProjectAsCreator);
 
   const [selectedProjectId, setSelectedProjectId] = useState<string>(
-    collaborativeProjects[0]?.id || 'cinder-wastes'
+    collaborativeProjects[0]?.id || ''
   );
   const [activeTab, setActiveTab] = useState<'overview' | 'creator-decisions' | 'request-access'>('overview');
   const [customTitle, setCustomTitle] = useState('');
@@ -56,7 +56,38 @@ export const WriteForProjectModal: React.FC = () => {
     collaborativeProjects.find((p) => p.id === selectedProjectId) ||
     collaborativeProjects[0];
 
-  if (!selectedProject) return null;
+  if (!selectedProject) {
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+        onClick={() => setIsOpen(false)}
+      >
+        <div
+          className="w-full max-w-lg rounded-2xl bg-canvas-card border border-canvas-border shadow-2xl p-6 sm:p-8 text-center text-ink space-y-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center mx-auto shadow-xs">
+            <Globe className="w-7 h-7" />
+          </div>
+          <h2 className="text-xl font-serif font-bold text-ink">
+            No Collaborative Projects Yet
+          </h2>
+          <p className="text-xs sm:text-sm text-ink-muted font-sans leading-relaxed">
+            Collaborative story universes and shared anthologies will appear here once created or shared by community authors.
+          </p>
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              className="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-bold text-xs shadow-md transition-all cursor-pointer"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const userPenNameLower = (penName || '').trim().toLowerCase();
   const creatorPenNameLower = (selectedProject.creatorPenName || '').trim().toLowerCase();

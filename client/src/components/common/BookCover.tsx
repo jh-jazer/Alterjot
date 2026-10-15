@@ -95,8 +95,8 @@ export const BookCover: React.FC<BookCoverProps> = ({
 
           {/* Center: Modern Image Holder Icon & Frame */}
           <div className="relative z-10 my-auto flex flex-col items-center justify-center text-center py-1">
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-none bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center text-white/60 mb-1.5 shadow-inner group-hover:border-amber-400/50 group-hover:text-amber-300 transition-colors">
-              <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+            <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-none bg-white/5 border border-dashed border-white/20 flex flex-col items-center justify-center text-white/60 mb-1 shadow-inner group-hover:border-amber-400/50 group-hover:text-amber-300 transition-colors">
+              <ImageIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
             <span className="text-[8px] sm:text-[9px] font-mono tracking-wider text-white/40 uppercase font-medium">
               Cover Holder
@@ -113,6 +113,8 @@ export const BookCover: React.FC<BookCoverProps> = ({
                   ? 'text-[11px]'
                   : size === 'md'
                   ? 'text-xs sm:text-[13px]'
+                  : size === 'full'
+                  ? 'text-[11px] sm:text-xs'
                   : 'text-sm sm:text-base'
               }`}
             >

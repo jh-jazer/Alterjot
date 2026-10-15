@@ -122,12 +122,12 @@ export const ChallengeDetailView: React.FC = () => {
             type="button"
             onClick={() => {
               openDashboard();
-              navigate('/dashboard');
+              navigate('/');
             }}
             className="inline-flex items-center gap-2 text-xs font-mono font-medium text-ink-muted hover:text-ink transition-colors cursor-pointer group"
           >
             <ArrowLeft className="w-4 h-4 text-brand-600 group-hover:-translate-x-1 transition-transform" />
-            <span>Back to Dashboard</span>
+            <span>Back to Home</span>
           </button>
 
           <div className="flex items-center gap-2">

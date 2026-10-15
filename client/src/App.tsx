@@ -10,6 +10,7 @@ import { DashboardView } from './components/dashboard/DashboardView';
 import { PlayView } from './components/play/PlayView';
 import { RankingView } from './components/ranking/RankingView';
 import { ChallengeDetailView } from './components/challenge/ChallengeDetailView';
+import { BookDetailView } from './components/library/BookDetailView';
 import { ProjectDashboardModal } from './components/dashboard/ProjectDashboardModal';
 import { ExportModal } from './components/export/ExportModal';
 import { WriteForProjectModal } from './components/collaborative/WriteForProjectModal';
@@ -20,15 +21,23 @@ import { MobileBottomNav } from './components/layout/MobileBottomNav';
 import { PWAStatusBanner } from './components/pwa/PWAStatusBanner';
 import { RouteSync } from './components/common/RouteSync';
 
-const StudioWorkspace: React.FC = () => (
-  <main className="flex-1 flex overflow-hidden relative">
-    {/* Left: VS Code Style Activity Bar Tabs (Chapters, Contexts, AI) */}
-    <LeftPanel />
+const StudioWorkspace: React.FC = () => {
+  const isZenMode = useWorkspaceStore((s) => s.panelState.isZenMode);
 
-    {/* Center: TipTap Prose Canvas */}
-    <ProseEditor />
-  </main>
-);
+  return (
+    <main
+      className={`flex-1 flex overflow-hidden relative ${
+        isZenMode ? '' : 'pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] md:pb-0'
+      }`}
+    >
+      {/* Left: VS Code Style Activity Bar Tabs (Chapters, Contexts, AI) */}
+      <LeftPanel />
+
+      {/* Center: TipTap Prose Canvas */}
+      <ProseEditor />
+    </main>
+  );
+};
 
 export const App: React.FC = () => {
   const loadInitialWorkspace = useWorkspaceStore((s) => s.loadInitialWorkspace);
@@ -51,11 +60,15 @@ export const App: React.FC = () => {
       {/* Main Viewport Routing */}
       <Routes>
         <Route path="/" element={<DashboardView />} />
+        <Route path="/home" element={<DashboardView />} />
         <Route path="/dashboard" element={<DashboardView />} />
         <Route path="/play" element={<PlayView />} />
         <Route path="/ranking" element={<RankingView />} />
         <Route path="/library" element={<LibraryView />} />
         <Route path="/works" element={<LibraryView />} />
+        <Route path="/book/:id" element={<BookDetailView />} />
+        <Route path="/novel/:id" element={<BookDetailView />} />
+        <Route path="/book" element={<Navigate to="/library" replace />} />
         <Route path="/works/:id" element={<StudioWorkspace />} />
         <Route path="/studio/:id" element={<StudioWorkspace />} />
         <Route path="/studio" element={<StudioWorkspace />} />

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import type { NarrativeTheme } from '../../types';
+import { AlterjotLogo } from '../common/AlterjotLogo';
 import {
   X,
   User,
-  Feather,
   Flame,
   Cog,
   Ghost,
@@ -18,7 +18,7 @@ export const OnboardingModal: React.FC = () => {
   const penName = useWorkspaceStore((s) => s.penName);
   const completeOnboarding = useWorkspaceStore((s) => s.completeOnboarding);
 
-  const [authorName, setAuthorName] = useState(penName || 'Ernest Quill');
+  const [authorName, setAuthorName] = useState(penName || '');
   const [selectedTheme, setSelectedTheme] = useState<NarrativeTheme>('apocalyptic');
   const [writingGoal, setWritingGoal] = useState('Epic Survival Novel (50,000+ words)');
 
@@ -26,7 +26,7 @@ export const OnboardingModal: React.FC = () => {
 
   const handleClose = () => {
     completeOnboarding({
-      penName: authorName.trim() || penName || 'Ernest Quill',
+      penName: authorName.trim() || penName || 'Author',
       preferredTheme: selectedTheme,
       writingGoal,
       ambiance: 'Dust & Whispering Wind',
@@ -36,7 +36,7 @@ export const OnboardingModal: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     completeOnboarding({
-      penName: authorName.trim() || 'Ernest Quill',
+      penName: authorName.trim() || 'Author',
       preferredTheme: selectedTheme,
       writingGoal,
       ambiance: 'Dust & Whispering Wind',
@@ -64,14 +64,14 @@ export const OnboardingModal: React.FC = () => {
           <X className="w-4 h-4" />
         </button>
 
-        {/* Top Centered Glyph Container */}
-        <div className="w-12 h-12 rounded-lg bg-[#f4f6fa] dark:bg-neutral-800 border border-neutral-200/60 dark:border-neutral-700/60 flex items-center justify-center mx-auto mb-4 text-neutral-800 dark:text-neutral-200 shadow-xs">
-          <Feather className="w-5 h-5 text-neutral-800 dark:text-neutral-200" />
+        {/* Top Centered Logo Container */}
+        <div className="flex justify-center mb-5">
+          <AlterjotLogo size="lg" />
         </div>
 
         {/* Heading */}
-        <h2 className="text-2xl font-bold tracking-tight text-neutral-900 dark:text-white text-center">
-          Welcome to Alterjot
+        <h2 className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white text-center">
+          Welcome to Your Atelier
         </h2>
 
         {/* Subtitle Description */}

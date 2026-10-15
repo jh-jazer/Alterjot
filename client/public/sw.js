@@ -1,5 +1,5 @@
 // Alterjot Service Worker — Offline Studio & Progressive Web App
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const STATIC_CACHE = `alterjot-static-${CACHE_VERSION}`;
 const FONTS_CACHE = `alterjot-fonts-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `alterjot-dynamic-${CACHE_VERSION}`;
@@ -64,6 +64,22 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
+  // 0. Always bypass caching completely in local development or for Vite dynamic modules
+  if (
+    url.hostname === 'localhost' ||
+    url.hostname === '127.0.0.1' ||
+    url.port === '5173' ||
+    url.port === '5000' ||
+    url.pathname.includes('/@vite') ||
+    url.pathname.includes('/@fs') ||
+    url.pathname.includes('/@id') ||
+    url.pathname.includes('node_modules') ||
+    url.search.includes('v=') ||
+    url.pathname.includes('.hot-update.')
+  ) {
+    return;
+  }
+
   // 1. Skip non-GET requests
   if (request.method !== 'GET') {
     return;
@@ -126,7 +142,9 @@ self.addEventListener('fetch', (event) => {
           if (cached) return cached;
           const rootCached = await caches.match('/');
           if (rootCached) return rootCached;
-          return caches.match('/index.html');
+          const indexCached = await caches.match('/index.html');
+          if (indexCached) return indexCached;
+          return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
         })
     );
     return;
@@ -145,8 +163,8 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => cachedResponse);
 
-      // Return cached immediately if available, else await network
-      return cachedResponse || fetchPromise;
+      // Return cached immediately if available, else await network (or empty fallback)
+      return cachedResponse || fetchPromise || new Response(null, { status: 404 });
     })
   );
 });

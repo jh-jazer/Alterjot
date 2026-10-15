@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import { GoogleSignInButton } from './GoogleSignInButton';
-import { X, Lock, Mail, User, LogIn, Eye, EyeOff, KeyRound, CheckCircle2 } from 'lucide-react';
+import { AlterjotLogo } from '../common/AlterjotLogo';
+import { X, Lock, Mail, User, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
 
 export const AuthModal: React.FC = () => {
   const isAuthModalOpen = useWorkspaceStore((s) => s.isAuthModalOpen);
@@ -30,7 +31,7 @@ export const AuthModal: React.FC = () => {
       setResetSent(true);
       return;
     }
-    const finalPenName = penName.trim() || (email ? email.split('@')[0] : 'Ernest Quill');
+    const finalPenName = penName.trim() || (email ? email.split('@')[0] : 'Author');
     login(finalPenName, email.trim());
   };
 
@@ -48,13 +49,9 @@ export const AuthModal: React.FC = () => {
           <X className="w-4 h-4" />
         </button>
 
-        {/* Top Centered Glyph Container */}
-        <div className="w-12 h-12 rounded-lg bg-[#f4f6fa] dark:bg-neutral-800 border border-neutral-200/60 dark:border-neutral-700/60 flex items-center justify-center mx-auto mb-4 text-neutral-800 dark:text-neutral-200 shadow-xs">
-          {mode === 'forgot' ? (
-            <KeyRound className="w-5 h-5 text-neutral-700 dark:text-neutral-300" />
-          ) : (
-            <LogIn className="w-5 h-5 text-neutral-800 dark:text-neutral-200 translate-x-0.5" />
-          )}
+        {/* Top Centered Logo */}
+        <div className="flex justify-center mb-4">
+          <AlterjotLogo size="md" />
         </div>
 
         {/* Heading */}

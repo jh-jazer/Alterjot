@@ -23,6 +23,7 @@ export interface Novel {
     fontFamily: 'serif' | 'sans' | 'mono';
     lineHeight: 'compact' | 'normal' | 'relaxed';
   };
+  invitedReaders?: InvitedReader[];
   createdAt: string;
   updatedAt: string;
 }
@@ -170,5 +171,27 @@ export interface AiInteractionMessage {
   content: string;
   proposedRewrite?: string;
   timestamp: string;
+}
+
+export interface InvitedReader {
+  username: string;
+  email?: string;
+  avatarUrl?: string;
+  invitedAt: string;
+  status: 'invited' | 'accepted';
+  role?: 'reader' | 'beta-reader' | 'editor';
+}
+
+export interface LineComment {
+  id: string;
+  novelId: string;
+  chapterId: string;
+  lineFrom: number;
+  lineTo: number;
+  lineText: string;
+  authorPenName: string;
+  authorAvatar?: string;
+  content: string;
+  createdAt: string;
 }
 
