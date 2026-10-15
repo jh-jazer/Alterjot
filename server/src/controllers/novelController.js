@@ -1,6 +1,7 @@
 import Novel from '../models/Novel.js';
 import Chapter from '../models/Chapter.js';
 import Scene from '../models/Scene.js';
+import User from '../models/User.js';
 import { isConnectedToAtlas } from '../config/db.js';
 import { memoryStore } from '../store/memoryStore.js';
 
@@ -14,7 +15,23 @@ export async function getNovels(req, res) {
       if (onlyPublished) {
         query.isPublished = true;
       } else if (userId) {
-        query = { $or: [{ userId }, { userId: '' }, { userId: { $exists: false } }] };
+        const userConditions = [{ userId }, { userId: '' }, { userId: { $exists: false } }];
+        try {
+          const user = await User.findOne({
+            $or: [
+              ...(userId.length === 24 ? [{ _id: userId }] : []),
+              { googleId: userId },
+              { email: (userId || '').toLowerCase() },
+            ],
+          });
+          if (user) {
+            userConditions.push({ userId: user._id.toString() });
+            if (user.googleId) userConditions.push({ userId: user.googleId });
+            if (user.penName) userConditions.push({ author: user.penName });
+          }
+        } catch {}
+
+        query = { $or: userConditions };
       }
       const novels = await Novel.find(query).sort({ publishedAt: -1, updatedAt: -1 });
       return res.json({ success: true, data: novels });

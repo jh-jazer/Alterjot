@@ -1,5 +1,6 @@
 import { OAuth2Client } from 'google-auth-library';
 import User from '../models/User.js';
+import Novel from '../models/Novel.js';
 import { isConnectedToAtlas } from '../config/db.js';
 import { memoryStore } from '../store/memoryStore.js';
 
@@ -79,6 +80,12 @@ export async function googleSignIn(req, res) {
           authProvider: 'google',
         });
       }
+
+      // Auto-adopt any previous guest novels matching the author's penName or guest ID
+      await Novel.updateMany(
+        { $or: [{ author: user.penName }, { userId: { $regex: '^user_' } }] },
+        { $set: { userId: user._id.toString(), author: user.penName } }
+      ).catch(() => {});
     } else {
       // Hybrid Local Memory Store fallback
       user = memoryStore.createOrUpdateGoogleUser({
