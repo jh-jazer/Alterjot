@@ -143,7 +143,7 @@ export const AiTabContent: React.FC = () => {
       {approvedToast && (
         <div className="m-3 p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-2 font-medium animate-in fade-in slide-in-from-top duration-200 shadow-xs">
           <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
-          <span>Line successfully replaced in manuscript!</span>
+          <span>Line successfully replaced in book!</span>
         </div>
       )}
 
@@ -303,7 +303,7 @@ export const AiTabContent: React.FC = () => {
                           className="w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-mono font-semibold transition-all shadow-xs cursor-pointer active:scale-98"
                         >
                           <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                          <span>Approve & Replace in Manuscript</span>
+                          <span>Approve & Replace in Book</span>
                         </button>
                       </div>
                     )}

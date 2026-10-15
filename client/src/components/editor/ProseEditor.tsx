@@ -317,7 +317,7 @@ export const ProseEditor: React.FC = () => {
         <Edit3 className="w-12 h-12 text-ink-faint mb-4 stroke-1 animate-pulse" />
         <h3 className="text-lg font-serif font-medium text-ink mb-1">No Scene Selected</h3>
         <p className="text-sm text-ink-muted max-w-sm">
-          Select a scene from the manuscript tree on the left, or create a new chapter to begin drafting.
+          Select a scene from the book tree on the left, or create a new chapter to begin drafting.
         </p>
       </div>
     );

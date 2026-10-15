@@ -91,7 +91,7 @@ export async function updateNovel(req, res) {
       const existing = await Novel.findById(id);
       if (!existing) return res.status(404).json({ success: false, error: 'Novel not found' });
       if (existing.userId && userId && existing.userId !== userId) {
-        return res.status(403).json({ success: false, error: 'Access denied: You do not own this manuscript.' });
+        return res.status(403).json({ success: false, error: 'Access denied: You do not own this book.' });
       }
       const novel = await Novel.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
       return res.json({ success: true, data: novel });
@@ -112,7 +112,7 @@ export async function deleteNovel(req, res) {
       const existing = await Novel.findById(id);
       if (!existing) return res.status(404).json({ success: false, error: 'Novel not found' });
       if (existing.userId && userId && existing.userId !== userId) {
-        return res.status(403).json({ success: false, error: 'Access denied: You do not own this manuscript.' });
+        return res.status(403).json({ success: false, error: 'Access denied: You do not own this book.' });
       }
       await Novel.findByIdAndDelete(id);
       await Chapter.deleteMany({ novelId: id });

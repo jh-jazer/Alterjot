@@ -148,7 +148,7 @@ export const ProjectDashboardModal: React.FC = () => {
               <span className="text-xs font-mono uppercase font-medium">Structure</span>
             </div>
             <div className="text-2xl font-serif font-bold text-ink mt-1">{chapters.length} Chapters</div>
-            <div className="text-xs text-ink-muted mt-0.5">{scenes.length} Scenes across manuscript</div>
+            <div className="text-xs text-ink-muted mt-0.5">{scenes.length} Scenes across book</div>
           </div>
 
           <div className="p-4 rounded-lg bg-canvas-surface border border-canvas-border shadow-xs">

@@ -104,7 +104,7 @@ export const NewNovelModal: React.FC<NewNovelModalProps> = ({ isOpen, onClose, e
             </div>
             <div>
               <h3 className="text-lg sm:text-xl font-serif font-bold text-ink">
-                {editingNovel ? 'Edit Manuscript Dossier' : 'Initialize New Collapse Dossier'}
+                {editingNovel ? 'Edit Book Dossier' : 'Initialize New Collapse Dossier'}
               </h3>
               <p className="text-xs text-ink-muted font-mono">
                 {editingNovel ? 'Update title, target goal, or metadata' : 'Set up your survival chronicle canvas and target word count'}

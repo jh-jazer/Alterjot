@@ -82,8 +82,8 @@ export const SharedManuscriptModal: React.FC<SharedManuscriptModalProps> = ({
             type="button"
             onClick={onClose}
             className="absolute top-5 right-5 p-2 rounded-lg text-ink-muted hover:text-ink hover:bg-canvas-hover transition-colors"
-            title="Close manuscript view"
-            aria-label="Close manuscript view"
+            title="Close book view"
+            aria-label="Close book view"
           >
             <X className="w-5 h-5" />
           </button>
@@ -204,7 +204,7 @@ export const SharedManuscriptModal: React.FC<SharedManuscriptModalProps> = ({
             <div className="space-y-5 animate-fadeIn">
               <div>
                 <h4 className="text-xs font-mono uppercase tracking-wider text-ink-muted font-bold mb-2">
-                  Manuscript Synopsis
+                  Book Synopsis
                 </h4>
                 <p className="font-serif text-sm sm:text-base leading-relaxed text-ink/90 bg-canvas-surface/50 p-4 rounded-xl border border-canvas-border/70">
                   {manuscript.synopsis}

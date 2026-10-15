@@ -41,7 +41,7 @@ export function useKeyboardShortcuts() {
         return;
       }
 
-      // Cmd/Ctrl + Shift + S -> Toggle Sidebar Manuscript Tree
+      // Cmd/Ctrl + Shift + S -> Toggle Sidebar Book Tree
       if (isCmdOrCtrl && e.shiftKey && (e.key === 'S' || e.key === 's')) {
         e.preventDefault();
         toggleSidebar();

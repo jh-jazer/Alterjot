@@ -82,7 +82,7 @@ export const LeftPanel: React.FC = () => {
       case 'search':
         return 'Search & Replace in Story';
       case 'chapters':
-        return 'Manuscript Chapters';
+        return 'Book Chapters';
       case 'contexts':
         return 'Survival Codex & Lore';
       case 'ai':

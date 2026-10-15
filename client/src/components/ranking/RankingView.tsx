@@ -61,7 +61,7 @@ export const RankingView: React.FC = () => {
     const userEntry = {
       rank: 4,
       author: penName,
-      title: novels[0]?.title || 'Untitled Manuscript',
+      title: novels[0]?.title || 'Untitled Book',
       genre: novels[0]?.genre || 'General Fiction',
       words: totalWords,
       streak: 7,
@@ -107,7 +107,7 @@ export const RankingView: React.FC = () => {
                   <tr>
                     <th className="py-3 px-4 text-center w-12">#</th>
                     <th className="py-3 px-4">Author (Pen Name)</th>
-                    <th className="py-3 px-4">Latest Manuscript</th>
+                    <th className="py-3 px-4">Latest Book</th>
                     <th className="py-3 px-4">Rank Tier</th>
                     <th className="py-3 px-4 text-right">Words Written</th>
                   </tr>
@@ -116,7 +116,7 @@ export const RankingView: React.FC = () => {
                   {sortedLeaderboard.length === 0 ? (
                     <tr>
                       <td colSpan={5} className="py-12 text-center text-xs text-ink-muted font-sans">
-                        No scribes ranked yet. Sign in, write words, and publish manuscripts to lead the rankings.
+                        No scribes ranked yet. Sign in, write words, and publish books to lead the rankings.
                       </td>
                     </tr>
                   ) : (

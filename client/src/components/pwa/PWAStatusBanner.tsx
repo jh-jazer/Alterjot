@@ -17,7 +17,7 @@ export const PWAStatusBanner: React.FC = () => {
           <div className="flex-1 min-w-0">
             <p className="text-xs font-semibold tracking-wide uppercase text-amber-400">Offline Studio</p>
             <p className="text-xs text-stone-300 dark:text-stone-400 leading-tight truncate sm:whitespace-normal">
-              Writing offline. Your manuscript autosaves safely locally.
+              Writing offline. Your book autosaves safely locally.
             </p>
           </div>
         </div>

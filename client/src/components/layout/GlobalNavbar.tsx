@@ -176,7 +176,7 @@ export const GlobalNavbar: React.FC = () => {
                 type="text"
                 value={librarySearchQuery}
                 onChange={(e) => setLibrarySearchQuery(e.target.value)}
-                placeholder="Search manuscripts by title, genre..."
+                placeholder="Search books by title, genre..."
                 className="w-full pl-9 pr-8 py-1.5 rounded-xl bg-canvas-card border border-canvas-border text-xs font-sans text-ink placeholder:text-ink-faint focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 shadow-xs transition-all"
               />
               {librarySearchQuery && (
@@ -339,7 +339,7 @@ export const GlobalNavbar: React.FC = () => {
                         Open Library
                       </div>
                       <div className="text-[11px] text-ink-muted leading-tight mt-0.5 font-sans">
-                        Browse your manuscript shelf
+                        Browse your book shelf
                       </div>
                     </div>
                   </button>

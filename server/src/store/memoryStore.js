@@ -75,7 +75,7 @@ class MemoryStore {
   createNovel(data) {
     const novel = {
       _id: 'novel_' + Date.now(),
-      title: data.title || 'Untitled Manuscript',
+      title: data.title || 'Untitled Book',
       userId: data.userId || '',
       subtitle: data.subtitle || '',
       author: data.author || '',

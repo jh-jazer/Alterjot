@@ -229,7 +229,7 @@ export const ChallengeDetailView: React.FC = () => {
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-serif font-bold text-sm shadow-lg shadow-brand-600/40 transition-all hover:scale-105 active:scale-95 cursor-pointer disabled:opacity-60"
                 >
                   <Feather className="w-4 h-4" />
-                  <span>{isAccepting ? 'Seeding Manuscript...' : 'Accept Challenge & Begin Writing'}</span>
+                  <span>{isAccepting ? 'Seeding Book...' : 'Accept Challenge & Begin Writing'}</span>
                 </button>
 
                 <button

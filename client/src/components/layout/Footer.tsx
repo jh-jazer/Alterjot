@@ -89,7 +89,7 @@ export const Footer: React.FC = () => {
             onClick={openLibrary}
             className="text-left hover:text-amber-400 transition-colors py-0.5 truncate cursor-pointer"
           >
-            Manuscript Shelf
+            Book Shelf
           </button>
         </div>
 
@@ -118,7 +118,7 @@ export const Footer: React.FC = () => {
               </div>
 
               <p className="text-xs sm:text-sm text-stone-400 font-serif leading-relaxed max-w-md">
-                A distraction-free manuscript workshop and digital atelier crafted for fiction writers, novelists, and scribes dedicated to persistent drafting momentum.
+                A distraction-free book workshop and digital atelier crafted for fiction writers, novelists, and scribes dedicated to persistent drafting momentum.
               </p>
 
               <div className="flex items-center gap-3 pt-1 flex-wrap text-[11px] font-mono text-stone-400">

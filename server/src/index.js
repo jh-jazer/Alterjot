@@ -49,7 +49,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
-    product: 'Alterjot Manuscript Studio',
+    product: 'Alterjot Book Studio',
     database: isConnectedToAtlas() ? 'MongoDB Atlas' : 'Hybrid Local Memory Store',
     isAtlas: isConnectedToAtlas(),
     timestamp: new Date().toISOString(),

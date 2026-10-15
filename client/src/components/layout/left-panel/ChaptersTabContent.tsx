@@ -42,7 +42,7 @@ export const ChaptersTabContent: React.FC = () => {
 
   const handleSaveNovelTitle = () => {
     if (!activeNovel) return;
-    const finalTitle = tempNovelTitle.trim() || 'Untitled Manuscript';
+    const finalTitle = tempNovelTitle.trim() || 'Untitled Book';
     updateNovel(activeNovel._id, { title: finalTitle });
     setIsEditingNovelTitle(false);
   };
@@ -85,7 +85,7 @@ export const ChaptersTabContent: React.FC = () => {
           <div className="flex items-center gap-1.5 text-brand-700 dark:text-amber-400">
             <Book className="w-3.5 h-3.5" />
             <span className="text-[10px] font-mono uppercase tracking-wider text-ink-faint font-semibold">
-              {activeNovel?.genre || 'Manuscript'}
+              {activeNovel?.genre || 'Book'}
             </span>
           </div>
           <span className="text-[10px] font-mono text-ink-muted">
@@ -114,9 +114,9 @@ export const ChaptersTabContent: React.FC = () => {
               setIsEditingNovelTitle(true);
             }}
             className="font-serif font-bold text-ink text-sm truncate cursor-pointer hover:text-brand-700 dark:hover:text-amber-400 transition-colors flex items-center justify-between group/title"
-            title="Click to rename manuscript"
+            title="Click to rename book"
           >
-            <span className="truncate">{activeNovel?.title || 'Untitled Manuscript'}</span>
+            <span className="truncate">{activeNovel?.title || 'Untitled Book'}</span>
             <Edit3 className="w-3 h-3 text-ink-faint opacity-40 group-hover/title:opacity-100 transition-opacity flex-shrink-0 ml-1.5" />
           </h2>
         )}

@@ -120,7 +120,7 @@ export const Top10Leaderboard: React.FC<Top10LeaderboardProps> = ({
     const userEntry = {
       rank: 4,
       author: penName,
-      title: novels[0]?.title || 'Untitled Manuscript',
+      title: novels[0]?.title || 'Untitled Book',
       genre: novels[0]?.genre || 'General Fiction',
       words: totalWords,
       streak: 7,
@@ -188,7 +188,7 @@ export const Top10Leaderboard: React.FC<Top10LeaderboardProps> = ({
               The Scribe Podium Awaits Its First Champion
             </h3>
             <p className="text-xs text-stone-600 dark:text-stone-400 font-sans leading-relaxed">
-              Pen manuscripts and log daily word counts to claim the top podium ranks.
+              Write books and log daily word counts to claim the top podium ranks.
             </p>
           </div>
         ) : (

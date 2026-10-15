@@ -46,7 +46,7 @@ export const Sidebar: React.FC = () => {
 
   const handleSaveNovelTitle = () => {
     if (!activeNovel) return;
-    const finalTitle = tempNovelTitle.trim() || 'Untitled Manuscript';
+    const finalTitle = tempNovelTitle.trim() || 'Untitled Book';
     updateNovel(activeNovel._id, { title: finalTitle });
     setIsEditingNovelTitle(false);
   };
@@ -83,7 +83,7 @@ export const Sidebar: React.FC = () => {
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-xs z-30 md:hidden animate-fadeIn"
         onClick={toggleSidebar}
-        title="Close Manuscript Tree"
+        title="Close Book Tree"
       />
 
       <aside className="fixed md:relative inset-y-0 left-0 z-40 w-4/5 max-w-xs md:max-w-none md:w-80 border-r border-canvas-border bg-canvas flex flex-col h-full shadow-2xl md:shadow-md select-none animate-in slide-in-from-left duration-200">
@@ -93,7 +93,7 @@ export const Sidebar: React.FC = () => {
             <div className="flex items-center gap-2 text-brand-700">
               <Book className="w-4 h-4" />
               <span className="text-[11px] font-mono uppercase tracking-wider text-ink-faint font-semibold">
-                {activeNovel?.genre || 'Manuscript'}
+                {activeNovel?.genre || 'Book'}
               </span>
             </div>
             <button
@@ -126,9 +126,9 @@ export const Sidebar: React.FC = () => {
                 setIsEditingNovelTitle(true);
               }}
               className="font-serif font-bold text-ink text-base truncate cursor-pointer hover:text-brand-700 dark:hover:text-amber-400 transition-colors flex items-center justify-between group/title"
-              title="Click to rename manuscript"
+              title="Click to rename book"
             >
-              <span className="truncate">{activeNovel?.title || 'Untitled Manuscript'}</span>
+              <span className="truncate">{activeNovel?.title || 'Untitled Book'}</span>
               <Edit3 className="w-3 h-3 text-ink-faint opacity-40 group-hover/title:opacity-100 transition-opacity flex-shrink-0" />
             </h2>
           )}

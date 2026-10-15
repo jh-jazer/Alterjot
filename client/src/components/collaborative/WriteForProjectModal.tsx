@@ -492,7 +492,7 @@ export const WriteForProjectModal: React.FC = () => {
                   <div className="pt-2 border-t border-canvas-border space-y-3">
                     <div>
                       <label className="block text-[11px] font-mono uppercase tracking-wider text-ink-faint font-semibold mb-1.5">
-                        Your Manuscript Title (Optional)
+                        Your Book Title (Optional)
                       </label>
                       <input
                         type="text"
@@ -510,7 +510,7 @@ export const WriteForProjectModal: React.FC = () => {
                       className="w-full py-3 px-6 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-serif font-bold text-sm shadow-md shadow-brand-600/30 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer flex items-center justify-center gap-2 group disabled:opacity-60"
                     >
                       <Feather className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-                      <span>{isStarting ? 'Initializing Manuscript...' : `Write for ${selectedProject.name.split(':')[0]}`}</span>
+                      <span>{isStarting ? 'Initializing Book...' : `Write for ${selectedProject.name.split(':')[0]}`}</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                   </div>

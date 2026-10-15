@@ -194,7 +194,7 @@ export const LibraryView: React.FC = () => {
             Author Authentication Required
           </h2>
           <p className="text-xs sm:text-sm text-ink-muted leading-relaxed font-sans">
-            Sign in to access your manuscript repository, invited reading copies, and collaborative story projects.
+            Sign in to access your book repository, invited reading copies, and collaborative story projects.
           </p>
           <button
             type="button"
@@ -265,7 +265,7 @@ export const LibraryView: React.FC = () => {
                   </h2>
                 </div>
                 <span className="text-xs font-mono text-ink-muted hidden sm:inline">
-                  Your private manuscripts
+                  Your private books
                 </span>
               </div>
             </div>
@@ -276,11 +276,11 @@ export const LibraryView: React.FC = () => {
                   <Book className="w-6 h-6" />
                 </div>
                 <h3 className="text-base font-serif font-bold text-ink mb-1">
-                  {librarySearchQuery ? 'No Matching Works' : 'No Manuscripts Yet'}
+                  {librarySearchQuery ? 'No Matching Works' : 'No Books Yet'}
                 </h3>
                 <p className="text-xs text-ink-muted max-w-sm mb-4 font-sans">
                   {librarySearchQuery
-                    ? `No manuscripts found matching "${librarySearchQuery}".`
+                    ? `No books found matching "${librarySearchQuery}".`
                     : 'Create your first volume to begin drafting in Alterjot.'}
                 </p>
                 <button
@@ -288,7 +288,7 @@ export const LibraryView: React.FC = () => {
                   onClick={() => setIsNewNovelModalOpen(true)}
                   className="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-serif font-semibold text-xs shadow-sm cursor-pointer"
                 >
-                  Create First Manuscript
+                  Create First Book
                 </button>
               </div>
             ) : (
@@ -385,7 +385,7 @@ export const LibraryView: React.FC = () => {
             {totalInvitedCount === 0 ? (
               <div className="py-12 px-4 rounded-xl bg-canvas-card border border-canvas-border text-center">
                 <p className="text-xs text-ink-muted font-sans">
-                  No manuscripts found in your invited reading list.
+                  No books found in your invited reading list.
                 </p>
               </div>
             ) : (

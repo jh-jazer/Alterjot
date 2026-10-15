@@ -116,7 +116,7 @@ export const ExportModal: React.FC = () => {
         <div className="flex-1 min-h-[220px] sm:min-h-[300px] overflow-hidden rounded-xl border border-canvas-border bg-canvas-subtle/70 p-3 sm:p-4 font-typewriter text-xs text-ink shadow-inner">
           {isLoading ? (
             <div className="h-full flex items-center justify-center text-ink-faint">
-              <span>Compiling manuscript bundle...</span>
+              <span>Compiling book bundle...</span>
             </div>
           ) : (
             <textarea

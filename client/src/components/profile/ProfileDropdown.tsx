@@ -61,7 +61,7 @@ const DEFAULT_NOTIFICATIONS: NotificationItem[] = [
   },
   {
     id: 'notif-3',
-    title: 'Manuscript Milestone',
+    title: 'Book Milestone',
     message: 'Great progress on your active scenes! Keep up the creative momentum.',
     time: '1d ago',
     read: true,
@@ -70,7 +70,7 @@ const DEFAULT_NOTIFICATIONS: NotificationItem[] = [
   {
     id: 'notif-4',
     title: 'Reader Reaction on Shelf',
-    message: 'Another author explored your shared manuscript on the public shelf.',
+    message: 'Another author explored your shared book on the public shelf.',
     time: '2d ago',
     read: true,
     type: 'shelf',
@@ -542,7 +542,7 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
               </button>
             </form>
             <p className="text-[10px] text-ink-muted font-sans leading-tight">
-              Your pen name is visible on published manuscripts, leaderboard rankings, and the community shelf.
+              Your pen name is visible on published books, leaderboard rankings, and the community shelf.
             </p>
           </div>
 

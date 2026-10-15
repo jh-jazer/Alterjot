@@ -1180,9 +1180,9 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
 
   startWritingImmediately: async () => {
     if (!get().requireAuth()) return;
-    // Always start a fresh untitled manuscript ready for immediate drafting
+    // Always start a fresh untitled book ready for immediate drafting
     await get().createNovel({
-      title: 'Untitled Manuscript',
+      title: 'Untitled Book',
       subtitle: '',
       author: get().penName,
       genre: 'General Fiction',
@@ -1264,7 +1264,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     try {
       const payload: Partial<Novel> = {
         ...data,
-        title: data.title?.trim() || 'Untitled Manuscript',
+        title: data.title?.trim() || 'Untitled Book',
         author: data.author?.trim() || get().penName,
         genre: data.genre || 'General Fiction',
         status: data.status || 'In Progress',

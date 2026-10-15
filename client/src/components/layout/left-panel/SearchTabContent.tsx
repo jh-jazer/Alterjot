@@ -272,7 +272,7 @@ export const SearchTabContent: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search manuscript..."
+            placeholder="Search book..."
             className="w-full pl-8 pr-16 py-1.5 text-xs font-mono rounded-lg bg-canvas-card border border-canvas-border text-ink placeholder:text-ink-faint focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500/30 transition-all shadow-xs"
           />
 
@@ -350,7 +350,7 @@ export const SearchTabContent: React.FC = () => {
                 ? 'opacity-40 cursor-not-allowed bg-canvas-subtle text-ink-muted border border-canvas-border'
                 : 'bg-brand-600 hover:bg-brand-700 text-white dark:bg-amber-500 dark:hover:bg-amber-600 dark:text-zinc-950 hover:shadow active:scale-98'
             }`}
-            title="Replace all occurrences across entire manuscript"
+            title="Replace all occurrences across entire book"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Replace All in Story</span>
@@ -386,7 +386,7 @@ export const SearchTabContent: React.FC = () => {
             </div>
             <div>
               <h4 className="font-serif font-bold text-xs sm:text-sm text-ink mb-1">
-                Manuscript Global Search
+                Book Global Search
               </h4>
               <p className="text-xs text-ink-muted font-sans max-w-[220px] leading-relaxed">
                 Find character names, lore, dialogue, or terms and replace them across all chapters.

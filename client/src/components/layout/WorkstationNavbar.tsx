@@ -38,7 +38,7 @@ export const WorkstationNavbar: React.FC = () => {
 
   const handleSaveTitle = () => {
     if (!activeNovel || isReaderMode) return;
-    const newTitle = tempTitle.trim() || 'Untitled Manuscript';
+    const newTitle = tempTitle.trim() || 'Untitled Book';
     updateNovel(activeNovel._id, { title: newTitle });
     setIsEditingTitle(false);
   };
@@ -49,9 +49,9 @@ export const WorkstationNavbar: React.FC = () => {
   return (
     <header className="w-full border-b border-canvas-border bg-canvas sticky top-0 z-30 select-none">
       <div className="w-full px-2 sm:px-4 lg:px-6 h-14 flex items-center justify-between gap-1.5 sm:gap-3">
-        {/* Left Section: Library Exit & Manuscript Title */}
+        {/* Left Section: Library Exit & Book Title */}
         <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1">
-          {/* Exit / Return to Manuscript Shelf */}
+          {/* Exit / Return to Book Shelf */}
           <button
             type="button"
             onClick={() => {
@@ -59,20 +59,20 @@ export const WorkstationNavbar: React.FC = () => {
               navigate('/library');
             }}
             className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl border border-canvas-border bg-canvas-card hover:bg-canvas-hover text-ink-muted hover:text-ink flex items-center justify-center transition-all shadow-xs group cursor-pointer flex-shrink-0"
-            title="Return to Manuscript Shelf"
-            aria-label="Return to Manuscript Shelf"
+            title="Return to Book Shelf"
+            aria-label="Return to Book Shelf"
           >
             <Library className="w-4 h-4 text-ink-muted group-hover:text-brand-600 dark:group-hover:text-amber-400 group-hover:scale-110 transition-transform" />
           </button>
 
           <div className="h-4 w-px bg-canvas-border mx-0.5 sm:mx-1 flex-shrink-0" />
 
-          {/* Manuscript Title Breadcrumbs */}
+          {/* Book Title Breadcrumbs */}
           <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
             {isReaderMode ? (
               <div className="flex items-center gap-2 min-w-0">
                 <span className="font-serif font-semibold text-xs sm:text-sm text-ink truncate max-w-[180px] xs:max-w-[280px] sm:max-w-[420px]">
-                  {activeNovel?.title || 'Untitled Manuscript'}
+                  {activeNovel?.title || 'Untitled Book'}
                 </span>
                 <span
                   title={activeReaderName ? `Reviewing as @${activeReaderName}` : 'Invited Reader Review Access'}
@@ -108,9 +108,9 @@ export const WorkstationNavbar: React.FC = () => {
                 type="button"
                 onClick={handleStartEditTitle}
                 className="font-serif font-semibold text-xs sm:text-sm text-ink hover:text-brand-700 truncate max-w-[180px] xs:max-w-[280px] sm:max-w-[420px] md:max-w-[560px] lg:max-w-[720px] flex items-center gap-1.5 group/title text-left transition-colors cursor-pointer"
-                title="Click to rename manuscript"
+                title="Click to rename book"
               >
-                <span className="truncate">{activeNovel?.title || 'Untitled Manuscript'}</span>
+                <span className="truncate">{activeNovel?.title || 'Untitled Book'}</span>
                 <Edit3 className="w-2.5 h-2.5 text-ink-faint opacity-40 group-hover/title:opacity-100 transition-opacity flex-shrink-0 hidden xs:inline" />
               </button>
             )}
