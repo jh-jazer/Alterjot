@@ -22,7 +22,7 @@ export const GlobalNavbar: React.FC = () => {
   const openDashboard = useWorkspaceStore((s) => s.openDashboard);
   const openLibrary = useWorkspaceStore((s) => s.openLibrary);
   const openPlay = useWorkspaceStore((s) => s.openPlay);
-  const openRanking = useWorkspaceStore((s) => s.openRanking);
+  const openExplore = useWorkspaceStore((s) => s.openExplore);
 
   const theme = useWorkspaceStore((s) => s.theme);
   const toggleTheme = useWorkspaceStore((s) => s.toggleTheme);
@@ -132,17 +132,17 @@ export const GlobalNavbar: React.FC = () => {
             <button
               type="button"
               onClick={() => {
-                openRanking();
-                navigate('/ranking');
+                openExplore();
+                navigate('/explore');
               }}
               className={`py-1.5 px-2 uppercase tracking-wider relative transition-colors ${
-                currentView === 'ranking'
+                currentView === 'explore'
                   ? 'text-ink font-bold'
                   : 'text-ink-muted hover:text-ink'
               }`}
             >
-              RANKING
-              {currentView === 'ranking' && (
+              EXPLORE
+              {currentView === 'explore' && (
                 <span className="absolute bottom-0 left-1 right-1 h-[2px] bg-brand-500/70 dark:bg-brand-400/80 rounded-full" />
               )}
             </button>

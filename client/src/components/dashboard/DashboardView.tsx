@@ -115,7 +115,7 @@ export const DashboardView: React.FC = () => {
                 navigate(`/shared/${found.id}`);
               } else {
                 openRanking();
-                navigate('/ranking');
+                navigate('/play#rankings');
               }
             }}
           />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import {
   Timer,
@@ -14,9 +14,12 @@ import vampireSiegeBanner from '../../assets/vampire_siege_banner.jpg';
 import elevatorDeliveryBanner from '../../assets/elevator_delivery_banner.jpg';
 import writingSprintBanner from '../../assets/writing_sprint_banner.jpg';
 import storySparkBanner from '../../assets/story_spark_banner.jpg';
+import { RankingSection } from '../ranking/RankingSection';
+import { Footer } from '../layout/Footer';
 
 export const PlayView: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
   const setIsAuthModalOpen = useWorkspaceStore((s) => s.setIsAuthModalOpen);
   const startWritingImmediately = useWorkspaceStore((s) => s.startWritingImmediately);
@@ -47,6 +50,17 @@ export const PlayView: React.FC = () => {
       : preferredTheme === 'steampunk'
       ? 'steampunk-triad'
       : 'apocalyptic-triad';
+
+  // Smooth scroll to rankings section when loaded with #rankings
+  useEffect(() => {
+    if (location.hash === '#rankings') {
+      const timer = setTimeout(() => {
+        const el = document.getElementById('rankings');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [location.hash]);
 
   // --- SPRINT TIMER STATE ---
   const [sprintMinutes, setSprintMinutes] = useState(15);
@@ -651,7 +665,17 @@ export const PlayView: React.FC = () => {
           </div>
         </div>
 
+        {/* ========================================================
+            5. ATELIER SCRIBES RANKINGS (AT BOTTOM OF PLAY)
+        ======================================================== */}
+        <div className="border-t border-canvas-border/80 pt-8 sm:pt-10">
+          <RankingSection />
+        </div>
+
       </div>
+
+      {/* Website Footer at bottom of Play */}
+      <Footer />
     </div>
   );
 };

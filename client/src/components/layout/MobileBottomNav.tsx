@@ -4,7 +4,7 @@ import { useWorkspaceStore, type LeftPanelTab } from '../../store/useWorkspaceSt
 import {
   Home,
   Dices,
-  Trophy,
+  Compass,
   BookOpen,
   Search,
   Files,
@@ -29,7 +29,7 @@ export const MobileBottomNav: React.FC = () => {
 
   const openDashboard = useWorkspaceStore((s) => s.openDashboard);
   const openPlay = useWorkspaceStore((s) => s.openPlay);
-  const openRanking = useWorkspaceStore((s) => s.openRanking);
+  const openExplore = useWorkspaceStore((s) => s.openExplore);
   const openLibrary = useWorkspaceStore((s) => s.openLibrary);
 
   const isStudioRoute =
@@ -160,13 +160,13 @@ export const MobileBottomNav: React.FC = () => {
       },
     },
     {
-      id: 'ranking',
-      label: 'Rank',
-      icon: Trophy,
-      active: currentView === 'ranking',
+      id: 'explore',
+      label: 'Explore',
+      icon: Compass,
+      active: currentView === 'explore' || location.pathname.startsWith('/explore'),
       onClick: () => {
-        openRanking();
-        navigate('/ranking');
+        openExplore();
+        navigate('/explore');
       },
     },
     {

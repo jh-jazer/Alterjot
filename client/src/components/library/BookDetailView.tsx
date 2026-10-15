@@ -24,6 +24,7 @@ import {
   ShieldCheck,
   Users,
   CheckCircle,
+  Globe,
 } from 'lucide-react';
 
 export const BookDetailView: React.FC = () => {
@@ -35,6 +36,7 @@ export const BookDetailView: React.FC = () => {
   const selectNovel = useWorkspaceStore((s) => s.selectNovel);
   const openStudio = useWorkspaceStore((s) => s.openStudio);
   const deleteNovel = useWorkspaceStore((s) => s.deleteNovel);
+  const togglePublishNovel = useWorkspaceStore((s) => s.togglePublishNovel);
   const setIsExportOpen = useWorkspaceStore((s) => s.setIsExportOpen);
   const setIsDashboardOpen = useWorkspaceStore((s) => s.setIsDashboardOpen);
   const openLibrary = useWorkspaceStore((s) => s.openLibrary);
@@ -52,10 +54,21 @@ export const BookDetailView: React.FC = () => {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isOpeningStudio, setIsOpeningStudio] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   // Identify target novel
   const targetId = id || activeNovelId;
   const novel = novels.find((n) => n._id === targetId);
+
+  const handleTogglePublish = async () => {
+    if (!novel || isPublishing) return;
+    setIsPublishing(true);
+    try {
+      await togglePublishNovel(novel._id);
+    } finally {
+      setIsPublishing(false);
+    }
+  };
 
   // Check if viewing in view-only reader mode
   const roleParam = searchParams.get('role');
@@ -197,6 +210,20 @@ export const BookDetailView: React.FC = () => {
             <div className="flex items-center gap-2">
               <button
                 type="button"
+                onClick={handleTogglePublish}
+                disabled={isPublishing}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-mono font-medium shadow-2xs transition-all cursor-pointer ${
+                  novel.isPublished
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20'
+                    : 'bg-canvas-card hover:bg-canvas-hover border-canvas-border text-ink'
+                }`}
+                title={novel.isPublished ? 'Unpublish from Explore' : 'Publish to Explore shelf'}
+              >
+                <Globe className={`w-3.5 h-3.5 ${novel.isPublished ? 'text-emerald-600 dark:text-emerald-400' : 'text-ink-muted'}`} />
+                <span>{novel.isPublished ? 'Published' : 'Publish Book'}</span>
+              </button>
+              <button
+                type="button"
                 onClick={() => setIsInviteModalOpen(true)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-canvas-card hover:bg-canvas-hover border border-canvas-border text-ink font-mono font-medium text-xs shadow-2xs transition-all cursor-pointer"
                 title="Invite a reader to review this book"
@@ -327,6 +354,12 @@ export const BookDetailView: React.FC = () => {
                   <span className="text-[10px] font-mono uppercase tracking-widest font-bold px-2.5 py-1 rounded-full bg-canvas-surface text-ink-muted border border-canvas-border">
                     {novel.status || 'Draft'}
                   </span>
+                  {novel.isPublished && (
+                    <span className="text-[10px] font-mono uppercase tracking-widest font-bold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5 shadow-2xs">
+                      <Globe className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                      <span>Published to Explore</span>
+                    </span>
+                  )}
                 </div>
 
                 {/* Title & Subtitle */}

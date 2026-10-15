@@ -35,6 +35,10 @@ export const api = {
     const res = await authFetch(`${API_BASE}/novels`);
     return handleResponse<Novel[]>(res);
   },
+  getPublishedNovels: async (): Promise<Novel[]> => {
+    const res = await authFetch(`${API_BASE}/novels?published=true`);
+    return handleResponse<Novel[]>(res);
+  },
   getNovel: async (id: string): Promise<Novel> => {
     const res = await authFetch(`${API_BASE}/novels/${id}`);
     return handleResponse<Novel>(res);

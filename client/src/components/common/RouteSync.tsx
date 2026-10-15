@@ -70,8 +70,10 @@ export const RouteSync: React.FC = () => {
     // Match static views
     if (pathname === '/play') {
       if (currentView !== 'play') setCurrentView('play');
+    } else if (pathname === '/explore') {
+      if (currentView !== 'explore') setCurrentView('explore');
     } else if (pathname === '/ranking') {
-      if (currentView !== 'ranking') setCurrentView('ranking');
+      if (currentView !== 'play') setCurrentView('play');
     } else if (pathname === '/library' || pathname === '/works') {
       if (currentView !== 'library') setCurrentView('library');
     } else if (pathname === '/' || pathname === '/home' || pathname === '/dashboard' || pathname.startsWith('/shared/')) {

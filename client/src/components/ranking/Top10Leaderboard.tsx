@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWorkspaceStore } from '../../store/useWorkspaceStore';
 import { TOP_10_AUTHORS } from '../../data/communityData';
 import {
@@ -8,6 +9,7 @@ import {
 
 interface Top10LeaderboardProps {
   onSelectAuthorWork?: (workTitle: string) => void;
+  showRankingsLink?: boolean;
 }
 
 // Stylized Author Avatar component matching ink sketch portrait aesthetic
@@ -90,7 +92,9 @@ const AuthorAvatar: React.FC<{
 
 export const Top10Leaderboard: React.FC<Top10LeaderboardProps> = ({
   onSelectAuthorWork,
+  showRankingsLink = true,
 }) => {
+  const navigate = useNavigate();
   const isAuthenticated = useWorkspaceStore((s) => s.isAuthenticated);
   const penName = useWorkspaceStore((s) => s.penName);
   const currentUser = useWorkspaceStore((s) => s.currentUser);
@@ -382,14 +386,23 @@ export const Top10Leaderboard: React.FC<Top10LeaderboardProps> = ({
               </span>
             </div>
 
-            <button
-              type="button"
-              onClick={openRanking}
-              className="text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-bold flex items-center gap-1 group cursor-pointer self-start sm:self-auto"
-            >
-              <span>See entire leaderboard rankings</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-            </button>
+            {showRankingsLink && (
+              <button
+                type="button"
+                onClick={() => {
+                  openRanking();
+                  navigate('/play');
+                  setTimeout(() => {
+                    const el = document.getElementById('rankings');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }, 120);
+                }}
+                className="text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-bold flex items-center gap-1 group cursor-pointer self-start sm:self-auto"
+              >
+                <span>See entire leaderboard rankings</span>
+                <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            )}
           </div>
         </div>
       )}

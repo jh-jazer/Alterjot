@@ -7,15 +7,23 @@ import { memoryStore } from '../store/memoryStore.js';
 export async function getNovels(req, res) {
   try {
     const userId = req.headers['x-user-id'] || req.query.userId || '';
+    const onlyPublished = req.query.published === 'true';
+
     if (isConnectedToAtlas()) {
-      // If a userId is passed, isolate novels to this author and legacy unassigned starter novels
-      const query = userId
-        ? { $or: [{ userId }, { userId: '' }, { userId: { $exists: false } }] }
-        : {};
-      const novels = await Novel.find(query).sort({ updatedAt: -1 });
+      let query = {};
+      if (onlyPublished) {
+        query.isPublished = true;
+      } else if (userId) {
+        query = { $or: [{ userId }, { userId: '' }, { userId: { $exists: false } }] };
+      }
+      const novels = await Novel.find(query).sort({ publishedAt: -1, updatedAt: -1 });
       return res.json({ success: true, data: novels });
     }
-    const novels = memoryStore.getNovels(userId);
+
+    let novels = memoryStore.getNovels(onlyPublished ? null : userId);
+    if (onlyPublished) {
+      novels = novels.filter((n) => n.isPublished);
+    }
     return res.json({ success: true, data: novels });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });

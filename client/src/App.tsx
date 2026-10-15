@@ -8,7 +8,7 @@ import { LeftPanel } from './components/layout/LeftPanel';
 import { LibraryView } from './components/library/LibraryView';
 import { DashboardView } from './components/dashboard/DashboardView';
 import { PlayView } from './components/play/PlayView';
-import { RankingView } from './components/ranking/RankingView';
+import { ExploreView } from './components/explore/ExploreView';
 import { ChallengeDetailView } from './components/challenge/ChallengeDetailView';
 import { BookDetailView } from './components/library/BookDetailView';
 import { ProjectDashboardModal } from './components/dashboard/ProjectDashboardModal';
@@ -63,7 +63,8 @@ export const App: React.FC = () => {
         <Route path="/home" element={<DashboardView />} />
         <Route path="/dashboard" element={<DashboardView />} />
         <Route path="/play" element={<PlayView />} />
-        <Route path="/ranking" element={<RankingView />} />
+        <Route path="/explore" element={<ExploreView />} />
+        <Route path="/ranking" element={<Navigate to="/play" replace />} />
         <Route path="/library" element={<LibraryView />} />
         <Route path="/works" element={<LibraryView />} />
         <Route path="/book/:id" element={<BookDetailView />} />

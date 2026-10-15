@@ -23,7 +23,7 @@ interface TypographySettings {
 }
 
 interface WorkspaceState {
-  currentView: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge' | 'book';
+  currentView: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge' | 'book' | 'explore';
   activeChallengeId: string | null;
   activeNovelId: string | null;
   activeChapterId: string | null;
@@ -59,11 +59,12 @@ interface WorkspaceState {
   librarySearchQuery: string;
   setLibrarySearchQuery: (query: string) => void;
 
-  setCurrentView: (view: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge' | 'book') => void;
+  setCurrentView: (view: 'dashboard' | 'landing' | 'library' | 'studio' | 'play' | 'ranking' | 'challenge' | 'book' | 'explore') => void;
   openDashboard: () => void;
   openLanding: () => void;
   openLibrary: () => void;
   openPlay: () => void;
+  openExplore: () => void;
   openRanking: () => void;
   openStudio: (novelId?: string) => Promise<void>;
   openBook: (novelId?: string) => Promise<void>;
@@ -118,6 +119,9 @@ interface WorkspaceState {
   createNovel: (data: Partial<Novel>) => Promise<Novel | null>;
   updateNovel: (novelId: string, data: Partial<Novel>) => Promise<void>;
   deleteNovel: (novelId: string) => Promise<void>;
+  publishedNovels: Novel[];
+  loadPublishedNovels: () => Promise<void>;
+  togglePublishNovel: (novelId: string) => Promise<boolean>;
   updateSceneTitle: (sceneId: string, title: string) => Promise<void>;
   updateChapterTitle: (chapterId: string, title: string) => Promise<void>;
 
@@ -196,8 +200,18 @@ const removeStorageItem = (key: string): void => {
   } catch {}
 };
 
-// Read initial theme preference: default to 'dark' for bunker atmosphere or existing stored
-const initialTheme = (typeof window !== 'undefined' && (getStorageItem('theme') as 'light' | 'dark')) || 'dark';
+// Read initial theme preference: default to 'light' (Light Retro - warm antique parchment)
+const initialTheme: 'light' | 'dark' = (() => {
+  if (typeof window === 'undefined') return 'light';
+  const hasUserSelected = getStorageItem('theme_user_selected') === 'true';
+  if (!hasUserSelected) {
+    removeStorageItem('theme');
+    return 'light';
+  }
+  const stored = getStorageItem('theme');
+  return stored === 'dark' ? 'dark' : 'light';
+})();
+
 if (typeof document !== 'undefined') {
   if (initialTheme === 'dark') {
     document.documentElement.classList.add('dark');
@@ -267,6 +281,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
   preferredTheme: ((typeof window !== 'undefined' && getStorageItem('preferred_theme')) as NarrativeTheme) || 'apocalyptic',
 
   novels: [],
+  publishedNovels: [],
   chapters: [],
   scenes: [],
   codexEntries: [],
@@ -321,6 +336,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       }
       try {
         setStorageItem('theme', theme);
+        setStorageItem('theme_user_selected', 'true');
       } catch {
         // ignore
       }
@@ -412,8 +428,11 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       set({ currentView: 'play', activeChallengeId: null });
     }
   },
+  openExplore: () => {
+    set({ currentView: 'explore', activeChallengeId: null });
+  },
   openRanking: () => {
-    set({ currentView: 'ranking', activeChallengeId: null });
+    set({ currentView: 'play', activeChallengeId: null });
   },
   openChallenge: (challengeId: string) => {
     set({ currentView: 'challenge', activeChallengeId: challengeId });
@@ -1340,6 +1359,45 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     }
   },
 
+  loadPublishedNovels: async () => {
+    try {
+      const serverNovels = await api.getPublishedNovels().catch(() => []);
+      const localPublished = get().novels.filter((n) => n.isPublished);
+      const map = new Map<string, Novel>();
+      [...serverNovels, ...localPublished].forEach((n) => {
+        if (n && n._id && n.isPublished) {
+          map.set(n._id, n);
+        }
+      });
+      set({ publishedNovels: Array.from(map.values()) });
+    } catch (err) {
+      console.warn('Failed to load published novels:', err);
+      const localPublished = get().novels.filter((n) => n.isPublished);
+      set({ publishedNovels: localPublished });
+    }
+  },
+
+  togglePublishNovel: async (novelId: string) => {
+    const novel = get().novels.find((n) => n._id === novelId);
+    if (!novel) return false;
+    const nextStatus = !novel.isPublished;
+    const updateData: Partial<Novel> = {
+      isPublished: nextStatus,
+      publishedAt: nextStatus ? (novel.publishedAt || new Date().toISOString()) : undefined,
+      views: novel.views || 0,
+      rating: novel.rating || 5.0,
+      ratingCount: novel.ratingCount || 0,
+    };
+    try {
+      await get().updateNovel(novelId, updateData);
+      await get().loadPublishedNovels();
+      return nextStatus;
+    } catch (err) {
+      console.error('Failed to toggle publish status:', err);
+      return false;
+    }
+  },
+
   updateSceneTitle: async (sceneId, title) => {
     const cleanTitle = title.trim() || 'Untitled Scene';
     set((state) => ({
@@ -1520,6 +1578,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
           await get().selectNovel(novels[0]._id);
         }
       }
+
+      await get().loadPublishedNovels();
     } catch (err) {
       console.error('Error loading initial workspace:', err);
       set({ serverConnected: false, saveStatus: 'cached-offline', currentView: 'library' });

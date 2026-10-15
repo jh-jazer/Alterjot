@@ -24,6 +24,11 @@ export interface Novel {
     lineHeight: 'compact' | 'normal' | 'relaxed';
   };
   invitedReaders?: InvitedReader[];
+  isPublished?: boolean;
+  publishedAt?: string;
+  views?: number;
+  rating?: number;
+  ratingCount?: number;
   createdAt: string;
   updatedAt: string;
 }

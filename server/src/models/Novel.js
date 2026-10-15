@@ -46,6 +46,27 @@ const NovelSchema = new mongoose.Schema(
       fontFamily: { type: String, default: 'serif' }, // 'serif' | 'sans' | 'mono'
       lineHeight: { type: String, default: 'normal' }, // 'compact' | 'normal' | 'relaxed'
     },
+    isPublished: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    publishedAt: {
+      type: Date,
+      default: null,
+    },
+    views: {
+      type: Number,
+      default: 0,
+    },
+    rating: {
+      type: Number,
+      default: 5.0,
+    },
+    ratingCount: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,
