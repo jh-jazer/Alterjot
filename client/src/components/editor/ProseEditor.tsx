@@ -122,7 +122,7 @@ export const ProseEditor: React.FC = () => {
     editorProps: {
       attributes: {
         class:
-          'prose prose-stone dark:prose-invert max-w-none focus:outline-none flex-1 min-h-[520px] px-4 py-4 sm:px-8 sm:py-6 md:px-16 md:py-8 select-text',
+          'prose prose-stone dark:prose-invert max-w-none focus:outline-none flex-1 min-h-[520px] px-4 pt-4 pb-20 sm:px-8 sm:pt-6 sm:pb-28 md:px-16 md:pt-8 md:pb-36 select-text',
       },
     },
     onUpdate: ({ editor }) => {
@@ -537,10 +537,10 @@ export const ProseEditor: React.FC = () => {
               editor?.commands.focus('end');
             }
           }}
-          className={`w-full min-h-full flex flex-col transition-all duration-300 ${
+          className={`w-full min-h-full shrink-0 flex flex-col transition-all duration-300 ${
             isZenMode
-              ? 'max-w-3xl my-2 sm:my-4 bg-canvas-card/90 rounded-md sm:rounded-lg border border-canvas-border/80 shadow-parchment-lg p-2 sm:p-4 md:p-6'
-              : 'max-w-4xl bg-canvas-card rounded-md sm:rounded-lg border border-canvas-border shadow-parchment'
+              ? 'max-w-3xl my-2 sm:my-4 mb-8 sm:mb-12 bg-canvas-card/90 rounded-md sm:rounded-lg border border-canvas-border/80 shadow-parchment-lg p-2 sm:p-4 md:p-6'
+              : 'max-w-4xl mb-8 sm:mb-12 bg-canvas-card rounded-md sm:rounded-lg border border-canvas-border shadow-parchment'
           }`}
         >
           {/* Chapter Title Header */}
@@ -565,7 +565,7 @@ export const ProseEditor: React.FC = () => {
           </div>
 
           {/* ProseMirror Canvas Container */}
-          <EditorContent editor={editor} className="flex-1 flex flex-col" />
+          <EditorContent editor={editor} className="flex-1 flex flex-col w-full" />
 
           {/* Turn the Page Chapter Navigation */}
           {chapters.length > 1 && (

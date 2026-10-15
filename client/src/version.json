@@ -1,11 +1,11 @@
 {
-  "version": "v1.0.52",
-  "commitHash": "f21769d",
-  "commitCount": 52,
+  "version": "v1.0.53",
+  "commitHash": "6ab254e",
+  "commitCount": 53,
   "branch": "main",
-  "commitMessage": "feat: eliminate local saving, enforce cloud database persistence for pen name, and disable guest accounts",
+  "commitMessage": "fix(auth): redirect to home page immediately upon sign out",
   "buildDate": "2026-10-15",
-  "buildTimestamp": "2026-10-15T14:56:26.321Z",
+  "buildTimestamp": "2026-10-15T15:06:48.272Z",
   "repoUrl": "https://github.com/jh-jazer/Alterjot",
-  "commitUrl": "https://github.com/jh-jazer/Alterjot/commit/f21769d"
+  "commitUrl": "https://github.com/jh-jazer/Alterjot/commit/6ab254e"
 }
