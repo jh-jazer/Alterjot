@@ -15,11 +15,13 @@ import {
   X,
   ChevronRight,
   SlidersHorizontal,
+  Files,
 } from 'lucide-react';
 
 export const WorkstationNavbar: React.FC = () => {
   const openLibrary = useWorkspaceStore((s) => s.openLibrary);
   const panelState = useWorkspaceStore((s) => s.panelState);
+  const toggleSidebar = useWorkspaceStore((s) => s.toggleSidebar);
   const toggleCodex = useWorkspaceStore((s) => s.toggleCodex);
   const toggleAiAssistant = useWorkspaceStore((s) => s.toggleAiAssistant);
   const toggleZenMode = useWorkspaceStore((s) => s.toggleZenMode);
@@ -244,6 +246,33 @@ export const WorkstationNavbar: React.FC = () => {
                       <ChevronRight className="w-3.5 h-3.5 text-ink-faint" />
                     </button>
 
+                    {/* Chapters Tree */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        toggleSidebar();
+                      }}
+                      className="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs font-mono text-ink hover:bg-canvas-hover transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-7 h-7 rounded-lg bg-brand-500/10 text-brand-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
+                          <Files className="w-3.5 h-3.5" />
+                        </div>
+                        <div className="text-left min-w-0">
+                          <span className="block font-medium truncate">Chapters</span>
+                          <span className="text-[10px] text-ink-muted truncate">Manuscript scenes & chapters</span>
+                        </div>
+                      </div>
+                      {panelState.isSidebarOpen ? (
+                        <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-brand-500/15 text-brand-700 dark:text-amber-300 font-semibold">
+                          Active
+                        </span>
+                      ) : (
+                        <ChevronRight className="w-3.5 h-3.5 text-ink-faint" />
+                      )}
+                    </button>
+
                     {/* World Codex Lore */}
                     <button
                       type="button"
@@ -393,6 +422,22 @@ export const WorkstationNavbar: React.FC = () => {
               >
                 <FileDown className="w-3.5 h-3.5 text-amber-700" />
                 <span className="hidden sm:inline">Export</span>
+              </button>
+
+              {/* Chapters Tree */}
+              <button
+                type="button"
+                onClick={toggleSidebar}
+                className={`flex items-center gap-1 p-1.5 sm:px-2 sm:py-1 rounded-lg text-xs font-mono transition-colors ${
+                  panelState.isSidebarOpen
+                    ? 'bg-brand-100 text-brand-900 border border-brand-300 dark:bg-amber-500/20 dark:text-amber-200 dark:border-amber-400/40'
+                    : 'text-ink-muted hover:text-ink hover:bg-canvas-hover'
+                }`}
+                title="Manuscript Chapters (Ctrl+Shift+S)"
+                aria-label="Manuscript Chapters"
+              >
+                <Files className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">Chapters</span>
               </button>
 
               {/* World Codex Lore */}

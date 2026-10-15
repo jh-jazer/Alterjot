@@ -4,12 +4,16 @@ import type { CollaborativeProject, ContributorRequest, ApprovedCollaborator, Cr
 import { COLLABORATIVE_PROJECTS } from '../data/collaborativeProjectsData';
 import { api } from '../services/api';
 
-interface PanelState {
+export type LeftPanelTab = 'chapters' | 'contexts' | 'ai';
+
+export interface PanelState {
   isSidebarOpen: boolean;
   isCodexOpen: boolean;
   isZenMode: boolean;
   isNotesDeckOpen: boolean;
   isAiAssistantOpen: boolean;
+  isLeftPanelOpen: boolean;
+  activeLeftTab: LeftPanelTab;
 }
 
 interface TypographySettings {
@@ -66,6 +70,10 @@ interface WorkspaceState {
   closeChallenge: () => void;
 
   setPanelState: (partial: Partial<PanelState>) => void;
+  setActiveLeftTab: (tab: LeftPanelTab) => void;
+  toggleLeftPanel: (tab?: LeftPanelTab) => void;
+  openLeftPanel: (tab?: LeftPanelTab) => void;
+  closeLeftPanel: () => void;
   toggleSidebar: () => void;
   toggleCodex: () => void;
   toggleNotesDeck: () => void;
@@ -221,6 +229,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
     isZenMode: false,
     isNotesDeckOpen: true,
     isAiAssistantOpen: false,
+    isLeftPanelOpen: true,
+    activeLeftTab: 'chapters',
   },
 
   typography: {
@@ -530,36 +540,115 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       panelState: { ...state.panelState, ...partial },
     })),
 
-  toggleSidebar: () =>
+  setActiveLeftTab: (tab) =>
     set((state) => ({
-      panelState: { ...state.panelState, isSidebarOpen: !state.panelState.isSidebarOpen },
+      panelState: {
+        ...state.panelState,
+        activeLeftTab: tab,
+        isLeftPanelOpen: true,
+        isSidebarOpen: tab === 'chapters',
+        isAiAssistantOpen: tab === 'ai',
+        isCodexOpen: tab === 'contexts',
+      },
     })),
 
-  toggleCodex: () =>
+  toggleLeftPanel: (tab) =>
+    set((state) => {
+      if (tab) {
+        if (state.panelState.isLeftPanelOpen && state.panelState.activeLeftTab === tab) {
+          return {
+            panelState: {
+              ...state.panelState,
+              isLeftPanelOpen: false,
+              isSidebarOpen: false,
+              isAiAssistantOpen: false,
+              isCodexOpen: false,
+            },
+          };
+        }
+        return {
+          panelState: {
+            ...state.panelState,
+            activeLeftTab: tab,
+            isLeftPanelOpen: true,
+            isSidebarOpen: tab === 'chapters',
+            isAiAssistantOpen: tab === 'ai',
+            isCodexOpen: tab === 'contexts',
+          },
+        };
+      }
+      const nextOpen = !state.panelState.isLeftPanelOpen;
+      return {
+        panelState: {
+          ...state.panelState,
+          isLeftPanelOpen: nextOpen,
+          isSidebarOpen: nextOpen && state.panelState.activeLeftTab === 'chapters',
+          isAiAssistantOpen: nextOpen && state.panelState.activeLeftTab === 'ai',
+          isCodexOpen: nextOpen && state.panelState.activeLeftTab === 'contexts',
+        },
+      };
+    }),
+
+  openLeftPanel: (tab) =>
+    set((state) => {
+      const targetTab = tab || state.panelState.activeLeftTab;
+      return {
+        panelState: {
+          ...state.panelState,
+          activeLeftTab: targetTab,
+          isLeftPanelOpen: true,
+          isSidebarOpen: targetTab === 'chapters',
+          isAiAssistantOpen: targetTab === 'ai',
+          isCodexOpen: targetTab === 'contexts',
+        },
+      };
+    }),
+
+  closeLeftPanel: () =>
     set((state) => ({
-      panelState: { ...state.panelState, isCodexOpen: !state.panelState.isCodexOpen },
+      panelState: {
+        ...state.panelState,
+        isLeftPanelOpen: false,
+        isSidebarOpen: false,
+        isAiAssistantOpen: false,
+        isCodexOpen: false,
+      },
     })),
+
+  toggleSidebar: () => get().toggleLeftPanel('chapters'),
+
+  toggleCodex: () => get().toggleLeftPanel('contexts'),
 
   toggleNotesDeck: () =>
     set((state) => ({
       panelState: { ...state.panelState, isNotesDeckOpen: !state.panelState.isNotesDeckOpen },
     })),
 
-  toggleAiAssistant: () =>
-    set((state) => ({
-      panelState: { ...state.panelState, isAiAssistantOpen: !state.panelState.isAiAssistantOpen },
-    })),
+  toggleAiAssistant: () => get().toggleLeftPanel('ai'),
 
   openAiAssistant: (passage) =>
     set((state) => ({
-      panelState: { ...state.panelState, isAiAssistantOpen: true },
+      panelState: {
+        ...state.panelState,
+        isLeftPanelOpen: true,
+        activeLeftTab: 'ai',
+        isAiAssistantOpen: true,
+        isSidebarOpen: false,
+        isCodexOpen: false,
+      },
       ...(passage ? { activePassage: passage } : {}),
     })),
 
-  closeAiAssistant: () =>
-    set((state) => ({
-      panelState: { ...state.panelState, isAiAssistantOpen: false },
-    })),
+  closeAiAssistant: () => {
+    const s = get();
+    if (s.panelState.activeLeftTab === 'ai') {
+      s.closeLeftPanel();
+    } else {
+      set((state) => ({
+        panelState: { ...state.panelState, isAiAssistantOpen: false },
+      }));
+    }
+  },
 
   setActivePassage: (passage) => set({ activePassage: passage }),
 
@@ -570,8 +659,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         panelState: {
           ...state.panelState,
           isZenMode: nextZen,
+          isLeftPanelOpen: nextZen ? false : true,
           isSidebarOpen: nextZen ? false : true,
           isCodexOpen: false,
+          isAiAssistantOpen: false,
         },
       };
     }),
@@ -581,8 +672,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       panelState: {
         ...state.panelState,
         isZenMode: val,
+        isLeftPanelOpen: val ? false : true,
         isSidebarOpen: val ? false : true,
         isCodexOpen: false,
+        isAiAssistantOpen: false,
       },
     })),
 

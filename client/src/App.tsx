@@ -3,8 +3,7 @@ import { useWorkspaceStore } from './store/useWorkspaceStore';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { Header } from './components/layout/Header';
 import { ProseEditor } from './components/editor/ProseEditor';
-import { CodexDrawer } from './components/layout/CodexDrawer';
-import { AiAssistantDrawer } from './components/layout/AiAssistantDrawer';
+import { LeftPanel } from './components/layout/LeftPanel';
 import { LibraryView } from './components/library/LibraryView';
 import { DashboardView } from './components/dashboard/DashboardView';
 import { PlayView } from './components/play/PlayView';
@@ -48,14 +47,11 @@ export const App: React.FC = () => {
         <ChallengeDetailView />
       ) : (
         <main className="flex-1 flex overflow-hidden relative">
-          {/* Left: AI Narrative Copilot Sidebar */}
-          <AiAssistantDrawer />
+          {/* Left: VS Code Style Activity Bar Tabs (Chapters, Contexts, AI) */}
+          <LeftPanel />
 
           {/* Center: TipTap Prose Canvas */}
           <ProseEditor />
-
-          {/* Right: World Codex & Lore Reference Drawer */}
-          <CodexDrawer />
         </main>
       )}
 
