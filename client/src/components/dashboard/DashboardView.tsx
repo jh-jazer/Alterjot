@@ -189,7 +189,7 @@ export const DashboardView: React.FC = () => {
                   The Library Shelf is Open
                 </h3>
                 <p className="text-xs text-ink-muted font-sans leading-relaxed">
-                  No public community books published yet. Write and publish your stories to display them on the Atelier shelf.
+                  No public community books published yet. Write and publish your stories to display them on the community shelf.
                 </p>
                 <div className="pt-2">
                   <button

@@ -24,7 +24,7 @@ export const CodexModal: React.FC<CodexModalProps> = ({
   const [tagsStr, setTagsStr] = useState('');
   const [timelineDate, setTimelineDate] = useState('');
 
-  // Character Dossier traits
+  // Character Profile traits
   const [appearance, setAppearance] = useState('');
   const [voice, setVoice] = useState('');
   const [quirks, setQuirks] = useState('');

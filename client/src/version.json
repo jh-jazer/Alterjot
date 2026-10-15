@@ -1,11 +1,11 @@
 {
-  "version": "v1.0.47",
-  "commitHash": "8fa008e",
-  "commitCount": 47,
+  "version": "v1.0.48",
+  "commitHash": "4e753c4",
+  "commitCount": 48,
   "branch": "main",
-  "commitMessage": "feat: add multi-provider AI controller, routes, and client service integrations",
+  "commitMessage": "feat: add comprehensive book management, reading studio, and explore components",
   "buildDate": "2026-10-15",
-  "buildTimestamp": "2026-10-15T13:52:43.106Z",
+  "buildTimestamp": "2026-10-15T13:53:44.807Z",
   "repoUrl": "https://github.com/jh-jazer/Alterjot",
-  "commitUrl": "https://github.com/jh-jazer/Alterjot/commit/8fa008e"
+  "commitUrl": "https://github.com/jh-jazer/Alterjot/commit/4e753c4"
 }
