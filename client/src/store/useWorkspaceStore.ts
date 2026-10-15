@@ -3,6 +3,7 @@ import type { Novel, Chapter, Scene, CodexEntry, SaveStatus, NarrativeTheme, Onb
 import type { CollaborativeProject, ContributorRequest, ApprovedCollaborator, CreativeDiscipline } from '../data/collaborativeProjectsData';
 import { COLLABORATIVE_PROJECTS } from '../data/collaborativeProjectsData';
 import { api } from '../services/api';
+import { aiService } from '../services/aiService';
 
 export type LeftPanelTab = 'search' | 'chapters' | 'contexts' | 'ai';
 
@@ -483,6 +484,8 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
       isAuthModalOpen: false,
       isOnboardingModalOpen: !hasOnboarded,
     });
+    // Sync encrypted API Vault across devices
+    aiService.loadVaultFromCloud({ id: user.id, email: user.email }).catch(() => {});
     get().loadInitialWorkspace();
   },
 
@@ -527,6 +530,9 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         isAuthModalOpen: false,
         isOnboardingModalOpen: !hasOnboarded,
       });
+
+      // Sync author's encrypted API Key Vault across devices
+      aiService.loadVaultFromCloud({ id: finalUser.id, email: finalUser.email }).catch(() => {});
 
       // Reload author's private manuscripts
       get().loadInitialWorkspace();
@@ -1605,6 +1611,11 @@ export const useWorkspaceStore = create<WorkspaceState>((set, get) => ({
         isAtlas: !!health.isAtlas,
         novels: enrichedNovels,
       });
+
+      // Synchronize encrypted cloud API vault if user is logged in
+      if (get().isAuthenticated) {
+        aiService.loadVaultFromCloud().catch(() => {});
+      }
 
       if (novels.length === 0) {
         set({ activeNovelId: null });

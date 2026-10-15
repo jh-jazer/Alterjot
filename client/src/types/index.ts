@@ -168,6 +168,11 @@ export interface AiPassageAnalysis {
   pacing: string;
   strengths: string;
   suggestions: string;
+  isLiveGemini?: boolean;
+  isLiveAi?: boolean;
+  provider?: string;
+  model?: string;
+  source?: string;
 }
 
 export interface AiInteractionMessage {
@@ -176,6 +181,9 @@ export interface AiInteractionMessage {
   content: string;
   proposedRewrite?: string;
   timestamp: string;
+  isLiveAi?: boolean;
+  model?: string;
+  provider?: string;
 }
 
 export interface InvitedReader {

@@ -7,6 +7,7 @@ import chapterRoutes from './routes/chapterRoutes.js';
 import sceneRoutes from './routes/sceneRoutes.js';
 import codexRoutes from './routes/codexRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 import { memoryStore } from './store/memoryStore.js';
 
 dotenv.config();
@@ -38,7 +39,21 @@ app.use(
       return callback(new Error('CORS blocked: Request origin not allowed by Alterjot API'));
     },
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'x-user-id',
+      'x-gemini-key',
+      'x-groq-key',
+      'x-openrouter-key',
+      'x-ai-key',
+      'x-ai-provider',
+      'x-ai-model',
+      'x-disable-fallback',
+      'x-force-local',
+      'x-engine-mode',
+      'x-ai-backup-keys',
+    ],
     credentials: true,
   })
 );
@@ -71,6 +86,7 @@ app.use('/api/chapters', chapterRoutes);
 app.use('/api/scenes', sceneRoutes);
 app.use('/api/codex', codexRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Error Handling
 app.use((err, req, res, next) => {

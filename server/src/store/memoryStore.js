@@ -43,6 +43,8 @@ class MemoryStore {
       penName: penName || (email ? email.split('@')[0] : 'Author'),
       avatarUrl: avatarUrl || '',
       authProvider: 'google',
+      encryptedVault: '',
+      vaultUpdatedAt: null,
       createdAt: now,
       updatedAt: now,
     };
@@ -50,6 +52,35 @@ class MemoryStore {
     return user;
   }
 
+  updateUserVault(userId, encryptedVault) {
+    const user = this.findUserById(userId) || this.users.find((u) => u.googleId === userId || u.email === userId);
+    if (user) {
+      user.encryptedVault = encryptedVault;
+      user.vaultUpdatedAt = new Date().toISOString();
+      return user;
+    }
+    // Also support fallback author user
+    let defaultUser = this.users[0];
+    if (!defaultUser) {
+      defaultUser = {
+        _id: userId || 'author_default',
+        email: 'user@alterjot.local',
+        penName: 'Author',
+        encryptedVault,
+        vaultUpdatedAt: new Date().toISOString(),
+      };
+      this.users.push(defaultUser);
+      return defaultUser;
+    }
+    defaultUser.encryptedVault = encryptedVault;
+    defaultUser.vaultUpdatedAt = new Date().toISOString();
+    return defaultUser;
+  }
+
+  getUserVault(userId) {
+    const user = this.findUserById(userId) || this.users.find((u) => u.googleId === userId || u.email === userId) || this.users[0];
+    return user ? { encryptedVault: user.encryptedVault || '', vaultUpdatedAt: user.vaultUpdatedAt || null } : null;
+  }
 
   // --- NOVELS ---
   getNovels(userId) {

@@ -121,3 +121,97 @@ export function getAuthConfig(req, res) {
     clientIdConfigured: isConfigured,
   });
 }
+
+/**
+ * Retrieve encrypted API vault for the authenticated user
+ * GET /api/auth/vault
+ */
+export async function getVault(req, res) {
+  try {
+    const userId = req.headers['x-user-id'] || req.query.userId;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'User ID is required' });
+    }
+
+    if (isConnectedToAtlas()) {
+      const user =
+        (await User.findById(userId).catch(() => null)) ||
+        (await User.findOne({ $or: [{ googleId: userId }, { email: userId }] }));
+      if (!user) {
+        return res.json({ success: true, encryptedVault: '', vaultUpdatedAt: null });
+      }
+      return res.json({
+        success: true,
+        encryptedVault: user.encryptedVault || '',
+        vaultUpdatedAt: user.vaultUpdatedAt || null,
+      });
+    }
+
+    const data = memoryStore.getUserVault(userId);
+    return res.json({
+      success: true,
+      encryptedVault: data?.encryptedVault || '',
+      vaultUpdatedAt: data?.vaultUpdatedAt || null,
+    });
+  } catch (err) {
+    console.error('[Auth] getVault error:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+}
+
+/**
+ * Save encrypted API vault for the authenticated user
+ * POST /api/auth/vault
+ * Body: { encryptedVault: string }
+ */
+export async function saveVault(req, res) {
+  try {
+    const userId = req.headers['x-user-id'] || req.body.userId;
+    const { encryptedVault } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'User ID is required' });
+    }
+
+    if (typeof encryptedVault !== 'string') {
+      return res.status(400).json({ success: false, error: 'encryptedVault string is required' });
+    }
+
+    const now = new Date();
+
+    if (isConnectedToAtlas()) {
+      let user =
+        (await User.findById(userId).catch(() => null)) ||
+        (await User.findOne({ $or: [{ googleId: userId }, { email: userId }] }));
+      if (user) {
+        user.encryptedVault = encryptedVault;
+        user.vaultUpdatedAt = now;
+        await user.save();
+      } else {
+        user = await User.create({
+          googleId: userId,
+          email: `${userId}@alterjot.local`,
+          penName: 'Author',
+          encryptedVault,
+          vaultUpdatedAt: now,
+          authProvider: 'local',
+        });
+      }
+      return res.json({
+        success: true,
+        message: 'Encrypted vault saved successfully to cloud',
+        vaultUpdatedAt: user.vaultUpdatedAt,
+      });
+    }
+
+    memoryStore.updateUserVault(userId, encryptedVault);
+    return res.json({
+      success: true,
+      message: 'Encrypted vault saved successfully to cloud store',
+      vaultUpdatedAt: now.toISOString(),
+    });
+  } catch (err) {
+    console.error('[Auth] saveVault error:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+}

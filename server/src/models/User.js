@@ -29,6 +29,13 @@ const UserSchema = new mongoose.Schema(
       enum: ['google', 'local', 'guest'],
       default: 'google',
     },
+    encryptedVault: {
+      type: String,
+      default: '',
+    },
+    vaultUpdatedAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

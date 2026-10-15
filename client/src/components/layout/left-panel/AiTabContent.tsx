@@ -18,7 +18,10 @@ import {
   HelpCircle,
   RotateCcw,
   X,
+  Key,
+  AlertCircle,
 } from 'lucide-react';
+import { GeminiKeyModal } from './GeminiKeyModal';
 
 export const AiTabContent: React.FC = () => {
   const activePassage = useWorkspaceStore((s) => s.activePassage);
@@ -30,19 +33,52 @@ export const AiTabContent: React.FC = () => {
   const [isProcessingQuery, setIsProcessingQuery] = useState(false);
   const [chatThread, setChatThread] = useState<AiInteractionMessage[]>([]);
   const [approvedToast, setApprovedToast] = useState(false);
+  const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const [aiStatus, setAiStatus] = useState<{
+    isLiveGemini: boolean;
+    isLiveAi?: boolean;
+    model: string;
+    provider?: string;
+    source?: string;
+    engineMode?: 'auto' | 'strict' | 'local';
+    totalVaultKeys?: number;
+    keyLabel?: string;
+  }>({
+    isLiveGemini: false,
+    model: 'Local Engine',
+  });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const chatBottomRef = useRef<HTMLDivElement>(null);
+
+  const refreshAiStatus = () => {
+    aiService.getStatus().then((st) => setAiStatus(st)).catch(() => {});
+  };
+
+  const handleCycleEngineMode = () => {
+    const current = aiService.getEngineMode();
+    const next = current === 'auto' ? 'strict' : current === 'strict' ? 'local' : 'auto';
+    aiService.setEngineMode(next);
+    refreshAiStatus();
+  };
+
+  // Check AI engine status on mount
+  useEffect(() => {
+    refreshAiStatus();
+  }, []);
 
   // Whenever active passage changes, re-run analysis and reset thread
   useEffect(() => {
     if (!activePassage?.text) {
       setAnalysis(null);
+      setAnalysisError(null);
       setChatThread([]);
       return;
     }
 
     let isMounted = true;
     setIsAnalyzing(true);
+    setAnalysisError(null);
     setChatThread([]);
 
     aiService
@@ -53,14 +89,18 @@ export const AiTabContent: React.FC = () => {
           setIsAnalyzing(false);
         }
       })
-      .catch(() => {
-        if (isMounted) setIsAnalyzing(false);
+      .catch((err: any) => {
+        if (isMounted) {
+          setAnalysis(null);
+          setAnalysisError(err.message || 'Live AI generation failed and fallback engine is disabled.');
+          setIsAnalyzing(false);
+        }
       });
 
     return () => {
       isMounted = false;
     };
-  }, [activePassage?.text]);
+  }, [activePassage?.text, aiStatus.engineMode]);
 
   const handleSendQuery = async (queryToSend?: string) => {
     const textToSubmit = (queryToSend || queryInput).trim();
@@ -85,6 +125,9 @@ export const AiTabContent: React.FC = () => {
         content: response.answer,
         proposedRewrite: response.proposedRewrite,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        isLiveAi: response.isLiveGemini || response.isLiveAi,
+        model: response.model,
+        provider: response.provider,
       };
       setChatThread((prev) => [...prev, aiMsg]);
       setTimeout(() => {
@@ -139,6 +182,72 @@ export const AiTabContent: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full bg-canvas select-none">
+      {/* AI Model Status Header */}
+      <div className="px-3 py-2 border-b border-canvas-border bg-canvas-card/60 flex items-center justify-between text-[11px] font-mono gap-2 flex-wrap">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span
+            className={`w-2 h-2 rounded-full flex-shrink-0 ${
+              aiStatus.engineMode === 'local'
+                ? 'bg-zinc-400'
+                : aiStatus.isLiveGemini || aiStatus.isLiveAi
+                ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse'
+                : 'bg-amber-500'
+            }`}
+          />
+          <span className="font-semibold text-ink truncate">
+            {aiStatus.engineMode === 'local'
+              ? 'Offline Engine'
+              : aiStatus.isLiveGemini || aiStatus.isLiveAi
+              ? aiStatus.keyLabel || aiStatus.provider || 'Personal AI Live'
+              : 'Local Writing Engine'}
+          </span>
+          {aiStatus.engineMode !== 'local' && (aiStatus.isLiveGemini || aiStatus.isLiveAi) && (
+            <span className="text-[10px] text-ink-muted truncate hidden sm:inline">
+              ({aiStatus.model})
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          {/* Quick Engine Mode Switcher */}
+          <button
+            type="button"
+            onClick={handleCycleEngineMode}
+            className={`px-2 py-0.5 rounded-md border text-[10px] font-mono font-semibold transition-all cursor-pointer flex items-center gap-1 ${
+              aiStatus.engineMode === 'strict'
+                ? 'bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30 hover:bg-amber-500/25'
+                : aiStatus.engineMode === 'local'
+                ? 'bg-zinc-500/15 text-ink-muted border-zinc-500/30 hover:bg-zinc-500/25'
+                : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/25 hover:bg-emerald-500/20'
+            }`}
+            title="Click to cycle: Auto-Fallback ➔ Strict AI (No Fallback) ➔ Offline"
+          >
+            <span>
+              {aiStatus.engineMode === 'strict'
+                ? '🔒 Strict AI'
+                : aiStatus.engineMode === 'local'
+                ? '✍️ Offline'
+                : '⚡ Auto'}
+            </span>
+          </button>
+
+          {/* Manage Vault Button */}
+          <button
+            type="button"
+            onClick={() => setIsKeyModalOpen(true)}
+            className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-canvas-surface hover:bg-canvas-hover border border-canvas-border text-[10px] text-ink transition-colors cursor-pointer font-medium shadow-2xs hover:border-amber-500/40"
+            title="Manage API key vault & rotation"
+          >
+            <Key className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+            <span>
+              {aiService.getVaultKeys().length > 0
+                ? `Keys (${aiService.getVaultKeys().length})`
+                : 'Add Key'}
+            </span>
+          </button>
+        </div>
+      </div>
+
       {/* Toast Notification */}
       {approvedToast && (
         <div className="m-3 p-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs flex items-center gap-2 font-medium animate-in fade-in slide-in-from-top duration-200 shadow-xs">
@@ -159,11 +268,22 @@ export const AiTabContent: React.FC = () => {
             <p className="text-xs text-ink-muted leading-relaxed max-w-xs mx-auto">
               Click any line in your draft or tap the blue margin indicator to activate line-level critique, tone analysis, and instant rewriting.
             </p>
-            <div className="pt-1">
+            <div className="pt-1 flex flex-col items-center gap-2">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-mono text-blue-700 dark:text-blue-300">
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
                 Line-level AI Copilot active
               </span>
+
+              {!aiService.hasAnyKey() && (
+                <button
+                  type="button"
+                  onClick={() => setIsKeyModalOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/25 text-amber-800 dark:text-amber-300 text-[11px] font-mono transition-all cursor-pointer font-medium"
+                >
+                  <Key className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                  <span>Connect free AI key (Gemini / Groq)</span>
+                </button>
+              )}
             </div>
           </div>
         ) : (
@@ -193,6 +313,36 @@ export const AiTabContent: React.FC = () => {
               </div>
             </div>
 
+            {/* Strict Mode Error Card if Live AI Fails */}
+            {analysisError && (
+              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-700 dark:text-rose-400 text-xs space-y-2 animate-fadeIn">
+                <div className="flex items-center gap-1.5 font-bold font-mono text-ink">
+                  <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+                  <span>Live AI Failed (Fallback Disabled)</span>
+                </div>
+                <p className="text-[11px] leading-relaxed text-ink-muted">{analysisError}</p>
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setIsKeyModalOpen(true)}
+                    className="px-2.5 py-1 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-mono text-[10px] font-semibold cursor-pointer transition-colors"
+                  >
+                    Manage Keys
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      aiService.setEngineMode('auto');
+                      refreshAiStatus();
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-canvas-card border border-canvas-border text-ink font-mono text-[10px] hover:bg-canvas-hover cursor-pointer transition-colors"
+                  >
+                    Enable Built-in Fallback
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* What the AI Thinks of This Line */}
             <div className="p-3.5 rounded-xl bg-canvas-card border border-canvas-border shadow-xs space-y-2.5">
               <div className="flex items-center justify-between">
@@ -200,12 +350,38 @@ export const AiTabContent: React.FC = () => {
                   <Brain className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                   AI Analysis & Critique
                 </span>
-                {isAnalyzing && (
+                {isAnalyzing ? (
                   <span className="flex items-center gap-1 text-[11px] font-mono text-blue-600 dark:text-blue-400">
                     <Loader2 className="w-3 h-3 animate-spin" />
                     Critiquing...
                   </span>
-                )}
+                ) : analysis ? (
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold border ${
+                      analysis.isLiveGemini || analysis.isLiveAi
+                        ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30'
+                        : 'bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30'
+                    }`}
+                    title={
+                      analysis.isLiveGemini || analysis.isLiveAi
+                        ? `Live AI Response from ${analysis.provider || 'API'}`
+                        : 'Generated by built-in offline literary heuristics'
+                    }
+                  >
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        analysis.isLiveGemini || analysis.isLiveAi
+                          ? 'bg-emerald-500 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.8)]'
+                          : 'bg-amber-500'
+                      }`}
+                    />
+                    <span>
+                      {analysis.isLiveGemini || analysis.isLiveAi
+                        ? analysis.model || 'Live AI'
+                        : 'Built-in Engine'}
+                    </span>
+                  </span>
+                ) : null}
               </div>
 
               {isAnalyzing ? (
@@ -272,9 +448,22 @@ export const AiTabContent: React.FC = () => {
                     }`}
                   >
                     <div className="flex items-center justify-between font-mono text-[10px] text-ink-faint mb-1">
-                      <span className="font-semibold text-ink-muted">
-                        {msg.role === 'user' ? 'You asked:' : 'AI Answer:'}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-semibold text-ink-muted">
+                          {msg.role === 'user' ? 'You asked:' : 'AI Answer:'}
+                        </span>
+                        {msg.role === 'assistant' && (
+                          <span
+                            className={`px-1.5 py-0.5 rounded text-[9px] font-mono font-medium border ${
+                              msg.isLiveAi
+                                ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/25'
+                                : 'bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/25'
+                            }`}
+                          >
+                            {msg.isLiveAi ? msg.model || 'Live AI' : 'Built-in Engine'}
+                          </span>
+                        )}
+                      </div>
                       <span>{msg.timestamp}</span>
                     </div>
 
@@ -412,6 +601,13 @@ export const AiTabContent: React.FC = () => {
           </>
         )}
       </div>
+
+      {/* Bring Your Own Key Modal */}
+      <GeminiKeyModal
+        isOpen={isKeyModalOpen}
+        onClose={() => setIsKeyModalOpen(false)}
+        onKeyUpdated={refreshAiStatus}
+      />
     </div>
   );
 };
